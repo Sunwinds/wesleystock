@@ -50,7 +50,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 
     SetMenuBar(mbar);
 #endif // wxUSE_MENUS
-
+    mainGrid = new wxGrid(this,-1);
 #if wxUSE_STATUSBAR
     // create a status bar with some information about the used wxWidgets version
     CreateStatusBar(2);

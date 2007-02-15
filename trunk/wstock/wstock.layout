@@ -2,9 +2,21 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
 	<File name="app.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="0" topLine="0" />
+		<Cursor position="193" topLine="0" />
 	</File>
-	<File name="main.cpp" open="1" top="1" tabpos="2">
-		<Cursor position="1583" topLine="0" />
+	<File name="app.h" open="1" top="0" tabpos="4">
+		<Cursor position="222" topLine="0" />
+	</File>
+	<File name="main.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="1330" topLine="33" />
+	</File>
+	<File name="main.h" open="1" top="0" tabpos="3">
+		<Cursor position="55" topLine="0" />
+	</File>
+	<File name="stocks.cpp" open="1" top="1" tabpos="6">
+		<Cursor position="220" topLine="0" />
+	</File>
+	<File name="stocks.h" open="1" top="0" tabpos="5">
+		<Cursor position="587" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>
