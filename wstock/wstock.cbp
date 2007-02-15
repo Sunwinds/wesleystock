@@ -9,7 +9,7 @@
 			<Target title="Debug">
 				<Option output="bin/Debug/wstock" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
-				<Option type="1" />
+				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
@@ -42,12 +42,21 @@
 		<Unit filename="app.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
+		<Unit filename="maingridpanel.cpp" />
+		<Unit filename="maingridpanel.h" />
+		<Unit filename="stocks.cpp" />
+		<Unit filename="stocks.h" />
 		<Unit filename="wx_pch.h">
 			<Option compile="1" />
 			<Option weight="0" />
 		</Unit>
 		<Extensions>
 			<code_completion />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+				</resources>
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
