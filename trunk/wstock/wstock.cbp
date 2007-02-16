@@ -12,6 +12,7 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-Wall" />
 					<Add option="-g" />
 				</Compiler>
 			</Target>
@@ -30,7 +31,7 @@
 		</Build>
 		<Compiler>
 			<Add option="`wx-config --cflags`" />
-			<Add option="-Winvalid-pch" />
+<!--			<Add option="-Winvalid-pch" /> -->
 			<Add option="-include wx_pch.h" />
 			<Add option="-DUSE_PCH" />
 			<Add option="-Wall" />
@@ -40,10 +41,9 @@
 		</Linker>
 		<Unit filename="app.cpp" />
 		<Unit filename="app.h" />
+		<Unit filename="wstockconfig.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
-		<Unit filename="maingridpanel.cpp" />
-		<Unit filename="maingridpanel.h" />
 		<Unit filename="stocks.cpp" />
 		<Unit filename="stocks.h" />
 		<Unit filename="wx_pch.h">
@@ -54,8 +54,6 @@
 			<code_completion />
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
-				<resources>
-				</resources>
 			</wxsmith>
 		</Extensions>
 	</Project>

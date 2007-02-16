@@ -6,10 +6,8 @@
 class Stock :public wxObject
 {
     public:
-        Stock(const wxString& sn, const wxString& si, const wxString& st){
-            StockName = sn;
+        Stock(const wxString& si){
             StockId = si;
-            StockType = st;
         };
     private:
         wxString StockName, // The Company name
@@ -24,6 +22,7 @@ class Stocks:public wxObject
     public:
         Stocks(){};
         bool Init();
+        int GetStockNum(){ return stocks.size();};
     private:
         StockList stocks;
 };
