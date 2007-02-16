@@ -51,12 +51,17 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     SetMenuBar(mbar);
 #endif // wxUSE_MENUS
     mainGrid = new wxGrid(this,-1);
+    mainGrid->CreateGrid(1,5);
 #if wxUSE_STATUSBAR
     // create a status bar with some information about the used wxWidgets version
     CreateStatusBar(2);
     SetStatusText(_("Hello Code::Blocks user !"),0);
     SetStatusText(wxbuildinfo(short_f),1);
 #endif // wxUSE_STATUSBAR
+}
+
+void MyFrame::SetStockSource(Stocks* stocks){
+    ;
 }
 
 MyFrame::~MyFrame()

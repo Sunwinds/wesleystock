@@ -17,6 +17,7 @@ bool MyApp::OnInit()
         wxLogMessage(_("There is no stock Id in %s,you may need add some into it!"),
             WStockConfig::GetKeyPath().c_str());
     }
+    frame->SetStockSource(stocks);
 
 	frame->Show();
 	return true;
