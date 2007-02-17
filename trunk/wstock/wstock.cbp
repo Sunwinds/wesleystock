@@ -31,7 +31,6 @@
 		</Build>
 		<Compiler>
 			<Add option="`wx-config --cflags`" />
-<!--			<Add option="-Winvalid-pch" /> -->
 			<Add option="-include wx_pch.h" />
 			<Add option="-DUSE_PCH" />
 			<Add option="-Wall" />
@@ -41,11 +40,15 @@
 		</Linker>
 		<Unit filename="app.cpp" />
 		<Unit filename="app.h" />
-		<Unit filename="wstockconfig.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
 		<Unit filename="stocks.cpp" />
 		<Unit filename="stocks.h" />
+		<Unit filename="wstockconfig.h" />
+		<Unit filename="wstockconst.h" />
+		<Unit filename="wstockdataprovider.h" />
+		<Unit filename="wstockgeturl.cpp" />
+		<Unit filename="wstockgeturl.h" />
 		<Unit filename="wx_pch.h">
 			<Option compile="1" />
 			<Option weight="0" />

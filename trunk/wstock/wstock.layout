@@ -2,24 +2,24 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
 	<File name="app.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="467" topLine="0" />
+		<Cursor position="539" topLine="0" />
 	</File>
 	<File name="app.h" open="1" top="0" tabpos="4">
-		<Cursor position="106" topLine="0" />
+		<Cursor position="206" topLine="0" />
 	</File>
-	<File name="main.cpp" open="1" top="1" tabpos="2">
-		<Cursor position="1355" topLine="41" />
+	<File name="main.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="2309" topLine="61" />
 	</File>
 	<File name="main.h" open="1" top="0" tabpos="3">
-		<Cursor position="216" topLine="0" />
+		<Cursor position="404" topLine="0" />
 	</File>
 	<File name="stocks.cpp" open="1" top="0" tabpos="6">
 		<Cursor position="831" topLine="11" />
 	</File>
 	<File name="stocks.h" open="1" top="0" tabpos="5">
-		<Cursor position="541" topLine="0" />
+		<Cursor position="231" topLine="0" />
 	</File>
 	<File name="wstockconfig.h" open="1" top="0" tabpos="7">
-		<Cursor position="402" topLine="0" />
+		<Cursor position="77" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>
