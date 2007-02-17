@@ -9,6 +9,7 @@ class Stock :public wxObject
         Stock(const wxString& si){
             StockId = si;
         };
+        wxString GetId(){ return StockId; };
     private:
         wxString StockName, // The Company name
                  StockId,     // for example: 600000
@@ -23,6 +24,9 @@ class Stocks:public wxObject
         Stocks(){};
         bool Init();
         int GetStockNum(){ return stocks.size();};
+        wxString GetStockId(int idx){
+            return stocks[idx]->GetId();
+        }
     private:
         StockList stocks;
 };

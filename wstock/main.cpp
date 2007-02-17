@@ -60,8 +60,29 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 #endif // wxUSE_STATUSBAR
 }
 
-void MyFrame::SetStockSource(Stocks* stocks){
-    ;
+void MyFrame::SetStockSource(Stocks* s){
+    stocks =s;
+    UpdateMainGrid(0);
+}
+
+void MyFrame::UpdateMainGrid(int stockidx){
+    mainGrid->BeginBatch();
+    int TotalLeft = stocks->GetStockNum() - stockidx;
+    if (TotalLeft > 10){ /*TODO:应该计算出目前可以容纳的股票个数*/
+        TotalLeft = 10;
+    }
+
+    if (mainGrid->GetNumberRows() < TotalLeft){
+        mainGrid->AppendRows(TotalLeft - mainGrid->GetNumberRows());
+    }
+    for (int i=0;i<TotalLeft;i++){
+        mainGrid->SetCellValue(i,0,stocks->GetStockId(stockidx + i));
+    }
+    if (mainGrid->GetNumberRows() > TotalLeft){
+        mainGrid->DeleteRows(TotalLeft,mainGrid->GetNumberRows() - TotalLeft);
+    }
+
+    mainGrid->EndBatch();
 }
 
 MyFrame::~MyFrame()
