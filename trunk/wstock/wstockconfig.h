@@ -1,7 +1,7 @@
 #ifndef CONFIG_H_INCLUDED
 #define CONFIG_H_INCLUDED
 
-#include "app.h"
+#include "wstockconst.h"
 
 class WStockConfig :public wxObject
 {

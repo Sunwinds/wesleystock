@@ -20,5 +20,6 @@ bool MyApp::OnInit()
     frame->SetStockSource(stocks);
 
 	frame->Show();
+	frame->Maximize();
 	return true;
 }
