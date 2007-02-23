@@ -14,12 +14,18 @@
 		<Cursor position="404" topLine="0" />
 	</File>
 	<File name="stocks.cpp" open="1" top="0" tabpos="6">
-		<Cursor position="831" topLine="11" />
+		<Cursor position="831" topLine="10" />
 	</File>
 	<File name="stocks.h" open="1" top="0" tabpos="5">
 		<Cursor position="231" topLine="0" />
 	</File>
 	<File name="wstockconfig.h" open="1" top="0" tabpos="7">
-		<Cursor position="77" topLine="0" />
+		<Cursor position="344" topLine="0" />
+	</File>
+	<File name="wstockdataprovider.h" open="1" top="1" tabpos="8">
+		<Cursor position="122" topLine="0" />
+	</File>
+	<File name="wx_pch.h" open="0" top="0" tabpos="8">
+		<Cursor position="179" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>

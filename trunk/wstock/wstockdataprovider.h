@@ -3,7 +3,7 @@
 
 class WStockDataProvider:public wxObject
 {
-    virtual void
+    virtual void RetriveRealTimeInfo()=0;
 };
 
 #endif // WSTOCKDATAPROVIDER_H_INCLUDED
