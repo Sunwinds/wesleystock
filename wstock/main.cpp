@@ -32,6 +32,7 @@ int idMenuAbout = wxNewId();
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(idMenuQuit, MyFrame::OnQuit)
     EVT_MENU(idMenuAbout, MyFrame::OnAbout)
+    EVT_STOCK_DATA_GET_DONE(-1, MyFrame::OnStockDataGetDone)
 END_EVENT_TABLE()
 
 MyFrame::MyFrame(wxFrame *frame, const wxString& title)
@@ -52,11 +53,15 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 #endif // wxUSE_MENUS
     mainGrid = new wxGrid(this,-1);
     mainGrid->CreateGrid(1,5);
+    mainGrid->SetDefaultCellAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
+    mainGrid->EnableEditing(false);
 #if wxUSE_STATUSBAR
     // create a status bar with some information about the used wxWidgets version
     CreateStatusBar(2);
+    int Widths[]={-1,100};
+    SetStatusWidths(2,Widths);
     SetStatusText(_("Hello Code::Blocks user !"),0);
-    SetStatusText(wxbuildinfo(short_f),1);
+    SetStatusText(_("WSTOCK"),1);
 #endif // wxUSE_STATUSBAR
 }
 
@@ -66,7 +71,25 @@ void MyFrame::SetStockSource(Stocks* s){
 }
 
 void MyFrame::UpdateMainGrid(int stockidx){
+    wxString DataProviderClass(wxT("YahooStock"));
+
+    CurStockStartPos = stockidx;
     mainGrid->BeginBatch();
+
+    Stock* stock = wxDynamicCast(wxCreateDynamicObject(DataProviderClass), Stock);
+    if (stock){
+        if (mainGrid->GetNumberCols()>(stock->GetProptiesNum()+1)){
+            mainGrid->DeleteCols(mainGrid->GetNumberCols() - stock->GetProptiesNum()-1);
+        }
+        else if (mainGrid->GetNumberCols() < (stock->GetProptiesNum()+1)){
+            mainGrid->AppendCols(stock->GetProptiesNum() +1 - mainGrid->GetNumberCols());
+        }
+        mainGrid->SetColLabelValue(0,_("Stock Name"));
+        for (int i=0;i<stock->GetProptiesNum();i++){
+            mainGrid->SetColLabelValue(i+1,stock->GetPropertyName(i));
+        }
+    }
+
     int TotalLeft = stocks->GetStockNum() - stockidx;
     if (TotalLeft > 10){ /*TODO:应该计算出目前可以容纳的股票个数*/
         TotalLeft = 10;
@@ -76,17 +99,48 @@ void MyFrame::UpdateMainGrid(int stockidx){
         mainGrid->AppendRows(TotalLeft - mainGrid->GetNumberRows());
     }
     for (int i=0;i<TotalLeft;i++){
-        mainGrid->SetCellValue(i,0,stocks->GetStockId(stockidx + i));
+        wxString name = stocks->GetStockName(stockidx + i);
+        if (name.Length()<=0){
+            name = stocks->GetStockId(stockidx + i);
+        }
+        mainGrid->SetCellValue(i,0,name);
     }
     if (mainGrid->GetNumberRows() > TotalLeft){
         mainGrid->DeleteRows(TotalLeft,mainGrid->GetNumberRows() - TotalLeft);
     }
-
+    mainGrid->AutoSize();
     mainGrid->EndBatch();
+    stocks->GetStock(stockidx)->RetriveRealTimeData((void*)0);
 }
 
 MyFrame::~MyFrame()
 {
+}
+
+void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
+    int idx = (int)event.UserData;
+    if (idx<mainGrid->GetNumberRows()){
+        if ((event.stock->GetId() == mainGrid->GetCellValue(idx,0))
+            || (event.stock->GetName() == mainGrid->GetCellValue(idx,0))){
+            mainGrid->BeginBatch();
+            for (int i=1;i<mainGrid->GetNumberCols();i++){
+                mainGrid->SetCellValue(idx,i,event.stock->GetPropertyValue(
+                        mainGrid->GetColLabelValue(i)));
+            }
+            mainGrid->AutoSizeColumns();
+            mainGrid->EndBatch();
+        }
+        if (idx==mainGrid->GetNumberRows()-1){
+            //本页的股票数据已经刷新了一轮了，为了减轻服务器的压力，是不是应该休息一下再刷新第二轮呢?
+            //先不要了吧
+            stocks->GetStock(CurStockStartPos)->RetriveRealTimeData((void*)(0));
+        }
+        else{
+            //刷新下一个股票数据
+            stocks->GetStock(CurStockStartPos + idx+1)->RetriveRealTimeData((void*)(idx+1));
+        }
+    }
+    //if the check fail, just discard this event.
 }
 
 void MyFrame::OnQuit(wxCommandEvent& event)

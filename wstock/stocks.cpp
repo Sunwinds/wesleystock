@@ -2,9 +2,13 @@
 #include "wstockconfig.h"
 #include "wx/filename.h"
 #include "wx/textfile.h"
+#include "yahoostock.h"
 
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(StockList);
+
+const wxEventType wxEVT_STOCK_DATA_GET_DONE = wxNewEventType();
+IMPLEMENT_DYNAMIC_CLASS(wxStockDataGetDoneEvent, wxNotifyEvent);
 
 bool Stocks::Init(){
     wxConfig config(APP_CFG, VENDOR_CFG);
@@ -21,8 +25,10 @@ bool Stocks::Init(){
             {
                 if (!file[i].StartsWith(wxT("#"))){
                     wxString si = file[i].Strip(wxString::both); //Strip Both Side
-                    if (si.Len()>0){
-                        stocks.Append(new Stock(si));
+                    wxString id = si.BeforeFirst(wxT(' '));
+                    wxString name = si.AfterFirst(wxT(' '));
+                    if (id.Len()>0){
+                        stocks.Append(new YahooStock(Parent, id,name));
                     }
                 }
             }

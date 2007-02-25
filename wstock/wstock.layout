@@ -14,21 +14,27 @@
 		<Cursor position="404" topLine="0" />
 	</File>
 	<File name="stocks.cpp" open="1" top="0" tabpos="6">
-		<Cursor position="831" topLine="10" />
+		<Cursor position="779" topLine="11" />
 	</File>
 	<File name="stocks.h" open="1" top="0" tabpos="5">
-		<Cursor position="231" topLine="0" />
+		<Cursor position="1097" topLine="15" />
 	</File>
 	<File name="wstockconfig.h" open="1" top="0" tabpos="7">
-		<Cursor position="348" topLine="0" />
+		<Cursor position="421" topLine="0" />
 	</File>
-	<File name="wstockdataprovider.h" open="1" top="1" tabpos="8">
-		<Cursor position="923" topLine="0" />
+	<File name="wstockgeturl.cpp" open="1" top="0" tabpos="11">
+		<Cursor position="72" topLine="0" />
 	</File>
-	<File name="wstockgeturl.h" open="1" top="0" tabpos="9">
-		<Cursor position="583" topLine="0" />
+	<File name="wstockgeturl.h" open="1" top="1" tabpos="8">
+		<Cursor position="731" topLine="3" />
 	</File>
 	<File name="wx_pch.h" open="0" top="0" tabpos="8">
 		<Cursor position="179" topLine="0" />
+	</File>
+	<File name="yahoostock.cpp" open="1" top="0" tabpos="10">
+		<Cursor position="190" topLine="0" />
+	</File>
+	<File name="yahoostock.h" open="1" top="0" tabpos="9">
+		<Cursor position="80" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>

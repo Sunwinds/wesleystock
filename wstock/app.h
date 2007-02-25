@@ -22,4 +22,6 @@ class MyApp : public wxApp
         Stocks* stocks;
 };
 
+DECLARE_APP(MyApp);
+
 #endif // APP_H
