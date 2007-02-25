@@ -46,13 +46,14 @@
 		<Unit filename="stocks.h" />
 		<Unit filename="wstockconfig.h" />
 		<Unit filename="wstockconst.h" />
-		<Unit filename="wstockdataprovider.h" />
 		<Unit filename="wstockgeturl.cpp" />
 		<Unit filename="wstockgeturl.h" />
 		<Unit filename="wx_pch.h">
 			<Option compile="1" />
 			<Option weight="0" />
 		</Unit>
+		<Unit filename="yahoostock.cpp" />
+		<Unit filename="yahoostock.h" />
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">

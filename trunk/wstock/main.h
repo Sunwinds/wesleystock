@@ -11,13 +11,14 @@ class MyFrame: public wxFrame
 		~MyFrame();
 		void SetStockSource(Stocks* stocks);
 	private:
-
+        int CurStockStartPos;
         wxGrid *mainGrid;
         Stocks *stocks;
 
 		void OnQuit(wxCommandEvent& event);
 		void OnAbout(wxCommandEvent& event);
 		void UpdateMainGrid(int stockidx);
+		void OnStockDataGetDone(wxStockDataGetDoneEvent&event);
 		DECLARE_EVENT_TABLE();
 };
 

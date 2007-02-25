@@ -4,6 +4,8 @@
 
 IMPLEMENT_APP(MyApp);
 
+wxConfig config(APP_CFG, VENDOR_CFG);
+
 bool MyApp::OnInit()
 {
     SetAppName(APP_CFG);
@@ -11,7 +13,7 @@ bool MyApp::OnInit()
 
 	MyFrame* frame = new MyFrame(0L, _("wxWidgets Application Template"));
 
-    stocks = new Stocks();
+    stocks = new Stocks(frame);
     stocks->Init();
     if (stocks->GetStockNum()==0){
         wxLogMessage(_("There is no stock Id in %s,you may need add some into it!"),
