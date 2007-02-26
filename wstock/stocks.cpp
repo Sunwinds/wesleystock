@@ -28,7 +28,7 @@ bool Stocks::Init(){
                     wxString id = si.BeforeFirst(wxT(' '));
                     wxString name = si.AfterFirst(wxT(' '));
                     if (id.Len()>0){
-                        stocks.Append(new YahooStock(Parent, id,name));
+                        stocks.Append(new Stock(id,name));
                     }
                 }
             }

@@ -1,4 +1,6 @@
 #include "main.h"
+#include <wx/datetime.h>
+#include "StockHistoryDialog.h"
 
 //helper functions
 enum wxbuildinfoformat {
@@ -28,15 +30,18 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 
 int idMenuQuit = wxNewId();
 int idMenuAbout = wxNewId();
-
+#define REALTIME_DELTA_TIMER_ID  200
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(idMenuQuit, MyFrame::OnQuit)
     EVT_MENU(idMenuAbout, MyFrame::OnAbout)
     EVT_STOCK_DATA_GET_DONE(-1, MyFrame::OnStockDataGetDone)
+    EVT_TIMER(REALTIME_DELTA_TIMER_ID, MyFrame::OnRealtimeDeltaTimer)
+    EVT_GRID_CELL_LEFT_DCLICK(MyFrame::OnGridCellDbClick)
 END_EVENT_TABLE()
 
 MyFrame::MyFrame(wxFrame *frame, const wxString& title)
-    : wxFrame(frame, -1, title)
+    : wxFrame(frame, -1, title),
+    RealTimeDeltaTimer(this,REALTIME_DELTA_TIMER_ID)
 {
 #if wxUSE_MENUS
     // create a menu bar
@@ -51,6 +56,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 
     SetMenuBar(mbar);
 #endif // wxUSE_MENUS
+    CurFetchObj = NULL;
     mainGrid = new wxGrid(this,-1);
     mainGrid->CreateGrid(1,5);
     mainGrid->SetDefaultCellAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
@@ -71,12 +77,10 @@ void MyFrame::SetStockSource(Stocks* s){
 }
 
 void MyFrame::UpdateMainGrid(int stockidx){
-    wxString DataProviderClass(wxT("YahooStock"));
 
     CurStockStartPos = stockidx;
     mainGrid->BeginBatch();
-
-    Stock* stock = wxDynamicCast(wxCreateDynamicObject(DataProviderClass), Stock);
+    StocksDataFetch*stock = GetCurFetchObj();
     if (stock){
         if (mainGrid->GetNumberCols()>(stock->GetProptiesNum()+1)){
             mainGrid->DeleteCols(mainGrid->GetNumberCols() - stock->GetProptiesNum()-1);
@@ -110,7 +114,7 @@ void MyFrame::UpdateMainGrid(int stockidx){
     }
     mainGrid->AutoSize();
     mainGrid->EndBatch();
-    stocks->GetStock(stockidx)->RetriveRealTimeData((void*)0);
+    stock->RetriveRealTimeData(stocks->GetList(), (void*)0);
 }
 
 MyFrame::~MyFrame()
@@ -120,25 +124,20 @@ MyFrame::~MyFrame()
 void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
     int idx = (int)event.UserData;
     if (idx<mainGrid->GetNumberRows()){
-        if ((event.stock->GetId() == mainGrid->GetCellValue(idx,0))
-            || (event.stock->GetName() == mainGrid->GetCellValue(idx,0))){
-            mainGrid->BeginBatch();
+        mainGrid->BeginBatch();
+        for (int j=0;j<mainGrid->GetNumberRows();j++){
             for (int i=1;i<mainGrid->GetNumberCols();i++){
-                mainGrid->SetCellValue(idx,i,event.stock->GetPropertyValue(
+                mainGrid->SetCellValue(idx+j,i,stocks->GetStock(idx+j)->GetPropertyValue(
                         mainGrid->GetColLabelValue(i)));
             }
-            mainGrid->AutoSizeColumns();
-            mainGrid->EndBatch();
         }
-        if (idx==mainGrid->GetNumberRows()-1){
-            //本页的股票数据已经刷新了一轮了，为了减轻服务器的压力，是不是应该休息一下再刷新第二轮呢?
-            //先不要了吧
-            stocks->GetStock(CurStockStartPos)->RetriveRealTimeData((void*)(0));
-        }
-        else{
-            //刷新下一个股票数据
-            stocks->GetStock(CurStockStartPos + idx+1)->RetriveRealTimeData((void*)(idx+1));
-        }
+        mainGrid->AutoSizeColumns();
+        mainGrid->EndBatch();
+
+        //股票数据已经刷新了一轮了，为了减轻服务器的压力，
+        //休息一下(10秒)再刷新第二轮吧
+        wxLogStatus(_("Start %ds Timer to Update Again"),10);
+        RealTimeDeltaTimer.Start(10000,true);
     }
     //if the check fail, just discard this event.
 }
@@ -152,5 +151,23 @@ void MyFrame::OnAbout(wxCommandEvent& event)
 {
     wxString msg = wxbuildinfo(long_f);
     wxMessageBox(msg, _("Welcome to..."));
+}
+
+StocksDataFetch*MyFrame::GetCurFetchObj(){
+    if (CurFetchObj) return CurFetchObj;
+    wxString DataProviderClass(wxT("YahooStock"));
+    StocksDataFetch* stock = wxDynamicCast(wxCreateDynamicObject(DataProviderClass), StocksDataFetch);
+    if (stock) stock->SetParent(this);
+    return stock;
+}
+
+void MyFrame::OnRealtimeDeltaTimer(wxTimerEvent& event){
+    StocksDataFetch*stock = GetCurFetchObj();
+    if (stock) stock->RetriveRealTimeData(stocks->GetList(), (void*)(0));
+}
+
+void MyFrame::OnGridCellDbClick(wxGridEvent& event){
+    StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
+    dialog.ShowModal();
 }
 

@@ -21,13 +21,11 @@ YahooStock这个类继承自Stock类，并且通过Yahoo股票接口实现股票
 完成事件。这个事件将发送给其Parent处理
 
 */
-
-class Stock :public wxEvtHandler
+class Stock :public wxObject
 {
     public:
         Stock(){};
-        Stock(wxEvtHandler* P, const wxString& si, const wxString &name){
-            Parent = P;
+        Stock(const wxString& si, const wxString &name){
             StockId = si;
             StockName = name;
         };
@@ -38,13 +36,11 @@ class Stock :public wxEvtHandler
             if (StockId[0] == wxT('0')) return wxT("SZ");
             return wxT("XX");
         };
-
-        virtual void RetriveRealTimeData(void* UserData)=0; //子类必须实现这个纯虚方法
-        virtual void RetriveHistoryDayData()=0;  //子类必须实现这个纯虚方法
-        virtual int GetProptiesNum()=0;
-        virtual wxString GetPropertyName(int idx)=0;
-        wxString GetPropertyValue(wxString name){
+        wxString GetPropertyValue(const wxString& name){
             return RealTimeProps[name];
+        };
+        void SetPropertyValue(const wxString& name,const wxString& value){
+            RealTimeProps[name] = value;
         };
 
     private:
@@ -52,7 +48,6 @@ class Stock :public wxEvtHandler
                  StockId,     // for example: 600000
                  StockType; //  SS or SZ (沪市或者深市)
     protected:
-        wxEvtHandler* Parent;
         StrStrHash RealTimeProps;
 
 };
@@ -66,21 +61,18 @@ class wxStockDataGetDoneEvent : public wxNotifyEvent
 {
     public:
     wxStockDataGetDoneEvent(wxEventType commandType = wxEVT_NULL,
-       StockRetriveType t=REALTIME_RETRIVE, void*data=NULL, Stock*s=NULL):
+       StockRetriveType t=REALTIME_RETRIVE, void*data=NULL):
         wxNotifyEvent(commandType, -1){
             rtype = t;
             UserData = data;
-            stock = s;
         };
     wxStockDataGetDoneEvent(const wxStockDataGetDoneEvent& event): wxNotifyEvent(event){
         UserData = event.UserData;
         rtype = event.rtype;
-        stock = event.stock;
         };
     virtual wxEvent *Clone() const {
         return new wxStockDataGetDoneEvent(*this);
     }
-    Stock* stock;
     StockRetriveType rtype;
     void *UserData;
     DECLARE_DYNAMIC_CLASS(wxStockDataGetDoneEvent);
@@ -112,9 +104,25 @@ class Stocks:public wxObject
         Stock *GetStock(int idx){
             return stocks[idx];
         }
+        StockList* GetList(){ return &stocks;};
     private:
         wxEvtHandler* Parent;
         StockList stocks;
+};
+
+class StocksDataFetch:public wxEvtHandler
+{
+    public:
+        StocksDataFetch(){};
+        void SetParent(wxEvtHandler* P){Parent=P;};
+        //获取某组股票的即时数据
+        virtual void RetriveRealTimeData(StockList* stocks, void* UserData)=0;
+        virtual void RetriveHistoryDayData()=0;  //子类必须实现这个纯虚方法
+        virtual int GetProptiesNum()=0;
+        virtual wxString GetPropertyName(int idx)=0;
+    protected:
+        StockList* stocks;
+        wxEvtHandler* Parent;
 };
 
 #endif // STOCKS_H_INCLUDED
