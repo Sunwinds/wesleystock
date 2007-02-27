@@ -122,22 +122,30 @@ MyFrame::~MyFrame()
 }
 
 void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
-    int idx = (int)event.UserData;
-    if (idx<mainGrid->GetNumberRows()){
-        mainGrid->BeginBatch();
-        for (int j=0;j<mainGrid->GetNumberRows();j++){
-            for (int i=1;i<mainGrid->GetNumberCols();i++){
-                mainGrid->SetCellValue(idx+j,i,stocks->GetStock(idx+j)->GetPropertyValue(
-                        mainGrid->GetColLabelValue(i)));
+    if (event.rtype == REALTIME_RETRIVE){
+        int idx = (int)event.UserData;
+        if (idx<mainGrid->GetNumberRows()){
+            mainGrid->BeginBatch();
+            for (int j=0;j<mainGrid->GetNumberRows();j++){
+                for (int i=1;i<mainGrid->GetNumberCols();i++){
+                    mainGrid->SetCellValue(idx+j,i,stocks->GetStock(idx+j)->GetPropertyValue(
+                            mainGrid->GetColLabelValue(i)));
+                }
             }
-        }
-        mainGrid->AutoSizeColumns();
-        mainGrid->EndBatch();
+            mainGrid->AutoSizeColumns();
+            mainGrid->EndBatch();
 
-        //股票数据已经刷新了一轮了，为了减轻服务器的压力，
-        //休息一下(10秒)再刷新第二轮吧
-        wxLogStatus(_("Start %ds Timer to Update Again"),10);
-        RealTimeDeltaTimer.Start(10000,true);
+            //股票数据已经刷新了一轮了，为了减轻服务器的压力，
+            //休息一下(10秒)再刷新第二轮吧
+            RealTimeDeltaTimer.Start(10000,true);
+        }
+    }
+    else{
+        Stock* s = (Stock*)event.UserData;
+        s->SaveHistoryDataToFile();
+        StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
+        dialog.SetStock(s);
+        dialog.ShowModal();
     }
     //if the check fail, just discard this event.
 }
@@ -167,7 +175,19 @@ void MyFrame::OnRealtimeDeltaTimer(wxTimerEvent& event){
 }
 
 void MyFrame::OnGridCellDbClick(wxGridEvent& event){
-    StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
-    dialog.ShowModal();
+    Stock* s = stocks->GetStock(CurStockStartPos+event.GetRow());
+    if (!s->IsHistoryDataReady()){
+        if (!s->LoadHistoryDataFromFile()){
+            GetCurFetchObj()->RetriveHistoryDayData(s);
+        }
+        else{
+            wxLogStatus(_("Load History Data From File!"));
+        }
+    }
+    else{
+        StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
+        dialog.SetStock(s);
+        dialog.ShowModal();
+    }
 }
 

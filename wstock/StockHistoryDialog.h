@@ -19,7 +19,7 @@ public:
     // end wxGlade
 
     StockHistoryDialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxSize(100,100), long style=wxDEFAULT_DIALOG_STYLE);
-
+    void SetStock(Stock* s);
 private:
     // begin wxGlade: StockHistoryDialog::methods
     void set_properties();
@@ -29,11 +29,11 @@ private:
 protected:
     // begin wxGlade: StockHistoryDialog::attributes
     wxPlotWindow* m_chart;
-    wxStaticText* label_1;
-    wxStaticText* label_2;
+    wxTextCtrl* text_ctrl_1;
     wxStaticLine* static_line_1;
     wxButton* button_1;
     // end wxGlade
+    Stock* stock;
 }; // wxGlade: end class
 
 
