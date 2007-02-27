@@ -7,6 +7,17 @@
 
 WX_DECLARE_STRING_HASH_MAP(wxString, StrStrHash);
 
+typedef struct{
+    wxDateTime data;
+    double     open;
+    double     High;
+    double     Low;
+    double     Close;
+    int        volume;
+    double     adjClose;
+}StockHistoryDataPiece;
+WX_DEFINE_ARRAY (StockHistoryDataPiece *, StockHistoryDataArray);
+
 /*
 
 Stock类不能被直接哪来使用，而必须使用这个类的派生类，一个派生类决定一种数据获取的方式，比如
@@ -21,6 +32,7 @@ YahooStock这个类继承自Stock类，并且通过Yahoo股票接口实现股票
 完成事件。这个事件将发送给其Parent处理
 
 */
+class wxPlotWindow;
 class Stock :public wxObject
 {
     public:
@@ -29,6 +41,7 @@ class Stock :public wxObject
             StockId = si;
             StockName = name;
         };
+        ~Stock();
         wxString GetId(){ return StockId; };
         wxString GetName(){ return StockName; };
         wxString GetStockType(){
@@ -39,17 +52,29 @@ class Stock :public wxObject
         wxString GetPropertyValue(const wxString& name){
             return RealTimeProps[name];
         };
+        bool IsHistoryDataReady(){
+            return DayHistoryData.size()>0;
+        }
+        void AppendDayData(StockHistoryDataPiece*p){ DayHistoryData.push_back(p);};
+        void AppendWeekData(StockHistoryDataPiece*p){ WeekHistoryData.push_back(p);};
+        void AppendMonthData(StockHistoryDataPiece*p){ MonthHistoryData.push_back(p);};
         void SetPropertyValue(const wxString& name,const wxString& value){
             RealTimeProps[name] = value;
         };
+
+        bool LoadHistoryDataFromFile();
+        bool SaveHistoryDataToFile();
 
     private:
         wxString StockName, // The Company name
                  StockId,     // for example: 600000
                  StockType; //  SS or SZ (沪市或者深市)
     protected:
+        friend class wxPlotWindow;
         StrStrHash RealTimeProps;
-
+        StockHistoryDataArray DayHistoryData;
+        StockHistoryDataArray WeekHistoryData;
+        StockHistoryDataArray MonthHistoryData;
 };
 
 typedef enum {
@@ -93,6 +118,7 @@ class Stocks:public wxObject
 {
     public:
         Stocks(wxEvtHandler* P){Parent=P;};
+        ~Stocks();
         bool Init();
         int GetStockNum(){ return stocks.size();};
         wxString GetStockId(int idx){
@@ -117,7 +143,7 @@ class StocksDataFetch:public wxEvtHandler
         void SetParent(wxEvtHandler* P){Parent=P;};
         //获取某组股票的即时数据
         virtual void RetriveRealTimeData(StockList* stocks, void* UserData)=0;
-        virtual void RetriveHistoryDayData()=0;  //子类必须实现这个纯虚方法
+        virtual void RetriveHistoryDayData(Stock* s)=0;  //子类必须实现这个纯虚方法
         virtual int GetProptiesNum()=0;
         virtual wxString GetPropertyName(int idx)=0;
     protected:

@@ -9,16 +9,18 @@ class YahooStock:public StocksDataFetch
     DECLARE_DYNAMIC_CLASS(YahooStock);
     public:
         static wxString Props[];
-        YahooStock(){FetchSeed=0;};
+        YahooStock(){RealtimeFetchSeed=0; HistoryFetchSeed=0;};
         virtual void RetriveRealTimeData(StockList* stocks, void* UserData);
-        virtual void RetriveHistoryDayData();
+        virtual void RetriveHistoryDayData(Stock* s);
 
         virtual int GetProptiesNum();
         virtual wxString GetPropertyName(int idx){return Props[idx]; };
 
         void OnUrlGetDone(wxUrlGetDoneEvent& event);
+        void FetchHistoryData(Stock* s,int datatype=0);
+        void FetchRealTimeData(StockList* ss, void* UserData, int StartIdx=0);
     private:
-        int FetchSeed;
+        int RealtimeFetchSeed,HistoryFetchSeed;
         DECLARE_EVENT_TABLE()
 
 };

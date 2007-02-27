@@ -22,7 +22,12 @@ class WStockConfig :public wxObject
             wxString keyPath = wxT("");
             config.Read(wxT("General/Proxy"), &keyPath);
             return keyPath;
-        }
+        };
+        static wxString GetHistoryDataDir(){
+            wxString DataDir = wxT("./data");
+            config.Read(STOCK_HISTORY_DATA_DIR_KEY, &DataDir);
+            return DataDir;
+        };
 };
 
 #endif // CONFIG_H_INCLUDED
