@@ -114,7 +114,7 @@ void MyFrame::UpdateMainGrid(int stockidx){
     }
     mainGrid->AutoSize();
     mainGrid->EndBatch();
-    stock->RetriveRealTimeData(stocks->GetList(), (void*)0);
+    //stock->RetriveRealTimeData(stocks->GetList(), (void*)0);
 }
 
 MyFrame::~MyFrame()
@@ -136,8 +136,8 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
             mainGrid->EndBatch();
 
             //股票数据已经刷新了一轮了，为了减轻服务器的压力，
-            //休息一下(10秒)再刷新第二轮吧
-            RealTimeDeltaTimer.Start(10000,true);
+            //休息一下(30秒)再刷新第二轮吧
+            RealTimeDeltaTimer.Start(30000,true);
         }
     }
     else{
@@ -189,5 +189,14 @@ void MyFrame::OnGridCellDbClick(wxGridEvent& event){
         dialog.SetStock(s);
         dialog.ShowModal();
     }
+}
+
+
+bool MyStocks::SaveDataToFile(){
+    return true;
+}
+
+bool MyStocks::LoadDataFromFile(){
+    return true;
 }
 

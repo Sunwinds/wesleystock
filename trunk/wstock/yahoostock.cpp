@@ -162,7 +162,7 @@ void YahooStock::FetchRealTimeData(StockList* ss, void* UserData, int StartIdx){
         if (data->RealtimeStockNum>MaxRealtimeNum) break;
     }
     Url <<wxT("&f=sl1d1t1c1ohgv&e=.csv");
-    wxLogStatus(_("Retriving totally %d stock info from finance.yahoo.com"),ss->size());
+    wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
     geturl->Create();
     geturl->Run();
