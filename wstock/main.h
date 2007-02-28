@@ -4,6 +4,25 @@
 #include "wx/grid.h"
 #include "stocks.h"
 
+class MyStockStru{
+    public:
+        Stock * stock;
+        double BuyPrice;
+        int BuyAmount;
+};
+WX_DECLARE_VOIDPTR_HASH_MAP(MyStockStru, MyStockDataHash);
+
+class MyStocks : public wxObject{
+    public:
+        MyStocks(){};
+        StockList* GetList(){ return &stocks;};
+        bool SaveDataToFile();
+        bool LoadDataFromFile();
+    private:
+        StockList stocks;
+        MyStockDataHash datas;
+};
+
 class MyFrame: public wxFrame
 {
 	public:
@@ -15,6 +34,7 @@ class MyFrame: public wxFrame
         int CurStockStartPos;
         wxGrid *mainGrid;
         Stocks *stocks;
+        StockList mystocks;
         wxTimer RealTimeDeltaTimer;
         StocksDataFetch* CurFetchObj;
 
