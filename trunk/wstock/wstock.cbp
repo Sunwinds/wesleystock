@@ -39,6 +39,8 @@
 			<Add option="`wx-config --libs`" />
 			<Add option="`curl-config --libs`" />
 		</Linker>
+		<Unit filename="MyStockDialog.cpp" />
+		<Unit filename="MyStockDialog.h" />
 		<Unit filename="StockHistoryDialog.cpp" />
 		<Unit filename="StockHistoryDialog.h" />
 		<Unit filename="app.cpp" />

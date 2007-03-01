@@ -27,7 +27,7 @@ bool Stocks::Init(){
             for (i = 0; i < file.GetLineCount(); i++)
             {
                 if (!file[i].StartsWith(wxT("#"))){
-                    wxString si = wxString(wxConvUTF8.cMB2WC(file[i].c_str()),*wxConvCurrent).Strip(wxString::both); //Strip Both Side
+                    wxString si = wxString(wxConvUTF8.cMB2WC((const char*)file[i].mb_str()),*wxConvCurrent).Strip(wxString::both); //Strip Both Side
                     wxString id = si.BeforeFirst(wxT(' '));
                     wxString name = si.AfterFirst(wxT(' '));
                     name = name.Strip(wxString::both);
@@ -48,7 +48,8 @@ bool Stocks::Init(){
 }
 
 Stock::~Stock(){
-    for (unsigned int i = 0; i < DayHistoryData.GetCount(); i++)
+    unsigned int i;
+    for (i = 0; i < DayHistoryData.GetCount(); i++)
     {
         StockHistoryDataPiece*p = DayHistoryData[i];
         delete(p);
@@ -202,7 +203,8 @@ bool Stock::SaveHistoryDataToFile(){
         return false;
     }
     wxDataOutputStream store(output);
-    for (size_t i =0;i<DayHistoryData.GetCount();i++){
+    size_t i;
+    for (i =0;i<DayHistoryData.GetCount();i++){
         int y=DayHistoryData[i]->data.GetYear();
         int m=DayHistoryData[i]->data.GetMonth();
         int d=DayHistoryData[i]->data.GetDay();
@@ -274,4 +276,15 @@ bool Stock::SaveHistoryDataToFile(){
     }
 
     return true;
+}
+
+Stock *Stocks::GetStockById(const wxString& id){
+        StockList::Node* node = stocks.GetFirst();
+        while (node)
+        {
+            Stock* pstock = node->GetData();
+            if (pstock->GetId() == id) return pstock;
+            node = node->GetNext();
+        }
+        return NULL;
 }
