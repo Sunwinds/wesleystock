@@ -1,9 +1,11 @@
 #include "app.h"
 #include "wstockconfig.h"
+
 #include "wx/filename.h"
 #include "wx/wfstream.h"
 #include "wx/datstrm.h"
 #include "wx/textfile.h"
+
 #include "yahoostock.h"
 
 #include <wx/listimpl.cpp>
@@ -25,7 +27,7 @@ bool Stocks::Init(){
             for (i = 0; i < file.GetLineCount(); i++)
             {
                 if (!file[i].StartsWith(wxT("#"))){
-                    wxString si = file[i].Strip(wxString::both); //Strip Both Side
+                    wxString si = wxString(wxConvUTF8.cMB2WC(file[i].c_str()),*wxConvCurrent).Strip(wxString::both); //Strip Both Side
                     wxString id = si.BeforeFirst(wxT(' '));
                     wxString name = si.AfterFirst(wxT(' '));
                     name = name.Strip(wxString::both);
@@ -53,14 +55,14 @@ Stock::~Stock(){
     }
     DayHistoryData.Clear();
 
-    for (unsigned int i = 0; i < MonthHistoryData.GetCount(); i++)
+    for (i = 0; i < MonthHistoryData.GetCount(); i++)
     {
         StockHistoryDataPiece*p = MonthHistoryData[i];
         delete(p);
     }
     MonthHistoryData.Clear();
 
-    for (unsigned int i = 0; i < WeekHistoryData.GetCount(); i++)
+    for (i = 0; i < WeekHistoryData.GetCount(); i++)
     {
         StockHistoryDataPiece*p = WeekHistoryData[i];
         delete(p);
@@ -80,7 +82,6 @@ Stocks::~Stocks(){
     stocks.Clear();
 }
 
-//检查数据目录中是否存在ID.DATE.dat文件，如果存在则加载，否则返回失败
 bool Stock::LoadHistoryDataFromFile(){
     wxDateTime now = wxDateTime::Now();
     wxFileName fn(WStockConfig::GetHistoryDataDir(),wxString::Format(wxT("%s.%s.%d_%d_%d_D.dat"),
@@ -90,7 +91,6 @@ bool Stock::LoadHistoryDataFromFile(){
             now.GetMonth(),
             now.GetDay()));
     if (fn.FileExists()){
-        //从文件中加载历史数据.历史数据仅当天有效
         wxFileInputStream input(fn.GetFullPath());
         wxDataInputStream store( input );
         while (!input.Eof()){
@@ -122,7 +122,6 @@ bool Stock::LoadHistoryDataFromFile(){
             now.GetMonth(),
             now.GetDay()));
     if (fn2.FileExists()){
-        //从文件中加载历史数据.历史数据仅当天有效
         wxFileInputStream input(fn2.GetFullPath());
         wxDataInputStream store( input );
         while (!input.Eof()){
@@ -154,7 +153,6 @@ bool Stock::LoadHistoryDataFromFile(){
             now.GetMonth(),
             now.GetDay()));
     if (fn3.FileExists()){
-        //从文件中加载历史数据.历史数据仅当天有效
         wxFileInputStream input(fn3.GetFullPath());
         wxDataInputStream store( input );
         while (!input.Eof()){
@@ -232,7 +230,7 @@ bool Stock::SaveHistoryDataToFile(){
         return false;
     }
     wxDataOutputStream store2(output2);
-    for (size_t i =0;i<WeekHistoryData.GetCount();i++){
+    for (i =0;i<WeekHistoryData.GetCount();i++){
         int y=WeekHistoryData[i]->data.GetYear();
         int m=WeekHistoryData[i]->data.GetMonth();
         int d=WeekHistoryData[i]->data.GetDay();
@@ -260,7 +258,7 @@ bool Stock::SaveHistoryDataToFile(){
         return false;
     }
     wxDataOutputStream store3(output3);
-    for (size_t i =0;i<MonthHistoryData.GetCount();i++){
+    for (i =0;i<MonthHistoryData.GetCount();i++){
         int y=MonthHistoryData[i]->data.GetYear();
         int m=MonthHistoryData[i]->data.GetMonth();
         int d=MonthHistoryData[i]->data.GetDay();
