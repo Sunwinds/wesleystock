@@ -12,14 +12,8 @@ bool MyApp::OnInit()
     SetVendorName(VENDOR_CFG);
 
 	MyFrame* frame = new MyFrame(0L, _("wxWidgets Application Template"));
-
-    stocks = new Stocks(frame);
-    stocks->Init();
-    if (stocks->GetStockNum()==0){
-        wxLogMessage(_("There is no stock Id in %s,you may need add some into it!"),
-            WStockConfig::GetKeyPath().c_str());
-    }
-    frame->SetStockSource(stocks);
+    frame->DoInitData();
+    frame->UpdateMainGrid(0);
 
 	frame->Show();
 	frame->Maximize();

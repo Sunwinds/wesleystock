@@ -118,8 +118,9 @@ WX_DECLARE_LIST(Stock, StockList);
 class Stocks:public wxObject
 {
     public:
-        Stocks(wxEvtHandler* P){Parent=P;};
+        Stocks(){};
         ~Stocks();
+        void SetParent(wxEvtHandler* P){Parent=P;};
         bool Init();
         int GetStockNum(){ return stocks.size();};
         wxString GetStockId(int idx){
@@ -131,6 +132,7 @@ class Stocks:public wxObject
         Stock *GetStock(int idx){
             return stocks[idx];
         }
+        Stock *GetStockById(const wxString& id);
         StockList* GetList(){ return &stocks;};
     private:
         wxEvtHandler* Parent;

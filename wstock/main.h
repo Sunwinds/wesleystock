@@ -1,23 +1,37 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include "wx/wx.h"
+#include <wx/list.h>
+#include <wx/hashmap.h>
 #include "wx/grid.h"
 #include "stocks.h"
+
+
+class BuyInfo{
+    public:
+        double BuyPrice;
+        int BuyAmount;
+        wxDateTime data;
+};
+
+WX_DECLARE_LIST(BuyInfo, BuyInfoList);
 
 class MyStockStru{
     public:
         Stock * stock;
-        double BuyPrice;
-        int BuyAmount;
+        BuyInfoList buyinfos;
 };
-WX_DECLARE_VOIDPTR_HASH_MAP(MyStockStru, MyStockDataHash);
+WX_DECLARE_STRING_HASH_MAP(MyStockStru*, MyStockDataHash);
 
 class MyStocks : public wxObject{
     public:
         MyStocks(){};
         StockList* GetList(){ return &stocks;};
+        MyStockDataHash& GetDatas(){return datas;};
         bool SaveDataToFile();
         bool LoadDataFromFile();
+        void UpdateStockList(StockList* source);
     private:
         StockList stocks;
         MyStockDataHash datas;
@@ -28,13 +42,15 @@ class MyFrame: public wxFrame
 	public:
 		MyFrame(wxFrame *frame, const wxString& title);
 		~MyFrame();
-		void SetStockSource(Stocks* stocks);
 		StocksDataFetch*GetCurFetchObj();
+		void DoInitData();
+		StockList*  GetMyStockList(){return mystocks.GetList();};
+		void UpdateMainGrid(int stockidx);
 	private:
         int CurStockStartPos;
         wxGrid *mainGrid;
-        Stocks *stocks;
-        StockList mystocks;
+        Stocks stocks;
+        MyStocks mystocks;
         wxTimer RealTimeDeltaTimer;
         StocksDataFetch* CurFetchObj;
 
@@ -42,7 +58,7 @@ class MyFrame: public wxFrame
 		void OnGridCellDbClick(wxGridEvent& event);
 		void OnRealtimeDeltaTimer(wxTimerEvent& event);
 		void OnAbout(wxCommandEvent& event);
-		void UpdateMainGrid(int stockidx);
+		void OnAddMyStock(wxCommandEvent& event);
 		void OnStockDataGetDone(wxStockDataGetDoneEvent&event);
 		DECLARE_EVENT_TABLE();
 };
