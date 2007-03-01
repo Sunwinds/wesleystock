@@ -2,6 +2,7 @@
 #define STOCKS_H_INCLUDED
 
 #include "wx/wx.h"
+#include "wx/datetime.h"
 #include <wx/arrstr.h>
 #include <wx/event.h>
 
@@ -141,7 +142,6 @@ class StocksDataFetch:public wxEvtHandler
     public:
         StocksDataFetch(){};
         void SetParent(wxEvtHandler* P){Parent=P;};
-        //获取某组股票的即时数据
         virtual void RetriveRealTimeData(StockList* stocks, void* UserData)=0;
         virtual void RetriveHistoryDayData(Stock* s)=0;  //子类必须实现这个纯虚方法
         virtual int GetProptiesNum()=0;
