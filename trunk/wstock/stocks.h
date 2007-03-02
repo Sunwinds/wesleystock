@@ -46,6 +46,7 @@ class Stock :public wxObject
         };
         ~Stock();
         wxString GetId(){ return StockId; };
+		void InitHistoryDatas();
         wxString GetName(){ return StockName; };
         wxString GetStockType(){
             if (StockId[0] == wxT('6')) return wxT("SS");
