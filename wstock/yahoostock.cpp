@@ -75,20 +75,7 @@ void YahooStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
                 wxString line = tkzlines.GetNextToken();
                 if (lineindex != 0) { //Skip the first line
                     StockHistoryDataPiece *p = new StockHistoryDataPiece;
-                    switch (data->StartIdx){
-                        case 0:
-                            s->AppendDayData(p);
-                            break;
-                        case 1:
-                            s->AppendWeekData(p);
-                            break;
-                        case 2:
-                            s->AppendMonthData(p);
-                            break;
-                        default:
-                            delete(p);
-                            p=NULL;
-                    }
+					s->AppendHistoryData(data->StartIdx,p);
                     if (p){
                         wxStringTokenizer tkz(line, wxT(","));
                         int idx=0;
