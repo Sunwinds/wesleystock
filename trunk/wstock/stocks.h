@@ -91,16 +91,20 @@ class wxStockDataGetDoneEvent : public wxNotifyEvent
         wxNotifyEvent(commandType, -1){
             rtype = t;
             UserData = data;
+            HistoryStock = NULL;
         };
     wxStockDataGetDoneEvent(const wxStockDataGetDoneEvent& event): wxNotifyEvent(event){
         UserData = event.UserData;
         rtype = event.rtype;
+        HistoryStock  = event.HistoryStock;
         };
     virtual wxEvent *Clone() const {
         return new wxStockDataGetDoneEvent(*this);
-    }
+    };
+    void SetHistoryStock(Stock*s){HistoryStock=s;};
     StockRetriveType rtype;
     void *UserData;
+    Stock* HistoryStock;
     DECLARE_DYNAMIC_CLASS(wxStockDataGetDoneEvent);
 };
 typedef void (wxEvtHandler::*wxStockDataGetDoneEventFunction)(wxStockDataGetDoneEvent&);
@@ -145,7 +149,7 @@ class StocksDataFetch:public wxEvtHandler
         StocksDataFetch(){};
         void SetParent(wxEvtHandler* P){Parent=P;};
         virtual void RetriveRealTimeData(StockList* stocks, void* UserData)=0;
-        virtual void RetriveHistoryDayData(Stock* s)=0;  //子类必须实现这个纯虚方法
+        virtual void RetriveHistoryDayData(Stock* s, void* UserData)=0;
         virtual int GetProptiesNum()=0;
         virtual wxString GetPropertyName(int idx)=0;
     protected:

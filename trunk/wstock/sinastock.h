@@ -1,15 +1,15 @@
-#ifndef YAHOOSTOCK_INCLUDED
-#define YAHOOSTOCK_INCLUDED
+#ifndef SinaStock_H_INCLUDED
+#define SinaStock_H_INCLUDED
 
 #include "stocks.h"
 #include "wstockgeturl.h"
 
-class YahooStock:public StocksDataFetch
+class SinaStock:public StocksDataFetch
 {
-    DECLARE_DYNAMIC_CLASS(YahooStock);
+    DECLARE_DYNAMIC_CLASS(SinaStock);
     public:
         static wxString Props[];
-        YahooStock(){RealtimeFetchSeed=0; HistoryFetchSeed=0;};
+        SinaStock(){RealtimeFetchSeed=0; HistoryFetchSeed=0;};
         virtual void RetriveRealTimeData(StockList* stocks, void* UserData);
         virtual void RetriveHistoryDayData(Stock* s, void* UserData);
 
@@ -25,4 +25,4 @@ class YahooStock:public StocksDataFetch
 
 };
 
-#endif // YAHOOSTOCK_INCLUDED
+#endif // SinaStock_H_INCLUDED

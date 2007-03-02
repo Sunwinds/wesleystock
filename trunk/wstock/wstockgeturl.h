@@ -42,11 +42,16 @@ class WStockGetUrl:public wxThread
             Parent = parent;
             Url = url;
             UserData = data;
+            PostData = wxT("");
+        };
+        void SetPostData(const wxString&data){
+            PostData = data;
         };
         virtual void *Entry();
     private:
         wxString Url;
         wxString Proxy;
+        wxString PostData;
         void * UserData;
         wxEvtHandler *Parent;
 

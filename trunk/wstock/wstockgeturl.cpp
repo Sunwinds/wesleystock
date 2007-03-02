@@ -85,34 +85,41 @@ void *WStockGetUrl::Entry(){
   /* init the curl session */
   curl_handle = curl_easy_init();
 
-    wxString Proxy = WStockConfig::GetProxy();
+/*    wxString Proxy = WStockConfig::GetProxy();
     if (Proxy.Length()>0){
       char proxy[255]="";
       strcpy(proxy,(const char*)Proxy.mb_str());
       curl_easy_setopt(curl_handle, CURLOPT_PROXY, proxy);
       curl_easy_setopt(curl_handle, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
     }
-
+*/
 
   char url[255]="";
   strcpy(url,(const char*)Url.mb_str());
   /* specify URL to get */
   curl_easy_setopt(curl_handle, CURLOPT_URL, url);
+  /*if (PostData.size()>0){
+      char post[255]="";
+      strcpy(post,(const char*)PostData.mb_str());
+      curl_easy_setopt(curl_handle, CURLOPT_POSTFIELDS, post);
+  }*/
   /* send all data to this function  */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
   /* we pass our 'chunk' struct to the callback function */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
   /* some servers don't like requests that are made without a user-agent
      field, so we provide one */
-  //curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+  curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
   /* get it! */
   curl_easy_perform(curl_handle);
   /* cleanup curl stuff */
   curl_easy_cleanup(curl_handle);
 
     if (Parent){
+        //printf("%s\n",(char*)chunk.memory);
         wxUrlGetDoneEvent event(wxEVT_URL_GET_DONE, -1,UserData);
-        event.Result = wxString((char*)chunk.memory,*wxConvCurrent);
+        wxCSConv cs(wxT("GB2312"));
+        event.Result = wxString(cs.cMB2WC((char*)chunk.memory),*wxConvCurrent);
         //event.RetCode = ret;
         //event.Result = rtnString;
         Parent->AddPendingEvent(event);

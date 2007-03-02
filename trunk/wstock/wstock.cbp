@@ -45,8 +45,12 @@
 		<Unit filename="StockHistoryDialog.h" />
 		<Unit filename="app.cpp" />
 		<Unit filename="app.h" />
+		<Unit filename="htmltableparser.cpp" />
+		<Unit filename="htmltableparser.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
+		<Unit filename="sinastock.cpp" />
+		<Unit filename="sinastock.h" />
 		<Unit filename="stockplot.cpp" />
 		<Unit filename="stockplot.h" />
 		<Unit filename="stocks.cpp" />

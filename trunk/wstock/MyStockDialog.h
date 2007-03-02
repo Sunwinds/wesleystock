@@ -62,7 +62,7 @@ class MyStockDialogData
 {
  public:
     MyStockDialogData(){
-        StockId=wxT("000889");
+        StockId=wxT("600171");
         ACount=3100;
         Price=3.87;
     };
