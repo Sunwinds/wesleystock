@@ -4,30 +4,22 @@
 #include "wx/wx.h"
 #include <wx/html/htmlpars.h>
 
-WX_DECLARE_LIST(wxArrayString, TableDataType);
-WX_DECLARE_LIST(TableDataType, TableListType);
-
 class HtmlTableParser:public wxHtmlTagHandler
 {
     public:
-        HtmlTableParser(){tables.DeleteContents(true);};
-        ~HtmlTableParser(){tables.Clear();};
+        HtmlTableParser(){};
+        ~HtmlTableParser(){};
         bool HandleTag(const wxHtmlTag& tag);
-        wxString GetCellValue(int tblidx, int r, int c);
-        wxSize GetTableSize(int tblidx);
-        int GetTableNumber(){return tables.size();};
-        int FindTable(int r, int c, wxString subv);
         virtual wxString GetSupportedTags(){
-            return wxT("TABLE,TR,TD");
+            return wxT("TD");
         };
         wxString GetPureText(wxString html);
         void HandleText(const wxChar* txt);
-        void SetRecordText(bool b){RecText=b;};
+        wxString GetValue(int idx){return tdtexts[idx];};
+        int GetTDIndex(const wxString& value);
         void DumpTable();
     private:
-        TableListType tables;
-        bool RecText;
-        wxString Text;
+        wxArrayString tdtexts;
 };
 
 class MyHtmlParser:public wxHtmlParser

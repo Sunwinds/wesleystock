@@ -36,33 +36,13 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
             HtmlTableParser *p=new HtmlTableParser();
             MyHtmlParser parser(p);
             parser.Parse(event.Result);
-            p->DumpTable();
-            return;
-            int tblidx = p->FindTable(0,0,wxT("当前价"));
-            if (tblidx>=0){
-                wxLogMessage(p->GetCellValue(tblidx,0,0));
-                //(*stocks)[data->StartIdx]->SetPropertyValue(Props[0], p->GetCellValue(tblidx,0,1));
-                //(*stocks)[data->StartIdx]->SetPropertyValue(Props[1], p->GetCellValue(tblidx,1,1));
+            int idx=p->GetTDIndex(wxT("当前价"));
+            if (idx>=0){
+                (*stocks)[data->StartIdx]->SetPropertyValue(Props[0], p->GetValue(idx+1));
             }
-            return;
-            wxStringTokenizer tkzlines(event.Result);
-            int lineindex=0;
-            while (tkzlines.HasMoreTokens()){
-                if (data->StartIdx+lineindex>=(int)stocks->size()) break;
-                wxString line = tkzlines.GetNextToken();
-                wxStringTokenizer tkz(line, wxT(","));
-                int idx=0;
-                while (tkz.HasMoreTokens()){
-                    wxString token = tkz.GetNextToken();
-                    if (idx>0){
-                        token.Trim().Replace(wxT("\""),wxT(""),true);
-                        (*stocks)[data->StartIdx+lineindex]->SetPropertyValue(Props[idx-1], token);
-                    }
-                    idx++;
-                }
-                lineindex++;
+            else{
+                wxLogMessage(wxT("Not Found!"));
             }
-
             if (data->StartIdx + data->RealtimeStockNum >= (int)stocks->size()){
                 //Tell The main App we have finish this stocks's real time data fetch
                 wxStockDataGetDoneEvent event(wxEVT_STOCK_DATA_GET_DONE,REALTIME_RETRIVE,
@@ -152,29 +132,18 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 }
 
 void SinaStock::FetchRealTimeData(StockList* ss, void* UserData, int StartIdx){
-    static int MaxRealtimeNum = 15;
+    //static int MaxRealtimeNum = 15;
     stocks = ss;
     SinaStock_UserData *data=new SinaStock_UserData();
     data->OrignUserData = UserData;
     data->rType = REALTIME_RETRIVE;
     data->FetchSeed = RealtimeFetchSeed;
     data->StartIdx = StartIdx;
-    data->RealtimeStockNum = 0;
+    data->RealtimeStockNum = 1;
     wxString country=wxT("ss");
-    if ((*ss)[0]->GetId().StartsWith(wxT("6"))) country=wxT("sh");
+    if ((*ss)[StartIdx]->GetId().StartsWith(wxT("6"))) country=wxT("sh");
     wxString Url(wxT("http://stock.finance.sina.com.cn/cgi-bin/stock/quote/quote.cgi?symbol="));
-    Url << (*ss)[0]->GetId() << wxT("&country=") << country;
-    /*for (size_t i=0;i<ss->size();i++){
-        if (i==0){
-            Url << (*ss)[i]->GetId() << wxT(".") <<(*ss)[i]->GetStockType();
-        }
-        else{
-            Url << wxT("+") << (*ss)[i]->GetId() << wxT(".") <<(*ss)[i]->GetStockType();
-        }
-        data->RealtimeStockNum++;
-        if (data->RealtimeStockNum>MaxRealtimeNum) break;
-    }
-    Url <<wxT("&f=sl1d1t1c1ohgv&e=.csv");*/
+    Url << (*ss)[StartIdx]->GetId() << wxT("&country=") << country;
     wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
     geturl->Create();
