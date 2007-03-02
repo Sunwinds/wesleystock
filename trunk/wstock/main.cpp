@@ -161,6 +161,7 @@ MyFrame::~MyFrame()
 }
 
 void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
+	wxLogStatus(wxT(""));
     if (event.rtype == REALTIME_RETRIVE){
         int idx = (int)event.UserData;
         if (idx<mainGrid->GetNumberRows()){

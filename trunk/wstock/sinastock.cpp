@@ -36,9 +36,11 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
             HtmlTableParser *p=new HtmlTableParser();
             MyHtmlParser parser(p);
             parser.Parse(event.Result);
-            int idx=p->GetTDIndex(wxT("å½“å‰ä»·"));
+            int idx=p->GetTDIndex(wxT("µ±Ç°¼Û")); 
             if (idx>=0){
                 (*stocks)[data->StartIdx]->SetPropertyValue(Props[0], p->GetValue(idx+1));
+				(*stocks)[data->StartIdx]->SetPropertyValue(Props[1], p->GetValue(idx+3));
+				(*stocks)[data->StartIdx]->SetPropertyValue(Props[2], p->GetValue(idx+19));
             }
             else{
                 wxLogMessage(wxT("Not Found!"));
@@ -63,20 +65,7 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
                 wxString line = tkzlines.GetNextToken();
                 if (lineindex != 0) { //Skip the first line
                     StockHistoryDataPiece *p = new StockHistoryDataPiece;
-                    switch (data->StartIdx){
-                        case 0:
-                            s->AppendDayData(p);
-                            break;
-                        case 1:
-                            s->AppendWeekData(p);
-                            break;
-                        case 2:
-                            s->AppendMonthData(p);
-                            break;
-                        default:
-                            delete(p);
-                            p=NULL;
-                    }
+					s->AppendHistoryData(data->StartIdx,p);
                     if (p){
                         wxStringTokenizer tkz(line, wxT(","));
                         int idx=0;
@@ -169,17 +158,8 @@ void SinaStock::FetchHistoryData(Stock* s,int datatype,void* UserData){
     data->FetchSeed = HistoryFetchSeed;
     data->StartIdx = datatype;
     data->HistoryStock = s;
-    wxString Url= wxString::Format(wxT("%s%s.%s&d=%d&e=%d&f=%d&g=%s&a=%d&b=%d&c=%d&ignore=.csv"),
-                wxT("http://ichart.finance.yahoo.com/table.csv?s="),
-                s->GetId().c_str(),
-                s->GetStockType().c_str(),
-                now.GetMonth(),
-                now.GetDay(),
-                now.GetYear(),
-                keys[datatype].c_str(),
-                AYearBefore.GetMonth(),
-                AYearBefore.GetDay(),
-                AYearBefore.GetYear());
+    wxString Url(wxT("http://biz.finance.sina.com.cn/company/history.php?symbol="));
+	Url << s->GetId();
     wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
     geturl->Create();

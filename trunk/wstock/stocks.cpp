@@ -49,31 +49,18 @@ bool Stocks::Init(){
 
 Stock::~Stock(){
     unsigned int i;
-    for (i = 0; i < DayHistoryData.GetCount(); i++)
-    {
-        StockHistoryDataPiece*p = DayHistoryData[i];
-        delete(p);
-    }
-    DayHistoryData.Clear();
-
-    for (i = 0; i < MonthHistoryData.GetCount(); i++)
-    {
-        StockHistoryDataPiece*p = MonthHistoryData[i];
-        delete(p);
-    }
-    MonthHistoryData.Clear();
-
-    for (i = 0; i < WeekHistoryData.GetCount(); i++)
-    {
-        StockHistoryDataPiece*p = WeekHistoryData[i];
-        delete(p);
-    }
-    WeekHistoryData.Clear();
+	for (size_t j=0;j<HistoryDatas.size();j++){
+		for (i = 0; i < HistoryDatas[j]->GetCount(); i++)
+		{
+			StockHistoryDataPiece*p = (*HistoryDatas[j])[i];
+			delete(p);
+		}
+	}
+    HistoryDatas[j]->Clear();
 }
 
 Stocks::~Stocks(){
     StockList::Node* node = stocks.GetFirst();
-    // 节点遍历
     while (node)
     {
         Stock* p = node->GetData();
@@ -84,197 +71,84 @@ Stocks::~Stocks(){
 }
 
 bool Stock::LoadHistoryDataFromFile(){
-    wxDateTime now = wxDateTime::Now();
-    wxFileName fn(WStockConfig::GetHistoryDataDir(),wxString::Format(wxT("%s.%s.%d_%d_%d_D.dat"),
-            GetId().c_str(),
-            GetStockType().c_str(),
-            now.GetYear(),
-            now.GetMonth(),
-            now.GetDay()));
-    if (fn.FileExists()){
-        wxFileInputStream input(fn.GetFullPath());
-        wxDataInputStream store( input );
-        while (!input.Eof()){
-            StockHistoryDataPiece *p = new StockHistoryDataPiece;
-            int y,m,d;
-            store >> y >> m >> d;
-            if (input.Eof()){
-                delete (p);
-                break;
-            }
-            DayHistoryData.push_back(p);
-            p->data  = wxDateTime(d,(wxDateTime::Month)m,y);
-            store   >> p->open
-                    >> p->High
-                    >> p->Low
-                    >> p->Close
-                    >> p->volume
-                    >> p->adjClose;
-        }
-    }
-    else{
-        return false;
-    }
-
-    wxFileName fn2(WStockConfig::GetHistoryDataDir(),wxString::Format(wxT("%s.%s.%d_%d_%d_W.dat"),
-            GetId().c_str(),
-            GetStockType().c_str(),
-            now.GetYear(),
-            now.GetMonth(),
-            now.GetDay()));
-    if (fn2.FileExists()){
-        wxFileInputStream input(fn2.GetFullPath());
-        wxDataInputStream store( input );
-        while (!input.Eof()){
-            StockHistoryDataPiece *p = new StockHistoryDataPiece;
-            int y,m,d;
-            store >> y >> m >> d;
-            if (input.Eof()){
-                delete (p);
-                break;
-            }
-            WeekHistoryData.push_back(p);
-            p->data  = wxDateTime(d,(wxDateTime::Month)m,y);
-            store   >> p->open
-                    >> p->High
-                    >> p->Low
-                    >> p->Close
-                    >> p->volume
-                    >> p->adjClose;
-        }
-    }
-    else{
-        return false;
-    }
-
-    wxFileName fn3(WStockConfig::GetHistoryDataDir(),wxString::Format(wxT("%s.%s.%d_%d_%d_M.dat"),
-            GetId().c_str(),
-            GetStockType().c_str(),
-            now.GetYear(),
-            now.GetMonth(),
-            now.GetDay()));
-    if (fn3.FileExists()){
-        wxFileInputStream input(fn3.GetFullPath());
-        wxDataInputStream store( input );
-        while (!input.Eof()){
-            StockHistoryDataPiece *p = new StockHistoryDataPiece;
-            int y,m,d;
-            store >> y >> m >> d;
-            if (input.Eof()){
-                delete (p);
-                break;
-            }
-            MonthHistoryData.push_back(p);
-            p->data  = wxDateTime(d,(wxDateTime::Month)m,y);
-            store   >> p->open
-                    >> p->High
-                    >> p->Low
-                    >> p->Close
-                    >> p->volume
-                    >> p->adjClose;
-        }
-    }
-    else{
-        return false;
-    }
-
+	wxDateTime now = wxDateTime::Now();
+	for (size_t i=0;i<HistoryDatas.size();i++){
+		wxFileName fn(WStockConfig::GetHistoryDataDir(),wxString::Format(wxT("%s.%s.%d_%d_%d_%d.dat"),
+				GetId().c_str(),
+				GetStockType().c_str(),
+				now.GetYear(),
+				now.GetMonth(),
+				now.GetDay(),
+				i));
+		if (fn.FileExists()){
+			wxFileInputStream input(fn.GetFullPath());
+			wxDataInputStream store( input );
+			while (!input.Eof()){
+				StockHistoryDataPiece *p = new StockHistoryDataPiece;
+				int y,m,d;
+				store >> y >> m >> d;
+				if (input.Eof()){
+					delete (p);
+					break;
+				}
+				HistoryDatas[i]->push_back(p);
+				p->data  = wxDateTime(d,(wxDateTime::Month)m,y);
+				store   >> p->open
+						>> p->High
+						>> p->Low
+						>> p->Close
+						>> p->volume
+						>> p->adjClose;
+			}
+		}
+		else{
+			return false;
+		}
+	}
+	HistoryDataReady=true;
     return true;
 }
 
 bool Stock::SaveHistoryDataToFile(){
     wxDateTime now = wxDateTime::Now();
-    wxFileName fn(WStockConfig::GetHistoryDataDir(),wxString::Format(wxT("%s.%s.%d_%d_%d_D.dat"),
-            GetId().c_str(),
-            GetStockType().c_str(),
-            now.GetYear(),
-            now.GetMonth(),
-            now.GetDay()));
-    fn.MakeAbsolute();
-    if (!fn.DirExists(fn.GetPath())){
-        if (!fn.Mkdir(fn.GetPath())){
-            wxLogError(_("Try to create directory %s fail!"),fn.GetPath().c_str());
-            return false;
-        }
-    }
+	for (size_t idx=0;idx<HistoryDatas.size();idx++){
+		wxFileName fn(WStockConfig::GetHistoryDataDir(),wxString::Format(wxT("%s.%s.%d_%d_%d_%d.dat"),
+				GetId().c_str(),
+				GetStockType().c_str(),
+				now.GetYear(),
+				now.GetMonth(),
+				now.GetDay(),
+				idx));
+		fn.MakeAbsolute();
+		if (!fn.DirExists(fn.GetPath())){
+			if (!fn.Mkdir(fn.GetPath())){
+				wxLogError(_("Try to create directory %s fail!"),fn.GetPath().c_str());
+				return false;
+			}
+		}
 
-    wxFileOutputStream output(fn.GetFullPath());
-    if (!output.Ok()){
-        wxLogError(_("Try to open file output stream %s fail!"),fn.GetFullPath().c_str());
-        return false;
-    }
-    wxDataOutputStream store(output);
-    size_t i;
-    for (i =0;i<DayHistoryData.GetCount();i++){
-        int y=DayHistoryData[i]->data.GetYear();
-        int m=DayHistoryData[i]->data.GetMonth();
-        int d=DayHistoryData[i]->data.GetDay();
-        store << y
-              << m
-              << d
-              << DayHistoryData[i]->open
-              << DayHistoryData[i]->High
-              << DayHistoryData[i]->Low
-              << DayHistoryData[i]->Close
-              << DayHistoryData[i]->volume
-              << DayHistoryData[i]->adjClose;
-    }
-
-    wxFileName fn2(WStockConfig::GetHistoryDataDir(),wxString::Format(wxT("%s.%s.%d_%d_%d_W.dat"),
-            GetId().c_str(),
-            GetStockType().c_str(),
-            now.GetYear(),
-            now.GetMonth(),
-            now.GetDay()));
-    fn2.MakeAbsolute();
-    wxFileOutputStream output2(fn2.GetFullPath());
-    if (!output2.Ok()){
-        wxLogError(_("Try to open file output stream %s fail!"),fn2.GetFullPath().c_str());
-        return false;
-    }
-    wxDataOutputStream store2(output2);
-    for (i =0;i<WeekHistoryData.GetCount();i++){
-        int y=WeekHistoryData[i]->data.GetYear();
-        int m=WeekHistoryData[i]->data.GetMonth();
-        int d=WeekHistoryData[i]->data.GetDay();
-        store2 << y
-              << m
-              << d
-              << WeekHistoryData[i]->open
-              << WeekHistoryData[i]->High
-              << WeekHistoryData[i]->Low
-              << WeekHistoryData[i]->Close
-              << WeekHistoryData[i]->volume
-              << WeekHistoryData[i]->adjClose;
-    }
-
-    wxFileName fn3(WStockConfig::GetHistoryDataDir(),wxString::Format(wxT("%s.%s.%d_%d_%d_M.dat"),
-            GetId().c_str(),
-            GetStockType().c_str(),
-            now.GetYear(),
-            now.GetMonth(),
-            now.GetDay()));
-    fn3.MakeAbsolute();
-    wxFileOutputStream output3(fn3.GetFullPath());
-    if (!output3.Ok()){
-        wxLogError(_("Try to open file output stream %s fail!"),fn3.GetFullPath().c_str());
-        return false;
-    }
-    wxDataOutputStream store3(output3);
-    for (i =0;i<MonthHistoryData.GetCount();i++){
-        int y=MonthHistoryData[i]->data.GetYear();
-        int m=MonthHistoryData[i]->data.GetMonth();
-        int d=MonthHistoryData[i]->data.GetDay();
-        store3 << y
-              << m
-              << d
-              << MonthHistoryData[i]->open
-              << MonthHistoryData[i]->High
-              << MonthHistoryData[i]->Low
-              << MonthHistoryData[i]->Close
-              << MonthHistoryData[i]->volume
-              << MonthHistoryData[i]->adjClose;
-    }
-
+		wxFileOutputStream output(fn.GetFullPath());
+		if (!output.Ok()){
+			wxLogError(_("Try to open file output stream %s fail!"),fn.GetFullPath().c_str());
+			return false;
+		}
+		wxDataOutputStream store(output);
+		size_t i;
+		for (i =0;i<HistoryDatas.GetCount();i++){
+			int y=(*HistoryDatas[idx])[i]->data.GetYear();
+			int m=(*HistoryDatas[idx])[i]->data.GetMonth();
+			int d=(*HistoryDatas[idx])[i]->data.GetDay();
+			store << y
+				  << m
+				  << d
+				  << (*HistoryDatas[idx])[i]->open
+				  << (*HistoryDatas[idx])[i]->High
+				  << (*HistoryDatas[idx])[i]->Low
+				  << (*HistoryDatas[idx])[i]->Close
+				  << (*HistoryDatas[idx])[i]->volume
+				  << (*HistoryDatas[idx])[i]->adjClose;
+		}
+	}
     return true;
 }
 

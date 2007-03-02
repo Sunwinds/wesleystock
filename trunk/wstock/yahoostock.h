@@ -15,6 +15,7 @@ class YahooStock:public StocksDataFetch
 
         virtual int GetProptiesNum();
         virtual wxString GetPropertyName(int idx){return Props[idx]; };
+		virtual int GetHistoryDataGroupNum(){return 3;};
 
         void OnUrlGetDone(wxUrlGetDoneEvent& event);
         void FetchHistoryData(Stock* s,int datatype=0,void* UserData=NULL);

@@ -26,9 +26,9 @@ void wxPlotWindow::OnDraw(wxDC& dc)
         dc.DrawText(_("stock history data not ready"),50,100);
     }
     else{
-        DrawPricePlot(dc, stock->DayHistoryData);
-        DrawPricePlot(dc, stock->WeekHistoryData,false,*wxBLUE);
-        DrawPricePlot(dc, stock->MonthHistoryData,false,*wxRED);
+		for (size_t i=0;i<stock->HistoryDatas.size();i++){
+			DrawPricePlot(dc, *stock->HistoryDatas[i]);
+		}
     }
 }
 

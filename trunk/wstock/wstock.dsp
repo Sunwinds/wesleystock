@@ -97,7 +97,19 @@ SOURCE=.\app.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\htmltableparser.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\main.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MyStockDialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\sinastock.cpp
 # End Source File
 # Begin Source File
 
@@ -129,7 +141,19 @@ SOURCE=.\app.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\htmltableparser.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\main.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\MyStockDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\sinastock.h
 # End Source File
 # Begin Source File
 

@@ -18,6 +18,7 @@ typedef struct{
     double     adjClose;
 }StockHistoryDataPiece;
 WX_DEFINE_ARRAY (StockHistoryDataPiece *, StockHistoryDataArray);
+WX_DEFINE_ARRAY (StockHistoryDataArray *, StockHistoryDataArrayArray);
 
 /*
 
@@ -37,10 +38,11 @@ class wxPlotWindow;
 class Stock :public wxObject
 {
     public:
-        Stock(){};
+        Stock(){HistoryDataReady=false;};
         Stock(const wxString& si, const wxString &name){
             StockId = si;
             StockName = name;
+			HistoryDataReady=false;
         };
         ~Stock();
         wxString GetId(){ return StockId; };
@@ -54,11 +56,11 @@ class Stock :public wxObject
             return RealTimeProps[name];
         };
         bool IsHistoryDataReady(){
-            return DayHistoryData.size()>0;
+            return HistoryDataReady;
         }
-        void AppendDayData(StockHistoryDataPiece*p){ DayHistoryData.push_back(p);};
-        void AppendWeekData(StockHistoryDataPiece*p){ WeekHistoryData.push_back(p);};
-        void AppendMonthData(StockHistoryDataPiece*p){ MonthHistoryData.push_back(p);};
+        void AppendHistoryData(int idx, StockHistoryDataPiece*p){ HistoryDatas[idx]->push_back(p);};
+        //void AppendWeekData(StockHistoryDataPiece*p){ WeekHistoryData.push_back(p);};
+        //void AppendMonthData(StockHistoryDataPiece*p){ MonthHistoryData.push_back(p);};
         void SetPropertyValue(const wxString& name,const wxString& value){
             RealTimeProps[name] = value;
         };
@@ -72,10 +74,12 @@ class Stock :public wxObject
                  StockType; //  SS or SZ (沪市或者深市)
     protected:
         friend class wxPlotWindow;
+		bool HistoryDataReady;
         StrStrHash RealTimeProps;
-        StockHistoryDataArray DayHistoryData;
-        StockHistoryDataArray WeekHistoryData;
-        StockHistoryDataArray MonthHistoryData;
+		StockHistoryDataArrayArray HistoryDatas;
+        //StockHistoryDataArray DayHistoryData;
+        //StockHistoryDataArray WeekHistoryData;
+        //StockHistoryDataArray MonthHistoryData;
 };
 
 typedef enum {
@@ -151,6 +155,7 @@ class StocksDataFetch:public wxEvtHandler
         virtual void RetriveRealTimeData(StockList* stocks, void* UserData)=0;
         virtual void RetriveHistoryDayData(Stock* s, void* UserData)=0;
         virtual int GetProptiesNum()=0;
+		virtual int GetHistoryDataGroupNum()=0;
         virtual wxString GetPropertyName(int idx)=0;
     protected:
         StockList* stocks;
