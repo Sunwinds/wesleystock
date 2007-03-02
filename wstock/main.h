@@ -21,6 +21,11 @@ class MyStockStru{
     public:
         Stock * stock;
         BuyInfoList buyinfos;
+        double GetEarningYield(double CurPrice);
+        double GetEarnings(double CurPrice);
+    private:
+        double GetTotalPay();
+        double GetCurValue(double CurPrice);
 };
 WX_DECLARE_STRING_HASH_MAP(MyStockStru*, MyStockDataHash);
 
@@ -29,6 +34,7 @@ class MyStocks : public wxObject{
         MyStocks(){};
         StockList* GetList(){ return &stocks;};
         MyStockDataHash& GetDatas(){return datas;};
+        MyStockStru* GetMyStockStruByStock(Stock*s);
         bool SaveDataToFile();
         bool LoadDataFromFile();
         void UpdateStockList(StockList* source);

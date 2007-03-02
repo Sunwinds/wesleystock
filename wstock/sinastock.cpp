@@ -1,11 +1,13 @@
-#include "yahoostock.h"
+#include "sinastock.h"
+#include "htmltableparser.h"
 #include <wx/tokenzr.h>
+#include <wx/html/htmlpars.h>
 
-BEGIN_EVENT_TABLE(YahooStock, StocksDataFetch)
-    EVT_URL_GET_DONE(-1,YahooStock::OnUrlGetDone)
+BEGIN_EVENT_TABLE(SinaStock, StocksDataFetch)
+    EVT_URL_GET_DONE(-1,SinaStock::OnUrlGetDone)
 END_EVENT_TABLE()
 
-IMPLEMENT_DYNAMIC_CLASS(YahooStock, StocksDataFetch);
+IMPLEMENT_DYNAMIC_CLASS(SinaStock, StocksDataFetch);
 
 typedef struct{
     void * OrignUserData;
@@ -14,29 +16,35 @@ typedef struct{
     int FetchSeed;
     int StartIdx;
     int RealtimeStockNum;
-} YahooStock_UserData;
+} SinaStock_UserData;
 
-wxString YahooStock::Props[]={
+wxString SinaStock::Props[]={
     _("PRICE"),
-    _("DATE"),
-    _("TIME"),
     _("DELTA"),
-    _("TODAY START"),
-    _("HIGHEST"),
-    _("LOWEREST"),
     _("EXCHANGE"),
 };
 
-int YahooStock::GetProptiesNum(){
-    return WXSIZEOF(YahooStock::Props);
+int SinaStock::GetProptiesNum(){
+    return WXSIZEOF(SinaStock::Props);
 };
 
 
-void YahooStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
-    YahooStock_UserData* data = (YahooStock_UserData*)event.UserData;
+void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
+    SinaStock_UserData* data = (SinaStock_UserData*)event.UserData;
     if (data->rType == REALTIME_RETRIVE){ //Real Time Data come!
         if (data->FetchSeed == RealtimeFetchSeed){
-            //wxLogMessage(wxT("Get Url return %p %d:%s"), event.UserData,event.RetCode,event.Result.c_str());
+            HtmlTableParser *p=new HtmlTableParser();
+            MyHtmlParser parser(p);
+            parser.Parse(event.Result);
+            p->DumpTable();
+            return;
+            int tblidx = p->FindTable(0,0,wxT("当前价"));
+            if (tblidx>=0){
+                wxLogMessage(p->GetCellValue(tblidx,0,0));
+                //(*stocks)[data->StartIdx]->SetPropertyValue(Props[0], p->GetCellValue(tblidx,0,1));
+                //(*stocks)[data->StartIdx]->SetPropertyValue(Props[1], p->GetCellValue(tblidx,1,1));
+            }
+            return;
             wxStringTokenizer tkzlines(event.Result);
             int lineindex=0;
             while (tkzlines.HasMoreTokens()){
@@ -143,18 +151,20 @@ void YahooStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
     delete(data);
 }
 
-void YahooStock::FetchRealTimeData(StockList* ss, void* UserData, int StartIdx){
+void SinaStock::FetchRealTimeData(StockList* ss, void* UserData, int StartIdx){
     static int MaxRealtimeNum = 15;
     stocks = ss;
-    YahooStock_UserData *data=new YahooStock_UserData();
+    SinaStock_UserData *data=new SinaStock_UserData();
     data->OrignUserData = UserData;
     data->rType = REALTIME_RETRIVE;
     data->FetchSeed = RealtimeFetchSeed;
     data->StartIdx = StartIdx;
     data->RealtimeStockNum = 0;
-
-    wxString Url(wxT("http://finance.yahoo.com/d/quotes.csv?s="));
-    for (size_t i=0;i<ss->size();i++){
+    wxString country=wxT("ss");
+    if ((*ss)[0]->GetId().StartsWith(wxT("6"))) country=wxT("sh");
+    wxString Url(wxT("http://stock.finance.sina.com.cn/cgi-bin/stock/quote/quote.cgi?symbol="));
+    Url << (*ss)[0]->GetId() << wxT("&country=") << country;
+    /*for (size_t i=0;i<ss->size();i++){
         if (i==0){
             Url << (*ss)[i]->GetId() << wxT(".") <<(*ss)[i]->GetStockType();
         }
@@ -164,19 +174,19 @@ void YahooStock::FetchRealTimeData(StockList* ss, void* UserData, int StartIdx){
         data->RealtimeStockNum++;
         if (data->RealtimeStockNum>MaxRealtimeNum) break;
     }
-    Url <<wxT("&f=sl1d1t1c1ohgv&e=.csv");
+    Url <<wxT("&f=sl1d1t1c1ohgv&e=.csv");*/
     wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
     geturl->Create();
     geturl->Run();
 }
 
-void YahooStock::RetriveRealTimeData(StockList* ss, void* UserData){
+void SinaStock::RetriveRealTimeData(StockList* ss, void* UserData){
     RealtimeFetchSeed++;
     FetchRealTimeData(ss,UserData);
 }
 
-void YahooStock::FetchHistoryData(Stock* s,int datatype,void* UserData){
+void SinaStock::FetchHistoryData(Stock* s,int datatype,void* UserData){
     wxString keys[]={
         wxT("d"),
         wxT("w"),
@@ -184,7 +194,7 @@ void YahooStock::FetchHistoryData(Stock* s,int datatype,void* UserData){
     };
     wxDateTime now = wxDateTime::Now();
     wxDateTime AYearBefore = now - wxDateSpan(1);
-    YahooStock_UserData *data=new YahooStock_UserData();
+    SinaStock_UserData *data=new SinaStock_UserData();
     data->OrignUserData = UserData;
     data->rType = HISTORY_RETRIVE;
     data->FetchSeed = HistoryFetchSeed;
@@ -207,7 +217,7 @@ void YahooStock::FetchHistoryData(Stock* s,int datatype,void* UserData){
     geturl->Run();
 }
 
-void YahooStock::RetriveHistoryDayData(Stock* s, void* UserData){
+void SinaStock::RetriveHistoryDayData(Stock* s, void* UserData){
     HistoryFetchSeed++;
     FetchHistoryData(s,0,UserData);
 }

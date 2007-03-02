@@ -105,16 +105,19 @@ void MyFrame::UpdateMainGrid(int stockidx){
     mainGrid->BeginBatch();
     StocksDataFetch*stock = GetCurFetchObj();
     if (stock){
-        if (mainGrid->GetNumberCols()>(stock->GetProptiesNum()+1)){
-            mainGrid->DeleteCols(mainGrid->GetNumberCols() - stock->GetProptiesNum()-1);
+        int ColNum = stock->GetProptiesNum()+3; // stockName, earnings, earnings yield
+        if (mainGrid->GetNumberCols()>ColNum){
+            mainGrid->DeleteCols(mainGrid->GetNumberCols() - ColNum);
         }
-        else if (mainGrid->GetNumberCols() < (stock->GetProptiesNum()+1)){
-            mainGrid->AppendCols(stock->GetProptiesNum() +1 - mainGrid->GetNumberCols());
+        else if (mainGrid->GetNumberCols() < ColNum){
+            mainGrid->AppendCols(ColNum - mainGrid->GetNumberCols());
         }
         mainGrid->SetColLabelValue(0,_("Stock Name"));
         for (int i=0;i<stock->GetProptiesNum();i++){
             mainGrid->SetColLabelValue(i+1,stock->GetPropertyName(i));
         }
+        mainGrid->SetColLabelValue(stock->GetProptiesNum()+1,_("Earnings Yield"));
+        mainGrid->SetColLabelValue(stock->GetProptiesNum()+2,_("Earnings"));
     }
 
     int TotalLeft = mystocks.GetList()->GetCount() - stockidx;
@@ -135,9 +138,22 @@ void MyFrame::UpdateMainGrid(int stockidx){
     if (mainGrid->GetNumberRows() > TotalLeft){
         mainGrid->DeleteRows(TotalLeft,mainGrid->GetNumberRows() - TotalLeft);
     }
-    mainGrid->AutoSize();
+    mainGrid->AutoSizeColumns();
     mainGrid->EndBatch();
-    //stock->RetriveRealTimeData(stocks->GetList(), (void*)0);
+    if (mystocks.GetList()->size()>0){//if we have some custom value,start update it.
+        stock->RetriveRealTimeData(mystocks.GetList(), (void*)0);
+        //if some of the stock history data not ready, retrive it
+        StockList::Node* node = mystocks.GetList()->GetFirst();
+        while (node)
+        {
+            Stock* p = node->GetData();
+            if (!p->IsHistoryDataReady()){
+                stock->RetriveHistoryDayData(p,(void*)0);
+                break;
+            }
+            node = node->GetNext();
+        }
+    }
 }
 
 MyFrame::~MyFrame()
@@ -150,9 +166,47 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
         if (idx<mainGrid->GetNumberRows()){
             mainGrid->BeginBatch();
             for (int j=0;j<mainGrid->GetNumberRows();j++){
+                double CurValue=0;
+                (*mystocks.GetList())[idx+j]->GetPropertyValue(_("PRICE")).ToDouble(&CurValue);
                 for (int i=1;i<mainGrid->GetNumberCols();i++){
-                    mainGrid->SetCellValue(idx+j,i,stocks.GetStock(idx+j)->GetPropertyValue(
-                            mainGrid->GetColLabelValue(i)));
+                    MyStockStru* pmystock = mystocks.GetMyStockStruByStock((*mystocks.GetList())[idx+j]);
+                    if ((mainGrid->GetColLabelValue(i)) == _("Earnings Yield")){
+                        if (pmystock){
+                            mainGrid->SetCellValue(idx+j,i, wxString::Format(wxT("%.3f%%"),
+                                    pmystock->GetEarningYield(CurValue)*100));
+                            if (pmystock->GetEarningYield(CurValue)>0){
+                                mainGrid->SetCellTextColour(idx+j,i,*wxRED);
+                            }
+                            else{
+                                mainGrid->SetCellTextColour(idx+j,i,*wxGREEN);
+                            }
+                        }
+                    }
+                    else if ((mainGrid->GetColLabelValue(i)) == _("Earnings")){
+                        if (pmystock){
+                            mainGrid->SetCellValue(idx+j,i, wxString::Format(wxT("%.2f"),
+                                    pmystock->GetEarnings(CurValue)));
+                            if (pmystock->GetEarnings(CurValue)>0){
+                                mainGrid->SetCellTextColour(idx+j,i,*wxRED);
+                            }
+                            else{
+                                mainGrid->SetCellTextColour(idx+j,i,*wxGREEN);
+                            }
+                        }
+                    }
+                    else{
+                        wxString CellValue = (*mystocks.GetList())[idx+j]->GetPropertyValue(
+                                mainGrid->GetColLabelValue(i));
+                        mainGrid->SetCellValue(idx+j,i,CellValue);
+                        if (mainGrid->GetColLabelValue(i) == _("DELTA")){
+                            if (CellValue.StartsWith(wxT("-"))){
+                                mainGrid->SetCellTextColour(idx+j,i,*wxGREEN);
+                            }
+                            else{
+                                mainGrid->SetCellTextColour(idx+j,i,*wxRED);
+                            }
+                        }
+                    }
                 }
             }
             mainGrid->AutoSizeColumns();
@@ -160,15 +214,29 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
 
             //股票数据已经刷新了一轮了，为了减轻服务器的压力，
             //休息一下(30秒)再刷新第二轮吧
-            RealTimeDeltaTimer.Start(30000,true);
+            //RealTimeDeltaTimer.Start(30000,true);
         }
     }
     else{
-        Stock* s = (Stock*)event.UserData;
+        int myflag=(int)event.UserData;
+        Stock* s = (Stock*)event.HistoryStock;
         s->SaveHistoryDataToFile();
-        StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
-        dialog.SetStock(s);
-        dialog.ShowModal();
+        if (myflag == 1){ //UserCall
+            StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
+            dialog.SetStock(s);
+            dialog.ShowModal();
+        }
+        StocksDataFetch*stock = GetCurFetchObj();
+        StockList::Node* node = mystocks.GetList()->GetFirst();
+        while (node)
+        {
+            Stock* p = node->GetData();
+            if (!p->IsHistoryDataReady()){
+                stock->RetriveHistoryDayData(p,(void*)0);
+                break;
+            }
+            node = node->GetNext();
+        }
     }
     //if the check fail, just discard this event.
 }
@@ -187,8 +255,17 @@ void MyFrame::OnAddMyStock(wxCommandEvent& event)
         else{
             MyStockStru *p = new MyStockStru;
             p->stock = stocks.GetStockById(dialog.GetData().StockId);
-            p->buyinfos.push_back(pinfo);
-            mystocks.GetDatas()[dialog.GetData().StockId] = p;
+            if (p->stock){
+                p->buyinfos.push_back(pinfo);
+                mystocks.GetDatas()[dialog.GetData().StockId] = p;
+                mystocks.GetList()->push_back(p->stock);
+                mystocks.SaveDataToFile();
+            }
+            else{
+                wxLogError(_("The Stock ID[%s] is unacceptable!"),dialog.GetData().StockId.c_str());
+                delete (p);
+                delete (pinfo);
+            }
         }
         UpdateMainGrid(0);
     }
@@ -207,7 +284,7 @@ void MyFrame::OnAbout(wxCommandEvent& event)
 
 StocksDataFetch*MyFrame::GetCurFetchObj(){
     if (CurFetchObj) return CurFetchObj;
-    wxString DataProviderClass(wxT("YahooStock"));
+    wxString DataProviderClass(wxT("SinaStock"));
     StocksDataFetch* stock = wxDynamicCast(wxCreateDynamicObject(DataProviderClass), StocksDataFetch);
     if (stock) stock->SetParent(this);
     return stock;
@@ -215,14 +292,14 @@ StocksDataFetch*MyFrame::GetCurFetchObj(){
 
 void MyFrame::OnRealtimeDeltaTimer(wxTimerEvent& event){
     StocksDataFetch*stock = GetCurFetchObj();
-    if (stock) stock->RetriveRealTimeData(stocks.GetList(), (void*)(0));
+    if (stock) stock->RetriveRealTimeData(mystocks.GetList(), (void*)(0));
 }
 
 void MyFrame::OnGridCellDbClick(wxGridEvent& event){
-    Stock* s = stocks.GetStock(CurStockStartPos+event.GetRow());
+    Stock* s = (*mystocks.GetList())[CurStockStartPos+event.GetRow()];
     if (!s->IsHistoryDataReady()){
         if (!s->LoadHistoryDataFromFile()){
-            GetCurFetchObj()->RetriveHistoryDayData(s);
+            GetCurFetchObj()->RetriveHistoryDayData(s,(void*)1);
         }
         else{
             wxLogStatus(_("Load History Data From File!"));
@@ -266,6 +343,7 @@ bool MyStocks::SaveDataToFile(){
                             << pbuyinfo->BuyPrice;
             node = node->GetNext();
         }
+        i++;
     }
     return true;
 }
@@ -308,4 +386,44 @@ void MyStocks::UpdateStockList(StockList* source){
             }
             node = node->GetNext();
         }
+}
+
+double MyStockStru::GetTotalPay(){
+    double ret=0;
+    BuyInfoList::Node* node = buyinfos.GetFirst();
+    while (node)
+    {
+        BuyInfo* p = node->GetData();
+        ret += (p->BuyPrice * p->BuyAmount) * 1.003;
+        node = node->GetNext();
+    }
+    return ret;
+}
+
+double MyStockStru::GetCurValue(double CurPrice){
+    double ret=0;
+    BuyInfoList::Node* node = buyinfos.GetFirst();
+    while (node)
+    {
+        BuyInfo* p = node->GetData();
+        ret += (CurPrice * p->BuyAmount) * 0.997;
+        node = node->GetNext();
+    }
+    return ret;
+}
+
+double MyStockStru::GetEarningYield(double CurPrice){
+    if (GetTotalPay()<=1) return 0;
+    return (GetCurValue(CurPrice) - GetTotalPay()) / GetTotalPay();
+}
+
+double MyStockStru::GetEarnings(double CurPrice){
+    return GetCurValue(CurPrice) - GetTotalPay();
+}
+
+MyStockStru* MyStocks::GetMyStockStruByStock(Stock*s){
+    if (datas.find(s->GetId()) != datas.end()){
+        return datas[s->GetId()];
+    }
+    return NULL;
 }
