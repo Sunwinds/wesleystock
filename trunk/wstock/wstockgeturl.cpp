@@ -2,6 +2,8 @@
 #include <wx/sstream.h>
 #include "wstockgeturl.h"
 #include "wstockconfig.h"
+#include "wx/wfstream.h"
+#include "wx/datstrm.h"
 
 const wxEventType wxEVT_URL_GET_DONE = wxNewEventType();
 IMPLEMENT_DYNAMIC_CLASS(wxUrlGetDoneEvent, wxNotifyEvent)
@@ -120,6 +122,12 @@ void *WStockGetUrl::Entry(){
         wxUrlGetDoneEvent event(wxEVT_URL_GET_DONE, -1,UserData);
         wxCSConv cs(wxT("GB2312"));
         event.Result = wxString(cs.cMB2WC((char*)chunk.memory),*wxConvCurrent);
+		wxLogMessage(wxT("%d %d"),strlen((char*)chunk.memory),event.Result.Length());
+
+		wxFileOutputStream output(wxT("c:\\test.log"));
+		wxDataOutputStream store(output);
+		store << event.Result;
+
         //event.RetCode = ret;
         //event.Result = rtnString;
         Parent->AddPendingEvent(event);
