@@ -58,6 +58,18 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
     }
     else if (data->rType == HISTORY_RETRIVE){
         if (data->FetchSeed == HistoryFetchSeed){
+            HtmlTableParser *p=new HtmlTableParser();
+            MyHtmlParser parser(p);
+            parser.Parse(event.Result);
+			//p->DumpTable();
+            int idx=p->GetTDIndex(wxT("½»Ò×½ð¶î")); 
+            if (idx>=0){
+				wxLogMessage(p->GetValue(idx+1));
+            }
+            else{
+                wxLogMessage(wxT("Not Found!"));
+            }
+			return;
             Stock*s = (Stock*)data->HistoryStock;
             wxStringTokenizer tkzlines(event.Result,wxT("\r\n"));
             int lineindex=0;
@@ -145,11 +157,6 @@ void SinaStock::RetriveRealTimeData(StockList* ss, void* UserData){
 }
 
 void SinaStock::FetchHistoryData(Stock* s,int datatype,void* UserData){
-    wxString keys[]={
-        wxT("d"),
-        wxT("w"),
-        wxT("m"),
-    };
     wxDateTime now = wxDateTime::Now();
     wxDateTime AYearBefore = now - wxDateSpan(1);
     SinaStock_UserData *data=new SinaStock_UserData();
@@ -158,8 +165,10 @@ void SinaStock::FetchHistoryData(Stock* s,int datatype,void* UserData){
     data->FetchSeed = HistoryFetchSeed;
     data->StartIdx = datatype;
     data->HistoryStock = s;
+    wxString country=wxT("ss");
+    if (s->GetId().StartsWith(wxT("6"))) country=wxT("sh");
     wxString Url(wxT("http://biz.finance.sina.com.cn/company/history.php?symbol="));
-	Url << s->GetId();
+	Url << country <<s->GetId();
     wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
     geturl->Create();

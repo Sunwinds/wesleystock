@@ -89,8 +89,9 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 }
 
 void MyFrame::DoInitData(){
+    StocksDataFetch*stock = GetCurFetchObj();
     stocks.SetParent(this);
-    stocks.Init();
+    stocks.Init(stock->GetHistoryDataGroupNum());
     if (stocks.GetStockNum()==0){
         wxLogMessage(_("There is no stock Id in %s,you may need add some into it!"),
             WStockConfig::GetKeyPath().c_str());
@@ -141,7 +142,7 @@ void MyFrame::UpdateMainGrid(int stockidx){
     mainGrid->AutoSizeColumns();
     mainGrid->EndBatch();
     if (mystocks.GetList()->size()>0){//if we have some custom value,start update it.
-        stock->RetriveRealTimeData(mystocks.GetList(), (void*)0);
+        //stock->RetriveRealTimeData(mystocks.GetList(), (void*)0);
         //if some of the stock history data not ready, retrive it
         StockList::Node* node = mystocks.GetList()->GetFirst();
         while (node)

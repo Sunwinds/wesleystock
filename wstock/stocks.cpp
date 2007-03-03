@@ -14,11 +14,19 @@ WX_DEFINE_LIST(StockList);
 const wxEventType wxEVT_STOCK_DATA_GET_DONE = wxNewEventType();
 IMPLEMENT_DYNAMIC_CLASS(wxStockDataGetDoneEvent, wxNotifyEvent);
 
-void Stocks::InitHistoryDatas(){
-	for (int i=0;i<
+void Stocks::InitHistoryDatas(int num){
+	for (size_t i=0;i<stocks.size();i++){
+		stocks[i]->InitHistoryData(num);
+	}
 }
 
-bool Stocks::Init(){
+void Stock::InitHistoryData(int num){
+	for (int i=0;i<num;i++){
+		HistoryDatas.push_back(new StockHistoryDataArray());
+	}
+}
+
+bool Stocks::Init(int HistoryDataNum){
     wxString keyPath=WStockConfig::GetKeyPath();
     wxFileName keyf(keyPath);
     keyf.MakeAbsolute();
@@ -37,7 +45,7 @@ bool Stocks::Init(){
                     name = name.Strip(wxString::both);
                     if (id.Len()>0){
                         Stock*s = new Stock(id,name);
-						s->InitHistoryDatas();
+						s->InitHistoryData(HistoryDataNum);
                         s->LoadHistoryDataFromFile();
                         stocks.Append(s);
                     }

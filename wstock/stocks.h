@@ -46,7 +46,6 @@ class Stock :public wxObject
         };
         ~Stock();
         wxString GetId(){ return StockId; };
-		void InitHistoryDatas();
         wxString GetName(){ return StockName; };
         wxString GetStockType(){
             if (StockId[0] == wxT('6')) return wxT("SS");
@@ -68,6 +67,7 @@ class Stock :public wxObject
 
         bool LoadHistoryDataFromFile();
         bool SaveHistoryDataToFile();
+		void InitHistoryData(int num);
 
     private:
         wxString StockName, // The Company name
@@ -130,7 +130,7 @@ class Stocks:public wxObject
         Stocks(){};
         ~Stocks();
         void SetParent(wxEvtHandler* P){Parent=P;};
-        bool Init();
+        bool Init(int HistoryDataNum);
         int GetStockNum(){ return stocks.size();};
         wxString GetStockId(int idx){
             return stocks[idx]->GetId();
@@ -142,6 +142,7 @@ class Stocks:public wxObject
             return stocks[idx];
         }
         Stock *GetStockById(const wxString& id);
+		void InitHistoryDatas(int num);
         StockList* GetList(){ return &stocks;};
     private:
         wxEvtHandler* Parent;
