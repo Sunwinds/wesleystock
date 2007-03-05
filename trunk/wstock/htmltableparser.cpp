@@ -25,8 +25,7 @@ wxString HtmlTableParser::GetPureText(wxString html){
 bool HtmlTableParser::HandleTag(const wxHtmlTag& tag){
     if (tag.GetName() == wxT("TD")){
         wxString Inner=m_Parser->GetSource()->Mid(tag.GetBeginPos(),tag.GetEndPos1()-tag.GetBeginPos());
-        if (Inner.size()<50){
-			wxLogMessage(Inner);
+        if (Inner.size()<200){
             tdtexts.Add(GetPureText(Inner));
         }
     }

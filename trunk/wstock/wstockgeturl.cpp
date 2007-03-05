@@ -100,11 +100,11 @@ void *WStockGetUrl::Entry(){
   strcpy(url,(const char*)Url.mb_str());
   /* specify URL to get */
   curl_easy_setopt(curl_handle, CURLOPT_URL, url);
-  /*if (PostData.size()>0){
+  if (PostData.size()>0){
       char post[255]="";
       strcpy(post,(const char*)PostData.mb_str());
       curl_easy_setopt(curl_handle, CURLOPT_POSTFIELDS, post);
-  }*/
+  }
   /* send all data to this function  */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
   /* we pass our 'chunk' struct to the callback function */
@@ -112,6 +112,23 @@ void *WStockGetUrl::Entry(){
   /* some servers don't like requests that are made without a user-agent
      field, so we provide one */
   curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+
+  if (CustomHeads.size()>0){
+        struct curl_slist *headers=NULL; /* init to NULL is important */
+        for (size_t i=0;i<CustomHeads.size();i++){
+            char post[1024]="";
+            strcpy(post,(const char*)CustomHeads[i].mb_str());
+            headers = curl_slist_append(headers, post);
+        }
+        curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, headers);
+  }
+
+  if (!CusCmd.IsEmpty()){
+      char post[255]="";
+      strcpy(post,(const char*)CusCmd.mb_str());
+      curl_easy_setopt(curl_handle,   CURLOPT_CUSTOMREQUEST, post);
+  }
+
   /* get it! */
   curl_easy_perform(curl_handle);
   /* cleanup curl stuff */
@@ -122,14 +139,12 @@ void *WStockGetUrl::Entry(){
         wxUrlGetDoneEvent event(wxEVT_URL_GET_DONE, -1,UserData);
         wxCSConv cs(wxT("GB2312"));
         event.Result = wxString(cs.cMB2WC((char*)chunk.memory),*wxConvCurrent);
-		wxLogMessage(wxT("%d %d"),strlen((char*)chunk.memory),event.Result.Length());
 
+		/*wxLogMessage(wxT("%d %d"),strlen((char*)chunk.memory),event.Result.Length());
 		wxFileOutputStream output(wxT("c:\\test.log"));
 		wxDataOutputStream store(output);
-		store << event.Result;
+		store << event.Result;*/
 
-        //event.RetCode = ret;
-        //event.Result = rtnString;
         Parent->AddPendingEvent(event);
     }
 

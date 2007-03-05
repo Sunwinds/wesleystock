@@ -78,6 +78,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     mainGrid->CreateGrid(1,5);
     mainGrid->SetDefaultCellAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
     mainGrid->EnableEditing(false);
+    gss = new GSpreadSheets(wxT(""),wxT(""));
 #if wxUSE_STATUSBAR
     // create a status bar with some information about the used wxWidgets version
     CreateStatusBar(2);
@@ -142,7 +143,7 @@ void MyFrame::UpdateMainGrid(int stockidx){
     mainGrid->AutoSizeColumns();
     mainGrid->EndBatch();
     if (mystocks.GetList()->size()>0){//if we have some custom value,start update it.
-        //stock->RetriveRealTimeData(mystocks.GetList(), (void*)0);
+        stock->RetriveRealTimeData(mystocks.GetList(), (void*)0);
         //if some of the stock history data not ready, retrive it
         StockList::Node* node = mystocks.GetList()->GetFirst();
         while (node)
@@ -162,7 +163,6 @@ MyFrame::~MyFrame()
 }
 
 void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
-	wxLogStatus(wxT(""));
     if (event.rtype == REALTIME_RETRIVE){
         int idx = (int)event.UserData;
         if (idx<mainGrid->GetNumberRows()){
@@ -216,7 +216,7 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
 
             //股票数据已经刷新了一轮了，为了减轻服务器的压力，
             //休息一下(30秒)再刷新第二轮吧
-            //RealTimeDeltaTimer.Start(30000,true);
+            RealTimeDeltaTimer.Start(30000,true);
         }
     }
     else{
