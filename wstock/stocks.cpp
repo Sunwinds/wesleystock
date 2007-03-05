@@ -68,8 +68,8 @@ Stock::~Stock(){
 			StockHistoryDataPiece*p = (*HistoryDatas[j])[i];
 			delete(p);
 		}
+        HistoryDatas[j]->Clear();
 	}
-    HistoryDatas[j]->Clear();
 }
 
 Stocks::~Stocks(){
@@ -124,6 +124,7 @@ bool Stock::LoadHistoryDataFromFile(){
 
 bool Stock::SaveHistoryDataToFile(){
     wxDateTime now = wxDateTime::Now();
+    HistoryDataReady = true;
 	for (size_t idx=0;idx<HistoryDatas.size();idx++){
 		wxFileName fn(WStockConfig::GetHistoryDataDir(),wxString::Format(wxT("%s.%s.%d_%d_%d_%d.dat"),
 				GetId().c_str(),
@@ -147,7 +148,7 @@ bool Stock::SaveHistoryDataToFile(){
 		}
 		wxDataOutputStream store(output);
 		size_t i;
-		for (i =0;i<HistoryDatas.GetCount();i++){
+		for (i =0;i<HistoryDatas[idx]->GetCount();i++){
 			int y=(*HistoryDatas[idx])[i]->data.GetYear();
 			int m=(*HistoryDatas[idx])[i]->data.GetMonth();
 			int d=(*HistoryDatas[idx])[i]->data.GetDay();

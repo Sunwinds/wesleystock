@@ -48,9 +48,17 @@ class WStockGetUrl:public wxThread
             PostData = data;
         };
         virtual void *Entry();
+        void SetCustomCmd(const wxString& cmd){
+            CusCmd = cmd;
+        };
+        void AppendCustomHead(const wxString& h){
+            CustomHeads.Add(h);
+        };
     private:
         wxString Url;
         wxString Proxy;
+        wxString CusCmd;
+        wxArrayString CustomHeads;
         wxString PostData;
         void * UserData;
         wxEvtHandler *Parent;

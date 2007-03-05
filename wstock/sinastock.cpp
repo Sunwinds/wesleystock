@@ -32,11 +32,12 @@ int SinaStock::GetProptiesNum(){
 void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
     SinaStock_UserData* data = (SinaStock_UserData*)event.UserData;
     if (data->rType == REALTIME_RETRIVE){ //Real Time Data come!
+        wxLogStatus(wxT(""));
         if (data->FetchSeed == RealtimeFetchSeed){
             HtmlTableParser *p=new HtmlTableParser();
             MyHtmlParser parser(p);
             parser.Parse(event.Result);
-            int idx=p->GetTDIndex(wxT("µ±Ç°¼Û")); 
+            int idx=p->GetTDIndex(wxT("å½“å‰ä»·"));
             if (idx>=0){
                 (*stocks)[data->StartIdx]->SetPropertyValue(Props[0], p->GetValue(idx+1));
 				(*stocks)[data->StartIdx]->SetPropertyValue(Props[1], p->GetValue(idx+3));
@@ -59,66 +60,42 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
     else if (data->rType == HISTORY_RETRIVE){
         if (data->FetchSeed == HistoryFetchSeed){
             HtmlTableParser *p=new HtmlTableParser();
+            Stock*s = (Stock*)data->HistoryStock;
             MyHtmlParser parser(p);
             parser.Parse(event.Result);
 			//p->DumpTable();
-            int idx=p->GetTDIndex(wxT("½»Ò×½ð¶î")); 
+            int idx=p->GetTDIndex(wxT("äº¤æ˜“é‡‘é¢"));
             if (idx>=0){
-				wxLogMessage(p->GetValue(idx+1));
-            }
-            else{
-                wxLogMessage(wxT("Not Found!"));
-            }
-			return;
-            Stock*s = (Stock*)data->HistoryStock;
-            wxStringTokenizer tkzlines(event.Result,wxT("\r\n"));
-            int lineindex=0;
-            while (tkzlines.HasMoreTokens()){
-                wxString line = tkzlines.GetNextToken();
-                if (lineindex != 0) { //Skip the first line
-                    StockHistoryDataPiece *p = new StockHistoryDataPiece;
-					s->AppendHistoryData(data->StartIdx,p);
-                    if (p){
-                        wxStringTokenizer tkz(line, wxT(","));
-                        int idx=0;
-                        while (tkz.HasMoreTokens()){
-                                wxString token = tkz.GetNextToken();
-                                token.Trim().Replace(wxT("\""),wxT(""),true);
-                                switch (idx){
-                                    case 0:
-                                        p->data.ParseDate(token);
-                                        printf("%s\n",(const char*)token.mb_str());
-                                    break;
-                                    case 1:
-                                        token.ToDouble(&p->open);
-                                    break;
-                                    case 2:
-                                        token.ToDouble(&p->High);
-                                    break;
-                                    case 3:
-                                        token.ToDouble(&p->Low);
-                                    break;
-                                    case 4:
-                                        token.ToDouble(&p->Close);
-                                    break;
-                                    case 5:
-                                        {
-                                            long v=0;
-                                            token.ToLong(&v);
-                                            p->volume = v;
-                                        }
-                                    break;
-                                    case 6:
-                                        token.ToDouble(&p->adjClose);
-                                    break;
-                            }
-                            idx++;
+                wxLogStatus(wxT("Get History Data From the url Done!"));
+                while (idx<p->GetTDCount()){
+                    wxDateTime date;
+                    if (date.ParseDate(p->GetValue(idx+1))){
+                        StockHistoryDataPiece *pp = new StockHistoryDataPiece;
+                        if (pp){
+                            s->AppendHistoryData(0,pp);
+                            pp->data = date;
+                            p->GetValue(idx+2).ToDouble(&pp->open);
+                            p->GetValue(idx+3).ToDouble(&pp->High);
+                            p->GetValue(idx+4).ToDouble(&pp->Close);
+                            p->GetValue(idx+5).ToDouble(&pp->Low);
+                            pp->adjClose = pp->Close;
+
+                            long v=0;
+                            p->GetValue(idx+6).ToLong(&v);
+                            pp->volume = v;
+
                         }
+                        idx += 7;
+                    }
+                    else{
+                        break;
                     }
                 }
-                lineindex++;
             }
-            if (data->StartIdx == 2){
+            else{
+                wxLogStatus(wxT("Not Found History Data From the url!"));
+            }
+            if (data->StartIdx == 3){ //if all 4 season data get done
                 wxStockDataGetDoneEvent event(wxEVT_STOCK_DATA_GET_DONE,HISTORY_RETRIVE,
                         data->OrignUserData);
                 event.SetHistoryStock(data->HistoryStock);
@@ -167,10 +144,25 @@ void SinaStock::FetchHistoryData(Stock* s,int datatype,void* UserData){
     data->HistoryStock = s;
     wxString country=wxT("ss");
     if (s->GetId().StartsWith(wxT("6"))) country=wxT("sh");
-    wxString Url(wxT("http://biz.finance.sina.com.cn/company/history.php?symbol="));
-	Url << country <<s->GetId();
+    wxString Url;
+    if (datatype==0){
+        Url << wxT("http://biz.finance.sina.com.cn/company/history.php?symbol=");
+        Url << country <<s->GetId();
+    }
+    else{
+        Url << wxT("http://biz.finance.sina.com.cn/company/history.php");
+    }
     wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
+    if (datatype>0){
+        wxDateTime date=wxDateTime::Now() - wxDateSpan(0,datatype * 3);
+        wxString PostData;
+        PostData << wxT("year=") << (int)date.GetYear() << wxT("&quarter=")
+                  << (int)(((int)date.GetMonth()) / 3 + 1)
+                  << wxT("&symbol=") <<country <<s->GetId();
+        wxLogStatus(PostData);
+        geturl->SetPostData(PostData);
+    }
     geturl->Create();
     geturl->Run();
 }

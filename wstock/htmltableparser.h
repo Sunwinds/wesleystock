@@ -17,6 +17,7 @@ class HtmlTableParser:public wxHtmlTagHandler
         void HandleText(const wxChar* txt);
         wxString GetValue(int idx){return tdtexts[idx];};
         int GetTDIndex(const wxString& value);
+        int GetTDCount(){ return tdtexts.size();};
         void DumpTable();
     private:
         wxArrayString tdtexts;

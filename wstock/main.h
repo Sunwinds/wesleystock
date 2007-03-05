@@ -6,6 +6,7 @@
 #include <wx/hashmap.h>
 #include "wx/grid.h"
 #include "stocks.h"
+#include "gspreadsheet.h"
 
 
 class BuyInfo{
@@ -59,6 +60,7 @@ class MyFrame: public wxFrame
         MyStocks mystocks;
         wxTimer RealTimeDeltaTimer;
         StocksDataFetch* CurFetchObj;
+        GSpreadSheets * gss;
 
 		void OnQuit(wxCommandEvent& event);
 		void OnGridCellDbClick(wxGridEvent& event);
