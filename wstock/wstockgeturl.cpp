@@ -100,15 +100,11 @@ void *WStockGetUrl::Entry(){
   strcpy(url,(const char*)Url.mb_str());
   /* specify URL to get */
   curl_easy_setopt(curl_handle, CURLOPT_URL, url);
-  if (PostData.size()>0){
-      char post[255]="";
-      strcpy(post,(const char*)PostData.mb_str());
-      curl_easy_setopt(curl_handle, CURLOPT_POSTFIELDS, post);
-  }
   /* send all data to this function  */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
   /* we pass our 'chunk' struct to the callback function */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
+  curl_easy_setopt(curl_handle, CURLOPT_HEADER,0);
   /* some servers don't like requests that are made without a user-agent
      field, so we provide one */
   curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
@@ -121,6 +117,11 @@ void *WStockGetUrl::Entry(){
             headers = curl_slist_append(headers, post);
         }
         curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, headers);
+  }
+  if (PostData.size()>0){
+      char post[1024]="";
+      strcpy(post,(const char*)PostData.mb_str());
+      curl_easy_setopt(curl_handle, CURLOPT_POSTFIELDS, post);
   }
 
   if (!CusCmd.IsEmpty()){
@@ -135,16 +136,21 @@ void *WStockGetUrl::Entry(){
   curl_easy_cleanup(curl_handle);
 
     if (Parent){
-        //printf("%s\n",(char*)chunk.memory);
         wxUrlGetDoneEvent event(wxEVT_URL_GET_DONE, -1,UserData);
-        wxCSConv cs(wxT("GB2312"));
-        event.Result = wxString(cs.cMB2WC((char*)chunk.memory),*wxConvCurrent);
+        if (WantXml){
+            event.doc = xmlReadMemory((char*)chunk.memory,
+                        strlen((char*)chunk.memory), "noname.xml",NULL,0);
+        }
+        else {
+            wxCSConv cs(wxT("GB2312"));
+            event.Result = wxString(cs.cMB2WC((char*)chunk.memory),*wxConvCurrent);
 
-		/*wxLogMessage(wxT("%d %d"),strlen((char*)chunk.memory),event.Result.Length());
-		wxFileOutputStream output(wxT("c:\\test.log"));
-		wxDataOutputStream store(output);
-		store << event.Result;*/
+            /*wxLogMessage(wxT("%d %d"),strlen((char*)chunk.memory),event.Result.Length());
+            wxFileOutputStream output(wxT("c:\\test.log"));
+            wxDataOutputStream store(output);
+            store << event.Result;*/
 
+        }
         Parent->AddPendingEvent(event);
     }
 

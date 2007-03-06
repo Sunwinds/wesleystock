@@ -164,4 +164,25 @@ class StocksDataFetch:public wxEvtHandler
         wxEvtHandler* Parent;
 };
 
+class BuyInfo{
+    public:
+        double BuyPrice;
+        int BuyAmount;
+        wxDateTime data;
+};
+
+WX_DECLARE_LIST(BuyInfo, BuyInfoList);
+
+class MyStockStru{
+    public:
+        Stock * stock;
+        BuyInfoList buyinfos;
+        double GetEarningYield(double CurPrice);
+        double GetEarnings(double CurPrice);
+    private:
+        double GetTotalPay();
+        double GetCurValue(double CurPrice);
+};
+WX_DECLARE_STRING_HASH_MAP(MyStockStru*, MyStockDataHash);
+
 #endif // STOCKS_H_INCLUDED

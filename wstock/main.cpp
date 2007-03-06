@@ -4,6 +4,7 @@
 #include "wx/wfstream.h"
 #include "wx/datstrm.h"
 #include "wstockconfig.h"
+#include "wstockcustomdialog.h"
 #include "MyStockDialog.h"
 #include "StockHistoryDialog.h"
 
@@ -40,13 +41,14 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 int idMenuQuit = wxNewId();
 int idMenuAbout = wxNewId();
 int idMenuAddMyStock = wxNewId();
-
+int idMenuConfig = wxNewId();
 
 #define REALTIME_DELTA_TIMER_ID  200
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(idMenuQuit, MyFrame::OnQuit)
     EVT_MENU(idMenuAbout, MyFrame::OnAbout)
     EVT_MENU(idMenuAddMyStock, MyFrame::OnAddMyStock)
+    EVT_MENU(idMenuConfig, MyFrame::OnConfigure)
     EVT_STOCK_DATA_GET_DONE(-1, MyFrame::OnStockDataGetDone)
     EVT_TIMER(REALTIME_DELTA_TIMER_ID, MyFrame::OnRealtimeDeltaTimer)
     EVT_GRID_CELL_LEFT_DCLICK(MyFrame::OnGridCellDbClick)
@@ -65,6 +67,8 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 
     wxMenu* ToolMenu = new wxMenu(_T(""));
     ToolMenu->Append(idMenuAddMyStock, _("&Add MyStock\tCtrl-a"), _("Add One Stock Buy Record!"));
+    ToolMenu->AppendSeparator();
+    ToolMenu->Append(idMenuConfig, _("&Configure\tCtrl-Alt-c"), _("Global Configure"));
     mbar->Append(ToolMenu, _("&Tool"));
 
     wxMenu* helpMenu = new wxMenu(_T(""));
@@ -78,7 +82,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     mainGrid->CreateGrid(1,5);
     mainGrid->SetDefaultCellAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
     mainGrid->EnableEditing(false);
-    gss = new GSpreadSheets(wxT(""),wxT(""));
+    gss = new GSpreadSheets();
 #if wxUSE_STATUSBAR
     // create a status bar with some information about the used wxWidgets version
     CreateStatusBar(2);
@@ -99,6 +103,7 @@ void MyFrame::DoInitData(){
     }
     mystocks.LoadDataFromFile();
     mystocks.UpdateStockList(stocks.GetList());
+    gss->PutToGoogle(&mystocks.GetDatas());
 }
 
 void MyFrame::UpdateMainGrid(int stockidx){
@@ -241,6 +246,16 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
         }
     }
     //if the check fail, just discard this event.
+}
+
+
+void MyFrame::OnConfigure(wxCommandEvent& event)
+{
+    wstockcustomdialog dialog(this,-1,wxT("Global Configure"));
+    if (dialog.ShowModal() == wxID_OK){
+        //change the configure and save to file.
+        dialog.StoreSettings();
+    };
 }
 
 void MyFrame::OnAddMyStock(wxCommandEvent& event)

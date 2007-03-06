@@ -28,6 +28,33 @@ class WStockConfig :public wxObject
             config.Read(STOCK_HISTORY_DATA_DIR_KEY, &DataDir);
             return DataDir;
         };
+        static wxString GetGmailUserName(){
+            wxString DataDir = wxT("cnwesleywang@gmail.com");
+            config.Read(wxT("Google/UserName"), &DataDir);
+            return DataDir;
+        };
+        static wxString GetGmailPasswd(){
+            wxString DataDir = wxT("");
+            config.Read(wxT("Google/Passwd"), &DataDir);
+            return DataDir;
+        };
+        static wxString GetGoogleMystockTitle(){
+            wxString DataDir = wxT("mystocks");
+            config.Read(wxT("Google/MyStockTitle"), &DataDir);
+            return DataDir;
+        };
+        static void SetHistoryDataDir(const wxString& keyPath){
+            config.Write(STOCK_HISTORY_DATA_DIR_KEY, keyPath);
+        };
+        static void SetGmailUserName(const wxString& keyPath){
+            config.Write(wxT("Google/UserName"), keyPath);
+        };
+        static void SetGmailPasswd(const wxString& keyPath){
+            config.Write(wxT("Google/Passwd"), keyPath);
+        };
+        static void SetGoogleMystockTitle(const wxString& keyPath){
+            config.Write(wxT("Google/MyStockTitle"), keyPath);
+        };
 };
 
 #endif // CONFIG_H_INCLUDED

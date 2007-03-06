@@ -8,28 +8,6 @@
 #include "stocks.h"
 #include "gspreadsheet.h"
 
-
-class BuyInfo{
-    public:
-        double BuyPrice;
-        int BuyAmount;
-        wxDateTime data;
-};
-
-WX_DECLARE_LIST(BuyInfo, BuyInfoList);
-
-class MyStockStru{
-    public:
-        Stock * stock;
-        BuyInfoList buyinfos;
-        double GetEarningYield(double CurPrice);
-        double GetEarnings(double CurPrice);
-    private:
-        double GetTotalPay();
-        double GetCurValue(double CurPrice);
-};
-WX_DECLARE_STRING_HASH_MAP(MyStockStru*, MyStockDataHash);
-
 class MyStocks : public wxObject{
     public:
         MyStocks(){};
@@ -66,6 +44,7 @@ class MyFrame: public wxFrame
 		void OnGridCellDbClick(wxGridEvent& event);
 		void OnRealtimeDeltaTimer(wxTimerEvent& event);
 		void OnAbout(wxCommandEvent& event);
+		void OnConfigure(wxCommandEvent& event);
 		void OnAddMyStock(wxCommandEvent& event);
 		void OnStockDataGetDone(wxStockDataGetDoneEvent&event);
 		DECLARE_EVENT_TABLE();

@@ -7,6 +7,9 @@
 
 #include "wx/wx.h"
 #include "wx/thread.h"
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <libxml/xpath.h>
 
 class wxUrlGetDoneEvent : public wxNotifyEvent
 {
@@ -18,6 +21,7 @@ class wxUrlGetDoneEvent : public wxNotifyEvent
         Result = event.Result;
         RetCode = event.RetCode;
         UserData = event.UserData;
+        doc = event.doc;
         };
     virtual wxEvent *Clone() const {
         return new wxUrlGetDoneEvent(*this);
@@ -25,6 +29,7 @@ class wxUrlGetDoneEvent : public wxNotifyEvent
     wxString Result;
     int RetCode;
     void *UserData;
+    xmlDocPtr doc;//valid when want xml;
     DECLARE_DYNAMIC_CLASS(wxUrlGetDoneEvent);
 };
 typedef void (wxEvtHandler::*wxUrlGetDoneEventFunction)(wxUrlGetDoneEvent&);
@@ -41,6 +46,7 @@ class WStockGetUrl:public wxThread
         WStockGetUrl(wxEvtHandler*parent, const wxString& url, void* data){
             Parent = parent;
             Url = url;
+            WantXml=false;
             UserData = data;
             PostData = wxT("");
         };
@@ -54,12 +60,14 @@ class WStockGetUrl:public wxThread
         void AppendCustomHead(const wxString& h){
             CustomHeads.Add(h);
         };
+        void SetWantXml(bool v){WantXml=v;};
     private:
         wxString Url;
         wxString Proxy;
         wxString CusCmd;
         wxArrayString CustomHeads;
         wxString PostData;
+        bool WantXml; //We expect xmlDocPtr in the retrive done event.//user need to release this doc
         void * UserData;
         wxEvtHandler *Parent;
 
