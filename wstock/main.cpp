@@ -265,6 +265,7 @@ void MyFrame::OnAddMyStock(wxCommandEvent& event)
         BuyInfo*pinfo =new BuyInfo;
         pinfo->BuyAmount = dialog.GetData().ACount;
         pinfo->BuyPrice = dialog.GetData().Price;
+        pinfo->Op = dialog.GetData().Op;
         pinfo->data = wxDateTime::Now();
         if (mystocks.GetDatas().find(dialog.GetData().StockId) != mystocks.GetDatas().end()){
             mystocks.GetDatas()[dialog.GetData().StockId]->buyinfos.push_back(pinfo);
@@ -282,9 +283,12 @@ void MyFrame::OnAddMyStock(wxCommandEvent& event)
                 wxLogError(_("The Stock ID[%s] is unacceptable!"),dialog.GetData().StockId.c_str());
                 delete (p);
                 delete (pinfo);
+                return;
             }
         }
+        mystocks.TestRemove(mystocks.GetDatas()[dialog.GetData().StockId]->stock);
         UpdateMainGrid(0);
+        gss->PutToGoogle(&mystocks.GetDatas());
     }
 }
 
@@ -357,7 +361,8 @@ bool MyStocks::SaveDataToFile(){
             BuyInfo* pbuyinfo = node->GetData();
             store <<stockid << (wxInt32)pbuyinfo->data.GetTicks()
                             << pbuyinfo->BuyAmount
-                            << pbuyinfo->BuyPrice;
+                            << pbuyinfo->BuyPrice
+                            << pbuyinfo->Op;
             node = node->GetNext();
         }
         i++;
@@ -383,7 +388,7 @@ bool MyStocks::LoadDataFromFile(){
             }
             BuyInfo* pbuyinfo = new BuyInfo;
             wxInt32 ticks;
-            store   >>ticks >> pbuyinfo->BuyAmount >> pbuyinfo->BuyPrice;
+            store   >>ticks >> pbuyinfo->BuyAmount >> pbuyinfo->BuyPrice >> pbuyinfo->Op;
             pbuyinfo->data = wxDateTime((time_t)ticks);
             datas[stockid]->buyinfos.push_back(pbuyinfo);
         }
@@ -411,7 +416,12 @@ double MyStockStru::GetTotalPay(){
     while (node)
     {
         BuyInfo* p = node->GetData();
-        ret += (p->BuyPrice * p->BuyAmount) * 1.003;
+        if (p->Op==0){
+            ret += (p->BuyPrice * p->BuyAmount) * 1.003;
+        }
+        else{
+            ret -= (p->BuyPrice * p->BuyAmount) * 0.997;
+        }
         node = node->GetNext();
     }
     return ret;
@@ -423,7 +433,12 @@ double MyStockStru::GetCurValue(double CurPrice){
     while (node)
     {
         BuyInfo* p = node->GetData();
-        ret += (CurPrice * p->BuyAmount) * 0.997;
+        if (p->Op==0){
+            ret += (CurPrice * p->BuyAmount) * 0.997;
+        }
+        else{
+            ret -= (CurPrice * p->BuyAmount) * 0.997;
+        }
         node = node->GetNext();
     }
     return ret;
@@ -443,4 +458,8 @@ MyStockStru* MyStocks::GetMyStockStruByStock(Stock*s){
         return datas[s->GetId()];
     }
     return NULL;
+}
+
+void MyStocks::TestRemove(Stock* s){
+    //TODO;
 }

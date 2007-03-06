@@ -146,13 +146,13 @@ void GSpreadSheets::UpdateCellsToGoogle(void){
 void GSpreadSheets::PutToGoogle(MyStockDataHash* data){
     MyStockDataHash::iterator i = data->begin();
     int RecordIdx=1;
+    wxString entry(wxT("<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gs='http://schemas.google.com/spreadsheets/2006'>"));
     while (i != data->end())    {
         wxString stockid = i->first;
         MyStockStru* pmystock = i->second;
         BuyInfoList::Node* node = pmystock->buyinfos.GetFirst();
         while (node)
         {
-            wxString entry(wxT("<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gs='http://schemas.google.com/spreadsheets/2006'>"));
             BuyInfo* pbuyinfo = node->GetData();
             {
                 wxString postdata(entry);
@@ -178,11 +178,49 @@ void GSpreadSheets::PutToGoogle(MyStockDataHash* data){
                       <<pbuyinfo->BuyPrice <<wxT("'/> </entry>");;
                 cellPostBuffer.Add(postdata);
             }
+            {
+                wxString postdata(entry);
+                postdata<< wxT("<gs:cell row='") << RecordIdx+1 << wxT("' col='5' inputValue='")
+                      <<pbuyinfo->Op <<wxT("'/> </entry>");;
+                cellPostBuffer.Add(postdata);
+            }
             node = node->GetNext();
             RecordIdx++;
         }
         i++;
     }
+
+    //Add One Line Of Empty for seprate
+            {
+                wxString postdata(entry);
+                postdata <<  wxT("<gs:cell row='") << RecordIdx+1 << wxT("' col='1' inputValue='")
+                          <<wxT("'/> </entry>");
+                cellPostBuffer.Add(postdata);
+            }
+            {
+                wxString postdata(entry);
+                postdata<< wxT("<gs:cell row='") << RecordIdx+1 << wxT("' col='2' inputValue='")
+                         <<wxT("'/> </entry>");
+                cellPostBuffer.Add(postdata);
+            }
+            {
+                wxString postdata(entry);
+                postdata<< wxT("<gs:cell row='") << RecordIdx+1 << wxT("' col='3' inputValue='")
+                         <<wxT("'/> </entry>");
+                cellPostBuffer.Add(postdata);
+            }
+            {
+                wxString postdata(entry);
+                postdata<< wxT("<gs:cell row='") << RecordIdx+1 << wxT("' col='4' inputValue='")
+                         <<wxT("'/> </entry>");;
+                cellPostBuffer.Add(postdata);
+            }
+            {
+                wxString postdata(entry);
+                postdata<< wxT("<gs:cell row='") << RecordIdx+1 << wxT("' col='5' inputValue='")
+                         <<wxT("'/> </entry>");;
+                cellPostBuffer.Add(postdata);
+            }
     UpdateCellsToGoogle();
 }
 
@@ -191,15 +229,17 @@ void GSpreadSheets::RetriveLinkFeedHref(){
         Auth();
     }
     else{
-        WStockGetUrl* geturl=new WStockGetUrl(this,
-                wxT("http://spreadsheets.google.com/feeds/spreadsheets/private/full"),(void*)-2);
-        wxString GoogleAuthHead(wxT("Authorization: GoogleLogin auth=\""));
-        GoogleAuthHead << AuthKey<< wxT("\"");
-        geturl->AppendCustomHead(GoogleAuthHead);
-        geturl->AppendCustomHead(wxT("Content-type: application/atom+xml"));
-        geturl->SetWantXml(true);
-        geturl->Create();
-        geturl->Run();
+        if (!WStockConfig::GetGoogleMystockTitle().IsEmpty()){
+            WStockGetUrl* geturl=new WStockGetUrl(this,
+                    wxT("http://spreadsheets.google.com/feeds/spreadsheets/private/full"),(void*)-2);
+            wxString GoogleAuthHead(wxT("Authorization: GoogleLogin auth=\""));
+            GoogleAuthHead << AuthKey<< wxT("\"");
+            geturl->AppendCustomHead(GoogleAuthHead);
+            geturl->AppendCustomHead(wxT("Content-type: application/atom+xml"));
+            geturl->SetWantXml(true);
+            geturl->Create();
+            geturl->Run();
+        }
     }
 }
 

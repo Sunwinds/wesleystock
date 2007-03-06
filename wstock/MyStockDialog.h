@@ -65,25 +65,30 @@ class MyStockDialogData
         StockId=wxT("600171");
         ACount=3100;
         Price=3.87;
+        Op=0;
     };
-    MyStockDialogData(wxString id, int a, double p){
+    MyStockDialogData(wxString id, int a, double p,int op){
         StockId = id;
         ACount = a;
         Price = p;
+        Op = op;
     };
     MyStockDialogData(const MyStockDialogData& v){
         StockId = v.StockId;
         ACount = v.ACount;
         Price = v.Price;
+        Op = v.Op;
     };
     MyStockDialogData & operator = (const MyStockDialogData& v){
         StockId = v.StockId;
         ACount = v.ACount;
         Price = v.Price;
+        Op = v.Op;
         return *this;
     };
     wxString StockId;
     int ACount;
+    int Op;
     double Price;
 };
 
@@ -115,6 +120,8 @@ protected:
     wxTextCtrl* t_acount;
     wxStaticText* label_3;
     wxTextCtrl* t_price;
+    wxStaticText* label_9;
+    wxComboBox* c_op;
     wxStaticLine* static_line_2;
     wxButton* button_2;
     wxButton* button_3;
