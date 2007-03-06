@@ -28,18 +28,23 @@ void GSpreadSheets::OnUrlGetDone(wxUrlGetDoneEvent& event){
                 }
         }
 
-        //wxLogMessage(AuthKey);
-        wxLogStatus(wxT("Try to Update Google SpreadSheets..."));
-        WStockGetUrl* geturl=new WStockGetUrl(this,
-                wxT("http://spreadsheets.google.com/feeds/cells/109692280057.3404530250775683464/od6/private/full"),(void*)0);
-        geturl->SetPostData(wxT("<?xml version=\"1.0\"?> <entry> <gs:cell row=\"5\" col=\"5\" inputValue=\"SomeTestValue\"/> </entry>"));
-        //geturl->SetCustomCmd(wxT("PUT"));
-        wxString GoogleAuthHead(wxT("Authorization: GoogleLogin auth=\""));
-        GoogleAuthHead << AuthKey<< wxT("\"");
-        geturl->AppendCustomHead(GoogleAuthHead);
-        geturl->AppendCustomHead(wxT("Content-type: application/atom+xml"));
-        geturl->Create();
-        geturl->Run();
+        if (!AuthKey.IsEmpty()){
+            //wxLogMessage(AuthKey);
+            wxLogStatus(wxT("Try to Update Google SpreadSheets..."));
+            WStockGetUrl* geturl=new WStockGetUrl(this,
+                    wxT("http://spreadsheets.google.com/feeds/cells/109692280057.3404530250775683464/od6/private/full"),(void*)0);
+            geturl->SetPostData(wxT("<?xml version=\"1.0\"?> <entry> <gs:cell row=\"5\" col=\"5\" inputValue=\"SomeTestValue\"/> </entry>"));
+            //geturl->SetCustomCmd(wxT("PUT"));
+            wxString GoogleAuthHead(wxT("Authorization: GoogleLogin auth=\""));
+            GoogleAuthHead << AuthKey<< wxT("\"");
+            geturl->AppendCustomHead(GoogleAuthHead);
+            geturl->AppendCustomHead(wxT("Content-type: application/atom+xml"));
+            geturl->Create();
+            geturl->Run();
+        }
+        else{
+            wxLogMessage(wxT("Login to Google Fail!"));
+        }
     }
     else{
         wxLogMessage(event.Result);
@@ -49,7 +54,7 @@ void GSpreadSheets::OnUrlGetDone(wxUrlGetDoneEvent& event){
 GSpreadSheets::GSpreadSheets(const wxString& username,const wxString& passwd){
     WStockGetUrl* geturl=new WStockGetUrl(this,
             wxT("https://www.google.com/accounts/ClientLogin"),(void*)-1);
-    geturl->SetPostData(wxT("accountType=GOOGLE&Email=cnwesleywang@gmail.com&Passwd=wq1977@2&service=wise&source=wstock"));
+    geturl->SetPostData(wxT("accountType=GOOGLE&Email=cnwesleywang@gmail.com&Passwd=&service=wise&source=wstock"));
     geturl->Create();
     geturl->Run();
 }
