@@ -59,6 +59,8 @@
 		<Unit filename="stocks.h" />
 		<Unit filename="wstockconfig.h" />
 		<Unit filename="wstockconst.h" />
+		<Unit filename="wstockcustomdialog.cpp" />
+		<Unit filename="wstockcustomdialog.h" />
 		<Unit filename="wstockgeturl.cpp" />
 		<Unit filename="wstockgeturl.h" />
 		<Unit filename="wx/plot/plot.h" />
