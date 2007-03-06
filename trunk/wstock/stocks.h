@@ -168,6 +168,7 @@ class BuyInfo{
     public:
         double BuyPrice;
         int BuyAmount;
+        int Op; //0:Buy; 1:Sell
         wxDateTime data;
 };
 

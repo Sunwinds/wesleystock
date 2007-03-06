@@ -14,6 +14,12 @@ MyStockDialog::MyStockDialog(wxWindow* parent, int id, const wxString& title, co
     t_acount = new wxTextCtrl(this, -1, wxT(""));
     label_3 = new wxStaticText(this, -1, wxT("Price:"));
     t_price = new wxTextCtrl(this, -1, wxT(""));
+    label_9 = new wxStaticText(this, -1, wxT("Operate:"));
+    const wxString c_op_choices[] = {
+        wxT("Buy"),
+        wxT("Sell")
+    };
+    c_op = new wxComboBox(this, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 2, c_op_choices, wxCB_DROPDOWN|wxCB_READONLY);
     static_line_2 = new wxStaticLine(this, -1);
     button_2 = new wxButton(this, wxID_CANCEL, wxT(""));
     button_3 = new wxButton(this, wxID_OK, wxT(""));
@@ -25,6 +31,7 @@ MyStockDialog::MyStockDialog(wxWindow* parent, int id, const wxString& title, co
     t_stockid->SetValidator(wxGenericValidator(&data.StockId));
     t_acount->SetValidator(wxGenericValidator(&data.ACount));
     t_price->SetValidator(wxDoubleValidator(&data.Price));
+    c_op->SetValidator(wxGenericValidator(&data.Op));
 
 }
 
@@ -33,6 +40,7 @@ void MyStockDialog::set_properties()
 {
     // begin wxGlade: MyStockDialog::set_properties
     SetTitle(wxT("MyStock"));
+    c_op->SetSelection(-1);
     button_3->SetDefault();
     // end wxGlade
 }
@@ -43,13 +51,15 @@ void MyStockDialog::do_layout()
     // begin wxGlade: MyStockDialog::do_layout
     wxBoxSizer* sizer_4 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* sizer_5 = new wxBoxSizer(wxHORIZONTAL);
-    wxFlexGridSizer* grid_sizer_1 = new wxFlexGridSizer(3, 2, 0, 0);
+    wxFlexGridSizer* grid_sizer_1 = new wxFlexGridSizer(4, 2, 0, 0);
     grid_sizer_1->Add(label_1, 0, wxRIGHT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5);
     grid_sizer_1->Add(t_stockid, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
     grid_sizer_1->Add(label_2, 0, wxRIGHT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5);
     grid_sizer_1->Add(t_acount, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
     grid_sizer_1->Add(label_3, 0, wxRIGHT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5);
     grid_sizer_1->Add(t_price, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
+    grid_sizer_1->Add(label_9, 0, wxRIGHT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5);
+    grid_sizer_1->Add(c_op, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
     grid_sizer_1->AddGrowableCol(1);
     sizer_4->Add(grid_sizer_1, 1, wxALL|wxEXPAND, 5);
     sizer_4->Add(static_line_2, 0, wxEXPAND, 0);

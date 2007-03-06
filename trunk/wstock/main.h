@@ -16,6 +16,7 @@ class MyStocks : public wxObject{
         MyStockStru* GetMyStockStruByStock(Stock*s);
         bool SaveDataToFile();
         bool LoadDataFromFile();
+        void TestRemove(Stock* s);//if we have no amount of one stock, remove it;
         void UpdateStockList(StockList* source);
     private:
         StockList stocks;
