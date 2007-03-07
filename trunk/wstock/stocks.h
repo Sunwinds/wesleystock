@@ -180,6 +180,7 @@ class MyStockStru{
         BuyInfoList buyinfos;
         double GetEarningYield(double CurPrice);
         double GetEarnings(double CurPrice);
+        int GetCurrentAmount();
     private:
         double GetTotalPay();
         double GetCurValue(double CurPrice);
