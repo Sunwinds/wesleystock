@@ -42,6 +42,7 @@ class MyFrame: public wxFrame
         GSpreadSheets * gss;
 
         void OnUpdateFromGoogle(wxCommandEvent& event);
+		void OnPutToGoogle(wxCommandEvent& event);
 		void OnQuit(wxCommandEvent& event);
 		void OnGridCellDbClick(wxGridEvent& event);
 		void OnRealtimeDeltaTimer(wxTimerEvent& event);

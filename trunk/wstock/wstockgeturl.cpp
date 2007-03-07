@@ -87,14 +87,13 @@ void *WStockGetUrl::Entry(){
   /* init the curl session */
   curl_handle = curl_easy_init();
 
-/*    wxString Proxy = WStockConfig::GetProxy();
-    if (Proxy.Length()>0){
-      char proxy[255]="";
-      strcpy(proxy,(const char*)Proxy.mb_str());
-      curl_easy_setopt(curl_handle, CURLOPT_PROXY, proxy);
-      curl_easy_setopt(curl_handle, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
-    }
-*/
+  curl_easy_setopt(curl_handle, CURLOPT_PROXY, "172.19.30.42:8080");
+  curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, "utscn\\sz08961:wq1977@9");
+  curl_easy_setopt(curl_handle, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+  curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH,CURLAUTH_NTLM);
+  curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);
+  curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYHOST, 1);
+
 
   char url[255]="";
   strcpy(url,(const char*)Url.mb_str());
@@ -144,7 +143,7 @@ void *WStockGetUrl::Entry(){
         else {
             wxCSConv cs(wxT("GB2312"));
             event.Result = wxString(cs.cMB2WC((char*)chunk.memory),*wxConvCurrent);
-
+			//wxLogMessage(event.Result);
             /*wxLogMessage(wxT("%d %d"),strlen((char*)chunk.memory),event.Result.Length());
             wxFileOutputStream output(wxT("c:\\test.log"));
             wxDataOutputStream store(output);

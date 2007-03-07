@@ -43,14 +43,16 @@ int idMenuAbout = wxNewId();
 int idMenuAddMyStock = wxNewId();
 int idMenuConfig = wxNewId();
 int idMenuUpdateMyStockFromGoogle = wxNewId();
+int idMenuPutMyStockToGoogle = wxNewId();
+int REALTIME_DELTA_TIMER_ID=wxNewId();
 
-#define REALTIME_DELTA_TIMER_ID  200
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(idMenuQuit, MyFrame::OnQuit)
     EVT_MENU(idMenuAbout, MyFrame::OnAbout)
     EVT_MENU(idMenuAddMyStock, MyFrame::OnAddMyStock)
     EVT_MENU(idMenuConfig, MyFrame::OnConfigure)
     EVT_MENU(idMenuUpdateMyStockFromGoogle, MyFrame::OnUpdateFromGoogle)
+    EVT_MENU(idMenuPutMyStockToGoogle, MyFrame::OnPutToGoogle)
     EVT_STOCK_DATA_GET_DONE(-1, MyFrame::OnStockDataGetDone)
     EVT_TIMER(REALTIME_DELTA_TIMER_ID, MyFrame::OnRealtimeDeltaTimer)
     EVT_GRID_CELL_LEFT_DCLICK(MyFrame::OnGridCellDbClick)
@@ -69,8 +71,11 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 
     wxMenu* ToolMenu = new wxMenu(_T(""));
     ToolMenu->Append(idMenuAddMyStock, _("&Add MyStock\tCtrl-a"), _("Add One Stock Buy Record!"));
+    ToolMenu->AppendSeparator();
     ToolMenu->Append(idMenuUpdateMyStockFromGoogle, _("&Update MyStock\tCtrl-u"),
                         _("Update MyStock Data from google!"));
+    ToolMenu->Append(idMenuPutMyStockToGoogle, _("&Put MyStock\tCtrl-u"),
+                        _("Put MyStock Data to google!"));
     ToolMenu->AppendSeparator();
     ToolMenu->Append(idMenuConfig, _("&Configure\tCtrl-Alt-c"), _("Global Configure"));
     mbar->Append(ToolMenu, _("&Tool"));
@@ -262,6 +267,11 @@ void MyFrame::OnConfigure(wxCommandEvent& event)
     };
 }
 
+void MyFrame::OnPutToGoogle(wxCommandEvent& event)
+{
+	gss->PutToGoogle(&mystocks.GetDatas());
+}
+
 void MyFrame::OnUpdateFromGoogle(wxCommandEvent& event)
 {
     ;
@@ -386,6 +396,7 @@ bool MyStocks::LoadDataFromFile(){
         wxFileInputStream input(fn.GetFullPath());
         wxDataInputStream store( input );
         while (!input.Eof()){
+			if (input.GetSize() <= input.TellI()) break;
             wxString stockid;
             store >> stockid;
             if (input.Eof()){
