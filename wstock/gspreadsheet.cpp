@@ -13,13 +13,13 @@ END_EVENT_TABLE()
 void GSpreadSheets::OnUrlGetDone(wxUrlGetDoneEvent& event){
     int rtype = (int)event.UserData;
     if (rtype == -1){
+        wxLogMessage(event.Result);
         wxStringTokenizer tkzlines(event.Result,wxT("\r\n"));
         while (tkzlines.HasMoreTokens()){
                 wxString line = tkzlines.GetNextToken();
                 wxStringTokenizer tkz(line,wxT("="));
                 if (tkz.HasMoreTokens()){
                     wxString cmd=tkz.GetNextToken();
-                    //wxLogMessage(cmd);
                     if (cmd.Lower() == wxT("auth")){
                         if (tkz.HasMoreTokens()){
                             AuthKey = tkz.GetNextToken();

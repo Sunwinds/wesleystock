@@ -28,12 +28,13 @@ int SinaStock::GetProptiesNum(){
     return WXSIZEOF(SinaStock::Props);
 };
 
-wxString key1(wxT("当前价("));
-wxString key2(wxT("交易金额"));
-wxString RealTimeKey(key1.wc_str(wxConvUTF8), *wxConvCurrent);
-wxString HistoryKey(key2.wc_str(wxConvUTF8), *wxConvCurrent);
 
 void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
+	wxString key1(wxT("当前价("));
+	wxString key2(wxT("交易金额"));
+	wxString RealTimeKey(key1.wc_str(wxConvUTF8), *wxConvCurrent);
+	wxString HistoryKey(key2.wc_str(wxConvUTF8), *wxConvCurrent);
+
     SinaStock_UserData* data = (SinaStock_UserData*)event.UserData;
     if (data->rType == REALTIME_RETRIVE){ //Real Time Data come!
         wxLogStatus(wxT(""));
