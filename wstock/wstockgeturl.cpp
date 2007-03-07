@@ -87,8 +87,8 @@ void *WStockGetUrl::Entry(){
   /* init the curl session */
   curl_handle = curl_easy_init();
 
-  curl_easy_setopt(curl_handle, CURLOPT_PROXY, "172.19.30.42:8080");
-  curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, "utscn\\sz08961:wq1977@9");
+  curl_easy_setopt(curl_handle, CURLOPT_PROXY, "");
+  curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, "");
   curl_easy_setopt(curl_handle, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
   curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH,CURLAUTH_NTLM);
   curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);

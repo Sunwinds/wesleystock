@@ -214,7 +214,7 @@
                 <border>0</border>
                 <option>1</option>
                 <object class="wxNotebook" name="notebook_1" base="EditNotebook">
-                    <style>wxNB_LEFT</style>
+                    <style>wxNB_BUTTON</style>
                     <tabs>
                         <tab window="notebook_1_pane_1">Generic</tab>
                         <tab window="notebook_1_pane_2">Google</tab>
