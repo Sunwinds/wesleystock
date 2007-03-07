@@ -44,23 +44,23 @@ class WStockConfig :public wxObject
             return DataDir;
         };
         static wxString GetCurlProxy(){
-            wxString DataDir = wxT("mystocks");
-            config.Read(wxT("Google/MyStockTitle"), &DataDir);
+            wxString DataDir = wxT("");
+            config.Read(wxT("Curl/Proxy"), &DataDir);
             return DataDir;
         };
         static wxString GetCurlUserPwd(){
-            wxString DataDir = wxT("mystocks");
-            config.Read(wxT("Google/MyStockTitle"), &DataDir);
+            wxString DataDir = wxT("");
+            config.Read(wxT("Curl/UserPwd"), &DataDir);
             return DataDir;
         };
-        static wxString GetCurlAuth(){
-            wxString DataDir = wxT("mystocks");
-            config.Read(wxT("Google/MyStockTitle"), &DataDir);
+        static int GetCurlAuth(){
+            int DataDir = 0;
+            config.Read(wxT("Curl/Auth"), &DataDir);
             return DataDir;
         };
-        static wxString GetCurlNoProxy(){
-            wxString DataDir = wxT("mystocks");
-            config.Read(wxT("Google/MyStockTitle"), &DataDir);
+        static bool GetCurlNoProxy(){
+            bool DataDir = true;
+            config.Read(wxT("Curl/NoProxy"), &DataDir);
             return DataDir;
         };
         static void SetHistoryDataDir(const wxString& keyPath){

@@ -87,13 +87,42 @@ void *WStockGetUrl::Entry(){
   /* init the curl session */
   curl_handle = curl_easy_init();
 
-  /*curl_easy_setopt(curl_handle, CURLOPT_PROXY, "");
-  curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, "");
-  curl_easy_setopt(curl_handle, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
-  curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH,CURLAUTH_NTLM);
-  curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);
-  curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYHOST, 1);*/
-
+  if ((!WStockConfig::GetCurlNoProxy()) && (!WStockConfig::GetCurlProxy().IsEmpty())){
+    char post[255]="";
+    strcpy(post,(const char*)WStockConfig::GetCurlProxy().mb_str());
+	curl_easy_setopt(curl_handle, CURLOPT_PROXY, post);
+	if (!WStockConfig::GetCurlUserPwd().IsEmpty()){
+	    char post[255]="";
+		strcpy(post,(const char*)WStockConfig::GetCurlUserPwd().mb_str());
+		curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, post);
+	}
+	curl_easy_setopt(curl_handle, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+    curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYHOST, 1);
+	switch (WStockConfig::GetCurlAuth()){
+	case 0:
+		curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH,CURLAUTH_NONE);
+		break;
+	case 1:
+		curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH,CURLAUTH_BASIC);
+		break;
+	case 2:
+		curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH,CURLAUTH_DIGEST);
+		break;
+	case 3:
+		curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH,CURLAUTH_GSSNEGOTIATE);
+		break;
+	case 4:
+		curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH,CURLAUTH_NTLM);
+		break;
+	case 5:
+		curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH,CURLAUTH_ANY);
+		break;
+	case 6:
+		curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH,CURLAUTH_ANYSAFE);
+		break;
+	}
+  }
 
   char url[255]="";
   strcpy(url,(const char*)Url.mb_str());
