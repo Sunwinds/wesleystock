@@ -7,7 +7,8 @@ wstockcustomdialog::wstockcustomdialog(wxWindow* parent, int id, const wxString&
     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE)
 {
     // begin wxGlade: wstockcustomdialog::wstockcustomdialog
-    notebook_1 = new wxNotebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_LEFT);
+    notebook_1 = new wxNotebook(this, -1, wxDefaultPosition, wxDefaultSize, 0);
+    notebook_1_pane_3 = new wxPanel(notebook_1, -1);
     notebook_1_pane_2 = new wxPanel(notebook_1, -1);
     notebook_1_pane_1 = new wxPanel(notebook_1, -1);
     label_4 = new wxStaticText(notebook_1_pane_1, -1, wxT("Keys Path:"));
@@ -20,6 +21,22 @@ wstockcustomdialog::wstockcustomdialog(wxWindow* parent, int id, const wxString&
     text_gpasswd = new wxTextCtrl(notebook_1_pane_2, -1, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
     label_8 = new wxStaticText(notebook_1_pane_2, -1, wxT("MystocksTitle:"));
     text_gstock_title = new wxTextCtrl(notebook_1_pane_2, -1, wxT(""));
+    label_10 = new wxStaticText(notebook_1_pane_3, -1, wxT("curl proxy:"));
+    text_curl_proxy = new wxTextCtrl(notebook_1_pane_3, -1, wxT(""));
+    label_11 = new wxStaticText(notebook_1_pane_3, -1, wxT("curl userpwd:"));
+    text_curl_userpwd = new wxTextCtrl(notebook_1_pane_3, -1, wxT(""));
+    label_12 = new wxStaticText(notebook_1_pane_3, -1, wxT("curl proxy auth:"));
+    const wxString combo_curl_auth_choices[] = {
+        wxT("NONE"),
+        wxT("BASIC"),
+        wxT("DIGEST"),
+        wxT("GSSNEGOTIATE"),
+        wxT("NTLM"),
+        wxT("ANY"),
+        wxT("ANYSAFE")
+    };
+    combo_curl_auth = new wxComboBox(notebook_1_pane_3, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 7, combo_curl_auth_choices, wxCB_DROPDOWN|wxCB_READONLY);
+    checkbox_curl_noproxy = new wxCheckBox(notebook_1_pane_3, -1, wxT("Do not use proxy"));
     static_line_3 = new wxStaticLine(this, -1);
     button_5 = new wxButton(this, wxID_CANCEL, wxT(""));
     button_6 = new wxButton(this, wxID_OK, wxT(""));
@@ -33,12 +50,18 @@ wstockcustomdialog::wstockcustomdialog(wxWindow* parent, int id, const wxString&
 void wstockcustomdialog::set_properties()
 {
     // begin wxGlade: wstockcustomdialog::set_properties
+    SetSize(wxSize(283, 258));
+    combo_curl_auth->SetSelection(-1);
     // end wxGlade
     text_keypath->SetValue(WStockConfig::GetKeyPath());
     text_history_dir->SetValue(WStockConfig::GetHistoryDataDir());
     text_gacount->SetValue(WStockConfig::GetGmailUserName());
     text_gpasswd->SetValue(WStockConfig::GetGmailPasswd());
     text_gstock_title->SetValue(WStockConfig::GetGoogleMystockTitle());
+    text_curl_proxy->SetValue(WStockConfig::GetCurlProxy());
+    text_curl_userpwd->SetValue(WStockConfig::GetCurlUserPwd());
+    combo_curl_auth->SetSelection(WStockConfig::GetCurlAuth());
+    checkbox_curl_noproxy->SetValue(WStockConfig::GetCurlNoProxy());
 }
 
 extern wxConfig config;
@@ -48,6 +71,10 @@ void wstockcustomdialog::StoreSettings(void){
     WStockConfig::SetGoogleMystockTitle(text_gstock_title->GetValue());
     WStockConfig::SetHistoryDataDir(text_history_dir->GetValue());
     WStockConfig::SetKeyPath(text_keypath->GetValue());
+    WStockConfig::SetCurlProxy(text_curl_proxy->GetValue());
+    WStockConfig::SetCurlUserPwd(text_curl_userpwd->GetValue());
+    WStockConfig::SetCurlAuth(combo_curl_auth->GetSelection());
+    WStockConfig::SetCurlNoProxy(checkbox_curl_noproxy->GetValue());
     config.Flush(true);
 }
 
@@ -56,6 +83,9 @@ void wstockcustomdialog::do_layout()
     // begin wxGlade: wstockcustomdialog::do_layout
     wxBoxSizer* sizer_6 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* sizer_7 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* sizer_9 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sizer_10 = new wxBoxSizer(wxVERTICAL);
+    wxFlexGridSizer* grid_sizer_4 = new wxFlexGridSizer(3, 2, 0, 0);
     wxFlexGridSizer* grid_sizer_3 = new wxFlexGridSizer(3, 2, 0, 0);
     wxBoxSizer* sizer_8 = new wxBoxSizer(wxVERTICAL);
     wxFlexGridSizer* grid_sizer_2 = new wxFlexGridSizer(2, 2, 0, 0);
@@ -80,8 +110,23 @@ void wstockcustomdialog::do_layout()
     grid_sizer_3->Fit(notebook_1_pane_2);
     grid_sizer_3->SetSizeHints(notebook_1_pane_2);
     grid_sizer_3->AddGrowableCol(1);
+    grid_sizer_4->Add(label_10, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5);
+    grid_sizer_4->Add(text_curl_proxy, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
+    grid_sizer_4->Add(label_11, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5);
+    grid_sizer_4->Add(text_curl_userpwd, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
+    grid_sizer_4->Add(label_12, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5);
+    grid_sizer_4->Add(combo_curl_auth, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
+    grid_sizer_4->AddGrowableCol(1);
+    sizer_9->Add(grid_sizer_4, 1, wxEXPAND, 0);
+    sizer_10->Add(checkbox_curl_noproxy, 0, wxADJUST_MINSIZE, 0);
+    sizer_9->Add(sizer_10, 1, wxEXPAND, 0);
+    notebook_1_pane_3->SetAutoLayout(true);
+    notebook_1_pane_3->SetSizer(sizer_9);
+    sizer_9->Fit(notebook_1_pane_3);
+    sizer_9->SetSizeHints(notebook_1_pane_3);
     notebook_1->AddPage(notebook_1_pane_1, wxT("Generic"));
     notebook_1->AddPage(notebook_1_pane_2, wxT("Google"));
+    notebook_1->AddPage(notebook_1_pane_3, wxT("CURL"));
     sizer_6->Add(notebook_1, 1, wxEXPAND, 0);
     sizer_6->Add(static_line_3, 0, wxEXPAND, 0);
     sizer_7->Add(20, 20, 1, wxADJUST_MINSIZE, 0);
@@ -90,8 +135,6 @@ void wstockcustomdialog::do_layout()
     sizer_6->Add(sizer_7, 0, wxEXPAND, 0);
     SetAutoLayout(true);
     SetSizer(sizer_6);
-    sizer_6->Fit(this);
-    sizer_6->SetSizeHints(this);
     Layout();
     // end wxGlade
 }

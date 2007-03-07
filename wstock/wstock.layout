@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="MyStockDialog.cpp" open="1" top="0" tabpos="17">
+	<File name="MyStockDialog.cpp" open="1" top="0" tabpos="8">
 		<Cursor position="1452" topLine="0" />
 	</File>
-	<File name="MyStockDialog.h" open="1" top="0" tabpos="16">
+	<File name="MyStockDialog.h" open="1" top="0" tabpos="7">
 		<Cursor position="1235" topLine="108" />
 	</File>
 	<File name="StockHistoryDialog.cpp" open="0" top="0" tabpos="2">
@@ -13,31 +13,31 @@
 	<File name="StockHistoryDialog.h" open="0" top="0" tabpos="3">
 		<Cursor position="818" topLine="5" />
 	</File>
-	<File name="app.cpp" open="1" top="0" tabpos="15">
+	<File name="app.cpp" open="1" top="0" tabpos="6">
 		<Cursor position="325" topLine="0" />
 	</File>
 	<File name="app.h" open="0" top="0" tabpos="4">
 		<Cursor position="337" topLine="0" />
 	</File>
 	<File name="gspreadsheet.cpp" open="1" top="0" tabpos="9">
-		<Cursor position="5800" topLine="150" />
+		<Cursor position="395" topLine="0" />
 	</File>
-	<File name="gspreadsheet.h" open="1" top="0" tabpos="7">
+	<File name="gspreadsheet.h" open="0" top="0" tabpos="7">
 		<Cursor position="812" topLine="10" />
 	</File>
 	<File name="htmltableparser.cpp" open="0" top="0" tabpos="15">
 		<Cursor position="836" topLine="15" />
 	</File>
-	<File name="htmltableparser.h" open="1" top="0" tabpos="2">
+	<File name="htmltableparser.h" open="0" top="0" tabpos="2">
 		<Cursor position="488" topLine="5" />
 	</File>
-	<File name="main.cpp" open="1" top="0" tabpos="4">
+	<File name="main.cpp" open="0" top="0" tabpos="4">
 		<Cursor position="9755" topLine="180" />
 	</File>
-	<File name="main.h" open="1" top="0" tabpos="8">
+	<File name="main.h" open="0" top="0" tabpos="8">
 		<Cursor position="1153" topLine="24" />
 	</File>
-	<File name="sinastock.cpp" open="1" top="1" tabpos="1">
+	<File name="sinastock.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="833" topLine="115" />
 	</File>
 	<File name="sinastock.h" open="0" top="0" tabpos="10">
@@ -49,28 +49,28 @@
 	<File name="stockplot.h" open="0" top="0" tabpos="4">
 		<Cursor position="360" topLine="0" />
 	</File>
-	<File name="stocks.cpp" open="1" top="0" tabpos="5">
+	<File name="stocks.cpp" open="0" top="0" tabpos="5">
 		<Cursor position="229" topLine="0" />
 	</File>
-	<File name="stocks.h" open="1" top="0" tabpos="3">
+	<File name="stocks.h" open="0" top="0" tabpos="3">
 		<Cursor position="6113" topLine="164" />
 	</File>
-	<File name="wstockconfig.h" open="1" top="0" tabpos="12">
-		<Cursor position="1713" topLine="0" />
+	<File name="wstockconfig.h" open="1" top="1" tabpos="3">
+		<Cursor position="2063" topLine="41" />
 	</File>
 	<File name="wstockconst.h" open="0" top="0" tabpos="0">
 		<Cursor position="176" topLine="0" />
 	</File>
-	<File name="wstockcustomdialog.cpp" open="1" top="0" tabpos="13">
-		<Cursor position="2100" topLine="34" />
+	<File name="wstockcustomdialog.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="3242" topLine="49" />
 	</File>
-	<File name="wstockcustomdialog.h" open="1" top="0" tabpos="14">
-		<Cursor position="599" topLine="15" />
+	<File name="wstockcustomdialog.h" open="1" top="0" tabpos="5">
+		<Cursor position="599" topLine="24" />
 	</File>
-	<File name="wstockgeturl.cpp" open="1" top="0" tabpos="11">
-		<Cursor position="4192" topLine="128" />
+	<File name="wstockgeturl.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="2693" topLine="75" />
 	</File>
-	<File name="wstockgeturl.h" open="1" top="0" tabpos="10">
+	<File name="wstockgeturl.h" open="1" top="0" tabpos="1">
 		<Cursor position="721" topLine="9" />
 	</File>
 	<File name="wx/plot/plot.h" open="0" top="0" tabpos="0">
@@ -79,7 +79,7 @@
 	<File name="wx_pch.h" open="0" top="0" tabpos="8">
 		<Cursor position="179" topLine="0" />
 	</File>
-	<File name="yahoostock.cpp" open="1" top="0" tabpos="6">
+	<File name="yahoostock.cpp" open="0" top="0" tabpos="6">
 		<Cursor position="48" topLine="0" />
 	</File>
 	<File name="yahoostock.h" open="0" top="0" tabpos="9">
