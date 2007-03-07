@@ -43,6 +43,26 @@ class WStockConfig :public wxObject
             config.Read(wxT("Google/MyStockTitle"), &DataDir);
             return DataDir;
         };
+        static wxString GetCurlProxy(){
+            wxString DataDir = wxT("mystocks");
+            config.Read(wxT("Google/MyStockTitle"), &DataDir);
+            return DataDir;
+        };
+        static wxString GetCurlUserPwd(){
+            wxString DataDir = wxT("mystocks");
+            config.Read(wxT("Google/MyStockTitle"), &DataDir);
+            return DataDir;
+        };
+        static wxString GetCurlAuth(){
+            wxString DataDir = wxT("mystocks");
+            config.Read(wxT("Google/MyStockTitle"), &DataDir);
+            return DataDir;
+        };
+        static wxString GetCurlNoProxy(){
+            wxString DataDir = wxT("mystocks");
+            config.Read(wxT("Google/MyStockTitle"), &DataDir);
+            return DataDir;
+        };
         static void SetHistoryDataDir(const wxString& keyPath){
             config.Write(STOCK_HISTORY_DATA_DIR_KEY, keyPath);
         };
@@ -54,6 +74,18 @@ class WStockConfig :public wxObject
         };
         static void SetGoogleMystockTitle(const wxString& keyPath){
             config.Write(wxT("Google/MyStockTitle"), keyPath);
+        };
+        static void SetCurlProxy(const wxString& keyPath){
+            config.Write(wxT("Curl/Proxy"), keyPath);
+        };
+        static void SetCurlUserPwd(const wxString& keyPath){
+            config.Write(wxT("Curl/UserPwd"), keyPath);
+        };
+        static void SetCurlAuth(int keyPath){
+            config.Write(wxT("Curl/Auth"), keyPath);
+        };
+        static void SetCurlNoProxy(bool keyPath){
+            config.Write(wxT("Curl/NoProxy"), keyPath);
         };
 };
 

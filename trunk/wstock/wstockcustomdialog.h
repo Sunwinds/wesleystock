@@ -40,6 +40,14 @@ protected:
     wxStaticText* label_8;
     wxTextCtrl* text_gstock_title;
     wxPanel* notebook_1_pane_2;
+    wxStaticText* label_10;
+    wxTextCtrl* text_curl_proxy;
+    wxStaticText* label_11;
+    wxTextCtrl* text_curl_userpwd;
+    wxStaticText* label_12;
+    wxComboBox* combo_curl_auth;
+    wxCheckBox* checkbox_curl_noproxy;
+    wxPanel* notebook_1_pane_3;
     wxNotebook* notebook_1;
     wxStaticLine* static_line_3;
     wxButton* button_5;

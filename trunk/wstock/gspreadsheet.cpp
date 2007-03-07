@@ -13,7 +13,7 @@ END_EVENT_TABLE()
 void GSpreadSheets::OnUrlGetDone(wxUrlGetDoneEvent& event){
     int rtype = (int)event.UserData;
     if (rtype == -1){
-        wxLogMessage(event.Result);
+        //wxLogMessage(event.Result);
         wxStringTokenizer tkzlines(event.Result,wxT("\r\n"));
         while (tkzlines.HasMoreTokens()){
                 wxString line = tkzlines.GetNextToken();
