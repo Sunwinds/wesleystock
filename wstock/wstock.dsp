@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 wxmsw26_xrc.lib wxmsw26_html.lib wxmsw26_adv.lib wxmsw26_core.lib wxbase26_xml.lib wxbase26.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib libcurl_imp.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"library"
+# ADD LINK32 wxmsw26_xrc.lib wxmsw26_html.lib wxmsw26_adv.lib wxmsw26_core.lib wxbase26_xml.lib wxbase26.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib libcurl_imp.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib libxml2.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"library"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "wstock - Win32 Debug"
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 wxmsw26d_html.lib wxmsw26d_adv.lib wxmsw26d_core.lib wxbase26d_xml.lib wxbase26d.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib libcurl_imp.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 wxmsw26d_html.lib wxmsw26d_adv.lib wxmsw26d_core.lib wxbase26d_xml.lib wxbase26d.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib libcurl_imp.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib libxml2.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
 
 !ENDIF 
 
@@ -94,6 +94,10 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=.\app.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\gspreadsheet.cpp
 # End Source File
 # Begin Source File
 
@@ -125,6 +129,10 @@ SOURCE=.\stocks.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\wstockcustomdialog.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\wstockgeturl.cpp
 # End Source File
 # Begin Source File
@@ -138,6 +146,10 @@ SOURCE=.\yahoostock.cpp
 # Begin Source File
 
 SOURCE=.\app.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\gspreadsheet.h
 # End Source File
 # Begin Source File
 
@@ -174,6 +186,10 @@ SOURCE=.\wstockconfig.h
 # Begin Source File
 
 SOURCE=.\wstockconst.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\wstockcustomdialog.h
 # End Source File
 # Begin Source File
 

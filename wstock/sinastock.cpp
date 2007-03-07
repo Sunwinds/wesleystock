@@ -28,6 +28,10 @@ int SinaStock::GetProptiesNum(){
     return WXSIZEOF(SinaStock::Props);
 };
 
+wxString key1(wxT("当前价("));
+wxString key2(wxT("交易金额"));
+wxString RealTimeKey(key1.wc_str(wxConvUTF8), *wxConvCurrent);
+wxString HistoryKey(key2.wc_str(wxConvUTF8), *wxConvCurrent);
 
 void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
     SinaStock_UserData* data = (SinaStock_UserData*)event.UserData;
@@ -37,7 +41,7 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
             HtmlTableParser *p=new HtmlTableParser();
             MyHtmlParser parser(p);
             parser.Parse(event.Result);
-            int idx=p->GetTDIndex(wxT("当前价"));
+            int idx=p->GetTDIndex(RealTimeKey);
             if (idx>=0){
                 (*stocks)[data->StartIdx]->SetPropertyValue(Props[0], p->GetValue(idx+1));
 				(*stocks)[data->StartIdx]->SetPropertyValue(Props[1], p->GetValue(idx+3));
@@ -64,7 +68,7 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
             MyHtmlParser parser(p);
             parser.Parse(event.Result);
 			//p->DumpTable();
-            int idx=p->GetTDIndex(wxT("交易金额"));
+            int idx=p->GetTDIndex(HistoryKey);
             if (idx>=0){
                 wxLogStatus(wxT("Get History Data From the url Done!"));
                 while (idx<p->GetTDCount()){
