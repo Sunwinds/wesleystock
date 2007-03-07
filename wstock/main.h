@@ -41,6 +41,7 @@ class MyFrame: public wxFrame
         StocksDataFetch* CurFetchObj;
         GSpreadSheets * gss;
 
+        void OnUpdateFromGoogle(wxCommandEvent& event);
 		void OnQuit(wxCommandEvent& event);
 		void OnGridCellDbClick(wxGridEvent& event);
 		void OnRealtimeDeltaTimer(wxTimerEvent& event);

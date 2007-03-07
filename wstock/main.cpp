@@ -42,6 +42,7 @@ int idMenuQuit = wxNewId();
 int idMenuAbout = wxNewId();
 int idMenuAddMyStock = wxNewId();
 int idMenuConfig = wxNewId();
+int idMenuUpdateMyStockFromGoogle = wxNewId();
 
 #define REALTIME_DELTA_TIMER_ID  200
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -49,6 +50,7 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(idMenuAbout, MyFrame::OnAbout)
     EVT_MENU(idMenuAddMyStock, MyFrame::OnAddMyStock)
     EVT_MENU(idMenuConfig, MyFrame::OnConfigure)
+    EVT_MENU(idMenuUpdateMyStockFromGoogle, MyFrame::OnUpdateFromGoogle)
     EVT_STOCK_DATA_GET_DONE(-1, MyFrame::OnStockDataGetDone)
     EVT_TIMER(REALTIME_DELTA_TIMER_ID, MyFrame::OnRealtimeDeltaTimer)
     EVT_GRID_CELL_LEFT_DCLICK(MyFrame::OnGridCellDbClick)
@@ -67,6 +69,8 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 
     wxMenu* ToolMenu = new wxMenu(_T(""));
     ToolMenu->Append(idMenuAddMyStock, _("&Add MyStock\tCtrl-a"), _("Add One Stock Buy Record!"));
+    ToolMenu->Append(idMenuUpdateMyStockFromGoogle, _("&Update MyStock\tCtrl-u"),
+                        _("Update MyStock Data from google!"));
     ToolMenu->AppendSeparator();
     ToolMenu->Append(idMenuConfig, _("&Configure\tCtrl-Alt-c"), _("Global Configure"));
     mbar->Append(ToolMenu, _("&Tool"));
@@ -258,6 +262,11 @@ void MyFrame::OnConfigure(wxCommandEvent& event)
     };
 }
 
+void MyFrame::OnUpdateFromGoogle(wxCommandEvent& event)
+{
+    ;
+}
+
 void MyFrame::OnAddMyStock(wxCommandEvent& event)
 {
     MyStockDialog dialog(this,-1,wxT("Add One Stock"));
@@ -277,7 +286,6 @@ void MyFrame::OnAddMyStock(wxCommandEvent& event)
                 p->buyinfos.push_back(pinfo);
                 mystocks.GetDatas()[dialog.GetData().StockId] = p;
                 mystocks.GetList()->push_back(p->stock);
-                mystocks.SaveDataToFile();
             }
             else{
                 wxLogError(_("The Stock ID[%s] is unacceptable!"),dialog.GetData().StockId.c_str());
@@ -288,6 +296,7 @@ void MyFrame::OnAddMyStock(wxCommandEvent& event)
         }
         mystocks.TestRemove(mystocks.GetDatas()[dialog.GetData().StockId]->stock);
         UpdateMainGrid(0);
+        mystocks.SaveDataToFile();
         gss->PutToGoogle(&mystocks.GetDatas());
     }
 }
@@ -428,20 +437,7 @@ double MyStockStru::GetTotalPay(){
 }
 
 double MyStockStru::GetCurValue(double CurPrice){
-    double ret=0;
-    BuyInfoList::Node* node = buyinfos.GetFirst();
-    while (node)
-    {
-        BuyInfo* p = node->GetData();
-        if (p->Op==0){
-            ret += (CurPrice * p->BuyAmount) * 0.997;
-        }
-        else{
-            ret -= (CurPrice * p->BuyAmount) * 0.997;
-        }
-        node = node->GetNext();
-    }
-    return ret;
+    return GetCurrentAmount()*CurPrice * 0.997;
 }
 
 double MyStockStru::GetEarningYield(double CurPrice){
@@ -453,6 +449,23 @@ double MyStockStru::GetEarnings(double CurPrice){
     return GetCurValue(CurPrice) - GetTotalPay();
 }
 
+int MyStockStru::GetCurrentAmount(){
+    int ret=0;
+    BuyInfoList::Node* node = buyinfos.GetFirst();
+    while (node)
+    {
+        BuyInfo* p = node->GetData();
+        if (p->Op==0){
+            ret += p->BuyAmount;
+        }
+        else{
+            ret -= p->BuyAmount;
+        }
+        node = node->GetNext();
+    }
+    return ret;
+}
+
 MyStockStru* MyStocks::GetMyStockStruByStock(Stock*s){
     if (datas.find(s->GetId()) != datas.end()){
         return datas[s->GetId()];
@@ -461,5 +474,11 @@ MyStockStru* MyStocks::GetMyStockStruByStock(Stock*s){
 }
 
 void MyStocks::TestRemove(Stock* s){
-    //TODO;
+    MyStockStru* p =GetMyStockStruByStock(s);
+    if (p){
+        if (p->GetCurrentAmount()==0){
+            datas.erase(s->GetId());
+            delete(p);
+        }
+    }
 }
