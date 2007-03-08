@@ -180,10 +180,10 @@ class MyStockStru{
         BuyInfoList buyinfos;
         double GetEarningYield(double CurPrice);
         double GetEarnings(double CurPrice);
-        int GetCurrentAmount();
-    private:
         double GetTotalPay();
+        int GetCurrentAmount();
         double GetCurValue(double CurPrice);
+    private:
 };
 WX_DECLARE_STRING_HASH_MAP(MyStockStru*, MyStockDataHash);
 

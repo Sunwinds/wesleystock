@@ -41,6 +41,7 @@ class MyFrame: public wxFrame
         StocksDataFetch* CurFetchObj;
         GSpreadSheets * gss;
 
+        void OnUpdateFromGoogleDone(wxNotifyEvent&event);
         void OnUpdateFromGoogle(wxCommandEvent& event);
 		void OnPutToGoogle(wxCommandEvent& event);
 		void OnQuit(wxCommandEvent& event);

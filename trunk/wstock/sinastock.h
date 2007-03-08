@@ -8,8 +8,14 @@ class SinaStock:public StocksDataFetch
 {
     DECLARE_DYNAMIC_CLASS(SinaStock);
     public:
-        static wxString Props[];
-        SinaStock(){RealtimeFetchSeed=0; HistoryFetchSeed=0;};
+        wxArrayString Props;
+        SinaStock(){
+                RealtimeFetchSeed=0;
+                HistoryFetchSeed=0;
+                Props.Add(_("PRICE"));
+                Props.Add(_("DELTA"));
+                Props.Add(_("EXCHANGE"));
+        };
         virtual void RetriveRealTimeData(StockList* stocks, void* UserData);
         virtual void RetriveHistoryDayData(Stock* s, void* UserData);
 

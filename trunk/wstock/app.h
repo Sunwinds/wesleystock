@@ -20,6 +20,7 @@ class MyApp : public wxApp
 		virtual bool OnInit();
     private :
         Stocks* stocks;
+        wxLocale m_locale;
 };
 
 DECLARE_APP(MyApp);

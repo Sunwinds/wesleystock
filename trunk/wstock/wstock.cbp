@@ -52,6 +52,8 @@
 		<Unit filename="htmltableparser.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
+		<Unit filename="mystockdetail.cpp" />
+		<Unit filename="mystockdetail.h" />
 		<Unit filename="sinastock.cpp" />
 		<Unit filename="sinastock.h" />
 		<Unit filename="stockplot.cpp" />

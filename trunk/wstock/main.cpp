@@ -3,6 +3,7 @@
 #include <wx/filename.h>
 #include "wx/wfstream.h"
 #include "wx/datstrm.h"
+#include "mystockdetail.h"
 #include "wstockconfig.h"
 #include "wstockcustomdialog.h"
 #include "MyStockDialog.h"
@@ -56,6 +57,7 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_STOCK_DATA_GET_DONE(-1, MyFrame::OnStockDataGetDone)
     EVT_TIMER(REALTIME_DELTA_TIMER_ID, MyFrame::OnRealtimeDeltaTimer)
     EVT_GRID_CELL_LEFT_DCLICK(MyFrame::OnGridCellDbClick)
+    EVT_GSPREADSHEETS_GET_DONE(-1, MyFrame::OnUpdateFromGoogleDone)
 END_EVENT_TABLE()
 
 MyFrame::MyFrame(wxFrame *frame, const wxString& title)
@@ -91,7 +93,8 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     mainGrid->CreateGrid(1,5);
     mainGrid->SetDefaultCellAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
     mainGrid->EnableEditing(false);
-    gss = new GSpreadSheets();
+    mainGrid->SetRowLabelSize(50);
+    gss = new GSpreadSheets(this);
 #if wxUSE_STATUSBAR
     // create a status bar with some information about the used wxWidgets version
     CreateStatusBar(2);
@@ -120,7 +123,7 @@ void MyFrame::UpdateMainGrid(int stockidx){
     mainGrid->BeginBatch();
     StocksDataFetch*stock = GetCurFetchObj();
     if (stock){
-        int ColNum = stock->GetProptiesNum()+3; // stockName, earnings, earnings yield
+        int ColNum = stock->GetProptiesNum()+4; // stockName, earnings, earnings yield
         if (mainGrid->GetNumberCols()>ColNum){
             mainGrid->DeleteCols(mainGrid->GetNumberCols() - ColNum);
         }
@@ -131,8 +134,9 @@ void MyFrame::UpdateMainGrid(int stockidx){
         for (int i=0;i<stock->GetProptiesNum();i++){
             mainGrid->SetColLabelValue(i+1,stock->GetPropertyName(i));
         }
-        mainGrid->SetColLabelValue(stock->GetProptiesNum()+1,_("Earnings Yield"));
-        mainGrid->SetColLabelValue(stock->GetProptiesNum()+2,_("Earnings"));
+        mainGrid->SetColLabelValue(stock->GetProptiesNum()+1,_("Total Amount"));
+        mainGrid->SetColLabelValue(stock->GetProptiesNum()+2,_("Earnings Yield"));
+        mainGrid->SetColLabelValue(stock->GetProptiesNum()+3,_("Earnings"));
     }
 
     int TotalLeft = mystocks.GetList()->GetCount() - stockidx;
@@ -149,6 +153,10 @@ void MyFrame::UpdateMainGrid(int stockidx){
             name = (*mystocks.GetList())[i]->GetId();
         }
         mainGrid->SetCellValue(i,0,name);
+        wxString Id=(*mystocks.GetList())[i]->GetId();
+        mainGrid->SetCellValue(i,stock->GetProptiesNum()+1,
+               wxString::Format(wxT("%d"),
+                    mystocks.GetDatas()[Id]->GetCurrentAmount()));
     }
     if (mainGrid->GetNumberRows() > TotalLeft){
         mainGrid->DeleteRows(TotalLeft,mainGrid->GetNumberRows() - TotalLeft);
@@ -173,6 +181,11 @@ void MyFrame::UpdateMainGrid(int stockidx){
 
 MyFrame::~MyFrame()
 {
+}
+
+void MyFrame::OnUpdateFromGoogleDone(wxNotifyEvent&event){
+    mystocks.UpdateStockList(stocks.GetList());
+    UpdateMainGrid(0);
 }
 
 void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
@@ -209,7 +222,7 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
                             }
                         }
                     }
-                    else{
+                    else if ((mainGrid->GetColLabelValue(i)) != _("Total Amount")){
                         wxString CellValue = (*mystocks.GetList())[idx+j]->GetPropertyValue(
                                 mainGrid->GetColLabelValue(i));
                         mainGrid->SetCellValue(idx+j,i,CellValue);
@@ -273,7 +286,10 @@ void MyFrame::OnPutToGoogle(wxCommandEvent& event)
 
 void MyFrame::OnUpdateFromGoogle(wxCommandEvent& event)
 {
-    ;
+    mystocks.GetDatas().clear();
+    mystocks.GetList()->clear();
+    UpdateMainGrid(0);
+    gss->GetFromGoogle(&mystocks.GetDatas());
 }
 
 void MyFrame::OnAddMyStock(wxCommandEvent& event)
@@ -336,11 +352,15 @@ void MyFrame::OnRealtimeDeltaTimer(wxTimerEvent& event){
 
 void MyFrame::OnGridCellDbClick(wxGridEvent& event){
 	StocksDataFetch*stock = GetCurFetchObj();
+	Stock* s = (*mystocks.GetList())[CurStockStartPos+event.GetRow()];
 	if (stock->GetProptiesNum()<event.GetCol()){
-		wxLogMessage(wxT("Hi"));
+	    mystockdetail dialog(this,-1,wxString::Format(wxT("%s-%s"),
+                        _("MyStock Detail"),
+                        s->GetName().c_str()));
+	    dialog.SetMyStock(mystocks.GetDatas()[s->GetId()]);
+	    dialog.ShowModal();
 	}
 	else{
-		Stock* s = (*mystocks.GetList())[CurStockStartPos+event.GetRow()];
 		if (!s->IsHistoryDataReady()){
 			if (!s->LoadHistoryDataFromFile()){
 				GetCurFetchObj()->RetriveHistoryDayData(s,(void*)1);
@@ -423,6 +443,7 @@ bool MyStocks::LoadDataFromFile(){
 }
 
 void MyStocks::UpdateStockList(StockList* source){
+        stocks.clear();
         StockList::Node* node = source->GetFirst();
         while (node)
         {
