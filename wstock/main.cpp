@@ -112,7 +112,6 @@ void MyFrame::DoInitData(){
     }
     mystocks.LoadDataFromFile();
     mystocks.UpdateStockList(stocks.GetList());
-    gss->PutToGoogle(&mystocks.GetDatas());
 }
 
 void MyFrame::UpdateMainGrid(int stockidx){
@@ -336,20 +335,26 @@ void MyFrame::OnRealtimeDeltaTimer(wxTimerEvent& event){
 }
 
 void MyFrame::OnGridCellDbClick(wxGridEvent& event){
-    Stock* s = (*mystocks.GetList())[CurStockStartPos+event.GetRow()];
-    if (!s->IsHistoryDataReady()){
-        if (!s->LoadHistoryDataFromFile()){
-            GetCurFetchObj()->RetriveHistoryDayData(s,(void*)1);
-        }
-        else{
-            wxLogStatus(_("Load History Data From File!"));
-        }
-    }
-    else{
-        StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
-        dialog.SetStock(s);
-        dialog.ShowModal();
-    }
+	StocksDataFetch*stock = GetCurFetchObj();
+	if (stock->GetProptiesNum()<event.GetCol()){
+		wxLogMessage(wxT("Hi"));
+	}
+	else{
+		Stock* s = (*mystocks.GetList())[CurStockStartPos+event.GetRow()];
+		if (!s->IsHistoryDataReady()){
+			if (!s->LoadHistoryDataFromFile()){
+				GetCurFetchObj()->RetriveHistoryDayData(s,(void*)1);
+			}
+			else{
+				wxLogStatus(_("Load History Data From File!"));
+			}
+		}
+		else{
+			StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
+			dialog.SetStock(s);
+			dialog.ShowModal();
+		}
+	}
 }
 
 
