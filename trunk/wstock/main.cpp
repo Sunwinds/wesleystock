@@ -12,6 +12,7 @@
 
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(BuyInfoList);
+WX_DEFINE_LIST(MainGridDef_StruList);
 
 //helper functions
 enum wxbuildinfoformat {
@@ -106,6 +107,15 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 }
 
 void MyFrame::DoInitData(){
+
+	ColDefs.push_back(new MainGridDef_Stru(_("NAME"),KT_FIXED,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("PRICE"),KT_REALTIME,VT_COLOR_NUMBER));
+	ColDefs.push_back(new MainGridDef_Stru(_("DELTA"),KT_REALTIME,VT_COLOR_NUMBER));
+	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE"),KT_REALTIME,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("Total Amount"),KT_MYSTOCK,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("Earnings Yield"),KT_MYSTOCK,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("Earnings"),KT_MYSTOCK,VT_OTHER));
+
     StocksDataFetch*stock = GetCurFetchObj();
     stocks.SetParent(this);
     stocks.Init(stock->GetHistoryDataGroupNum());
