@@ -8,16 +8,16 @@ MyStockDialog::MyStockDialog(wxWindow* parent, int id, const wxString& title, co
     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME)
 {
     // begin wxGlade: MyStockDialog::MyStockDialog
-    label_1 = new wxStaticText(this, -1, wxT("Stock Id:"));
+    label_1 = new wxStaticText(this, -1, _("Stock Id:"));
     t_stockid = new wxTextCtrl(this, -1, wxT(""));
-    label_2 = new wxStaticText(this, -1, wxT("Acount:"));
+    label_2 = new wxStaticText(this, -1, _("Acount:"));
     t_acount = new wxTextCtrl(this, -1, wxT(""));
-    label_3 = new wxStaticText(this, -1, wxT("Price:"));
+    label_3 = new wxStaticText(this, -1, _("Price:"));
     t_price = new wxTextCtrl(this, -1, wxT(""));
-    label_9 = new wxStaticText(this, -1, wxT("Operate:"));
+    label_9 = new wxStaticText(this, -1, _("Operate:"));
     const wxString c_op_choices[] = {
-        wxT("Buy"),
-        wxT("Sell")
+        _("Buy"),
+        _("Sell")
     };
     c_op = new wxComboBox(this, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 2, c_op_choices, wxCB_DROPDOWN|wxCB_READONLY);
     static_line_2 = new wxStaticLine(this, -1);
@@ -39,7 +39,7 @@ MyStockDialog::MyStockDialog(wxWindow* parent, int id, const wxString& title, co
 void MyStockDialog::set_properties()
 {
     // begin wxGlade: MyStockDialog::set_properties
-    SetTitle(wxT("MyStock"));
+    SetTitle(_("MyStock"));
     c_op->SetSelection(-1);
     button_3->SetDefault();
     // end wxGlade

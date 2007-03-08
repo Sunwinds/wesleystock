@@ -10,7 +10,7 @@ StockHistoryDialog::StockHistoryDialog(wxWindow* parent, int id, const wxString&
     m_chart = new wxPlotWindow(this, -1);
     text_ctrl_1 = new wxTextCtrl(this, -1, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
     static_line_1 = new wxStaticLine(this, -1);
-    button_1 = new wxButton(this, wxID_CANCEL, wxT("OK"));
+    button_1 = new wxButton(this, wxID_CANCEL, _("OK"));
 
     set_properties();
     do_layout();

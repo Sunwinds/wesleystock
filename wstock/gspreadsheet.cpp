@@ -10,6 +10,8 @@ BEGIN_EVENT_TABLE(GSpreadSheets, wxEvtHandler)
     EVT_URL_GET_DONE(-1,GSpreadSheets::OnUrlGetDone)
 END_EVENT_TABLE()
 
+const wxEventType wxEVT_GSPREADSHEETS_GET_DONE = wxNewEventType();
+
 void GSpreadSheets::OnUrlGetDone(wxUrlGetDoneEvent& event){
     int rtype = (int)event.UserData;
     if (rtype == -1){
@@ -93,10 +95,56 @@ void GSpreadSheets::OnUrlGetDone(wxUrlGetDoneEvent& event){
         }
         UpdateCellsToGoogle();//try to update the buffer to google.
     }
-    else if (rtype == 0){ //update cell
+    else if (rtype == 0){ //update to google
         //wxLogMessage(event.Result);
         cellPostBuffer.RemoveAt(0);
         UpdateCellsToGoogle();
+    }
+    else if (rtype == 1){ //get from google
+        Data->clear();
+        if (event.doc != NULL){
+            wxArrayString Record;
+            for (xmlNodePtr node=event.doc->children->children;node;node=node->next){
+               bool Good=true;
+                if (xmlStrcmp(node->name,(const xmlChar*)"entry")==0){
+                    for (xmlNodePtr entrysubnode=node->children;entrysubnode;entrysubnode=entrysubnode->next){
+                        if (xmlStrcmp(entrysubnode->name,(const xmlChar*)"cell")==0){
+                            int r=atoi((char*)xmlGetProp(entrysubnode, (const xmlChar*)"row"));
+                            int c=atoi((char*)xmlGetProp(entrysubnode, (const xmlChar*)"col"));
+                            xmlChar* v=xmlGetProp(entrysubnode, (const xmlChar*)"inputValue");
+                            if ((r == ((int)Data->size()+1)) && (c == ((int)Record.size()+1))){
+                                Record.Add(wxString(wxConvUTF8.cMB2WC((const char*)v),*wxConvCurrent));
+                                //wxLogMessage(wxT("%d %d %s"),r,c,Record[Record.size()-1].c_str());
+                            }
+                            else{
+                                Good=false;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (!Good) break;
+                if (Record.size() == 5){
+                    if (Data->find(Record[0]) == Data->end()){
+                        (*Data)[Record[0]] = new MyStockStru();
+                    }
+                    BuyInfo *p = new BuyInfo;
+                    long v=0;
+                    Record[1].ToLong(&v);
+                    p->data = wxDateTime((time_t)v);
+                    Record[2].ToLong(&v);
+                    p->BuyAmount = v;
+                    Record[4].ToLong(&v);
+                    p->Op = v;
+                    Record[3].ToDouble(&p->BuyPrice);
+                    ((*Data)[Record[0]])->buyinfos.push_back(p);
+                    Record.clear();
+                }
+            }
+            xmlFreeDoc(event.doc);
+        }
+        wxNotifyEvent event(wxEVT_GSPREADSHEETS_GET_DONE, -1);
+        Parent->AddPendingEvent(event);
     }
     else{
         wxLogMessage(event.Result);
@@ -116,7 +164,8 @@ void GSpreadSheets::Auth(void){
     }
 }
 
-GSpreadSheets::GSpreadSheets(){
+GSpreadSheets::GSpreadSheets(wxEvtHandler *p){
+    Parent = p;
     Auth();
 }
 
@@ -145,7 +194,7 @@ void GSpreadSheets::UpdateCellsToGoogle(void){
 
 void GSpreadSheets::PutToGoogle(MyStockDataHash* data){
     MyStockDataHash::iterator i = data->begin();
-    int RecordIdx=1;
+    int RecordIdx=0;
     wxString entry(wxT("<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gs='http://schemas.google.com/spreadsheets/2006'>"));
     while (i != data->end())    {
         wxString stockid = i->first;
@@ -265,5 +314,17 @@ void GSpreadSheets::GetFromGoogle(MyStockDataHash* data){
     }
     else if (cellsFeedHref.IsEmpty()){
         RetriveCellFeedHref();
+    }
+    else{
+        Data = data;
+        wxLogStatus(_("Try to Get mystock data from Google SpreadSheets"));
+        WStockGetUrl* geturl=new WStockGetUrl(this,cellsFeedHref,(void*)1);
+        wxString GoogleAuthHead(wxT("Authorization: GoogleLogin auth=\""));
+        GoogleAuthHead << AuthKey<< wxT("\"");
+        geturl->AppendCustomHead(GoogleAuthHead);
+        geturl->AppendCustomHead(wxT("Content-type: application/atom+xml"));
+        geturl->SetWantXml(true);
+        geturl->Create();
+        geturl->Run();
     }
 }

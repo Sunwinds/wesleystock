@@ -5,6 +5,13 @@
 #include "wstockgeturl.h"
 #include "stocks.h"
 
+//typedef void (wxEvtHandler::*wxNotifyEventFunction)(wxNotifyEvent&);
+extern const wxEventType wxEVT_GSPREADSHEETS_GET_DONE;
+#define EVT_GSPREADSHEETS_GET_DONE(id, fn) DECLARE_EVENT_TABLE_ENTRY( \
+    wxEVT_GSPREADSHEETS_GET_DONE, id, -1, (wxObjectEventFunction) (wxEventFunction) \
+    (wxNotifyEventFunction) & fn, \
+    (wxObject *) NULL ),
+
 class GSpreadSheetsOpData{
     public:
         wxString StockId;
@@ -18,7 +25,7 @@ WX_DECLARE_LIST(GSpreadSheetsOpData,GSpreadSheetsOpDataList);
 class GSpreadSheets :public wxEvtHandler
 {
     public:
-        GSpreadSheets();
+        GSpreadSheets(wxEvtHandler *p);
         void Auth(void);
         void RetriveCellFeedHref();
         void RetriveLinkFeedHref();
@@ -29,6 +36,8 @@ class GSpreadSheets :public wxEvtHandler
         void UpdateCellsToGoogle(void);
         wxString UName,PassWd,AuthKey,linkFeedHref,cellsFeedHref;
         wxArrayString cellPostBuffer;
+        MyStockDataHash* Data;
+        wxEvtHandler *Parent;
         DECLARE_EVENT_TABLE()
 };
 

@@ -18,14 +18,8 @@ typedef struct{
     int RealtimeStockNum;
 } SinaStock_UserData;
 
-wxString SinaStock::Props[]={
-    _("PRICE"),
-    _("DELTA"),
-    _("EXCHANGE"),
-};
-
 int SinaStock::GetProptiesNum(){
-    return WXSIZEOF(SinaStock::Props);
+    return SinaStock::Props.size();
 };
 
 

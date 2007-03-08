@@ -11,32 +11,32 @@ wstockcustomdialog::wstockcustomdialog(wxWindow* parent, int id, const wxString&
     notebook_1_pane_3 = new wxPanel(notebook_1, -1);
     notebook_1_pane_2 = new wxPanel(notebook_1, -1);
     notebook_1_pane_1 = new wxPanel(notebook_1, -1);
-    label_4 = new wxStaticText(notebook_1_pane_1, -1, wxT("Keys Path:"));
+    label_4 = new wxStaticText(notebook_1_pane_1, -1, _("Keys Path:"));
     text_keypath = new wxTextCtrl(notebook_1_pane_1, -1, wxT(""));
-    label_5 = new wxStaticText(notebook_1_pane_1, -1, wxT("History Dir:"));
+    label_5 = new wxStaticText(notebook_1_pane_1, -1, _("History Dir:"));
     text_history_dir = new wxTextCtrl(notebook_1_pane_1, -1, wxT(""));
-    label_6 = new wxStaticText(notebook_1_pane_2, -1, wxT("GoogleAcount:"));
+    label_6 = new wxStaticText(notebook_1_pane_2, -1, _("GoogleAcount:"));
     text_gacount = new wxTextCtrl(notebook_1_pane_2, -1, wxT(""));
-    label_7 = new wxStaticText(notebook_1_pane_2, -1, wxT("GooglePasswd:"));
+    label_7 = new wxStaticText(notebook_1_pane_2, -1, _("GooglePasswd:"));
     text_gpasswd = new wxTextCtrl(notebook_1_pane_2, -1, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
-    label_8 = new wxStaticText(notebook_1_pane_2, -1, wxT("MystocksTitle:"));
+    label_8 = new wxStaticText(notebook_1_pane_2, -1, _("MystocksTitle:"));
     text_gstock_title = new wxTextCtrl(notebook_1_pane_2, -1, wxT(""));
-    label_10 = new wxStaticText(notebook_1_pane_3, -1, wxT("curl proxy:"));
+    label_10 = new wxStaticText(notebook_1_pane_3, -1, _("curl proxy:"));
     text_curl_proxy = new wxTextCtrl(notebook_1_pane_3, -1, wxT(""));
-    label_11 = new wxStaticText(notebook_1_pane_3, -1, wxT("curl userpwd:"));
+    label_11 = new wxStaticText(notebook_1_pane_3, -1, _("curl userpwd:"));
     text_curl_userpwd = new wxTextCtrl(notebook_1_pane_3, -1, wxT(""));
-    label_12 = new wxStaticText(notebook_1_pane_3, -1, wxT("curl proxy auth:"));
+    label_12 = new wxStaticText(notebook_1_pane_3, -1, _("curl proxy auth:"));
     const wxString combo_curl_auth_choices[] = {
-        wxT("NONE"),
-        wxT("BASIC"),
-        wxT("DIGEST"),
-        wxT("GSSNEGOTIATE"),
-        wxT("NTLM"),
-        wxT("ANY"),
-        wxT("ANYSAFE")
+        _("NONE"),
+        _("BASIC"),
+        _("DIGEST"),
+        _("GSSNEGOTIATE"),
+        _("NTLM"),
+        _("ANY"),
+        _("ANYSAFE")
     };
     combo_curl_auth = new wxComboBox(notebook_1_pane_3, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 7, combo_curl_auth_choices, wxCB_DROPDOWN|wxCB_READONLY);
-    checkbox_curl_noproxy = new wxCheckBox(notebook_1_pane_3, -1, wxT("Do not use proxy"));
+    checkbox_curl_noproxy = new wxCheckBox(notebook_1_pane_3, -1, _("Do not use proxy"));
     static_line_3 = new wxStaticLine(this, -1);
     button_5 = new wxButton(this, wxID_CANCEL, wxT(""));
     button_6 = new wxButton(this, wxID_OK, wxT(""));
@@ -124,9 +124,9 @@ void wstockcustomdialog::do_layout()
     notebook_1_pane_3->SetSizer(sizer_9);
     sizer_9->Fit(notebook_1_pane_3);
     sizer_9->SetSizeHints(notebook_1_pane_3);
-    notebook_1->AddPage(notebook_1_pane_1, wxT("Generic"));
-    notebook_1->AddPage(notebook_1_pane_2, wxT("Google"));
-    notebook_1->AddPage(notebook_1_pane_3, wxT("CURL"));
+    notebook_1->AddPage(notebook_1_pane_1, _("Generic"));
+    notebook_1->AddPage(notebook_1_pane_2, _("Google"));
+    notebook_1->AddPage(notebook_1_pane_3, _("CURL"));
     sizer_6->Add(notebook_1, 1, wxEXPAND, 0);
     sizer_6->Add(static_line_3, 0, wxEXPAND, 0);
     sizer_7->Add(20, 20, 1, wxADJUST_MINSIZE, 0);
