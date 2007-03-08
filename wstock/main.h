@@ -8,6 +8,33 @@
 #include "stocks.h"
 #include "gspreadsheet.h"
 
+enum{
+	KT_FIXED,
+	KT_REALTIME,
+	KT_REALTIME_CALC,
+	KT_HISTORY_CALC,
+	KT_MYSTOCK
+};
+
+enum{
+	VT_COLOR_NUMBER,
+	VT_NUMBER,
+	VT_OTHER
+};
+
+class MainGridDef_Stru:public wxObject{
+public:
+	MainGridDef_Stru(const wxString &k, int kt,int vt){
+		KeyName = k;
+		KeyType = kt;
+		ValueType = vt;
+	};
+	wxString KeyName;
+	int KeyType; //0:Fixed 1: RealTime 2:RealTimeCalc 3:HistoryCalc
+	int ValueType; //0: Number With Color 1:Number Without Color 2:Other
+};
+WX_DECLARE_LIST(MainGridDef_Stru,MainGridDef_StruList);
+
 class MyStocks : public wxObject{
     public:
         MyStocks(){};
@@ -40,6 +67,7 @@ class MyFrame: public wxFrame
         wxTimer RealTimeDeltaTimer;
         StocksDataFetch* CurFetchObj;
         GSpreadSheets * gss;
+		MainGridDef_StruList ColDefs;
 
         void OnUpdateFromGoogleDone(wxNotifyEvent&event);
         void OnUpdateFromGoogle(wxCommandEvent& event);
