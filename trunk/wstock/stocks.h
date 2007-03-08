@@ -76,11 +76,11 @@ class Stock :public wxObject
     protected:
         friend class wxPlotWindow;
 		bool HistoryDataReady;
+        StrStrHash FixedProps;
         StrStrHash RealTimeProps;
+        StrStrHash RealTimeCalcProps;
+        StrStrHash HistoryCalcProps;
 		StockHistoryDataArrayArray HistoryDatas;
-        //StockHistoryDataArray DayHistoryData;
-        //StockHistoryDataArray WeekHistoryData;
-        //StockHistoryDataArray MonthHistoryData;
 };
 
 typedef enum {
