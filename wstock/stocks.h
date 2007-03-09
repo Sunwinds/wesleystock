@@ -43,6 +43,8 @@ class Stock :public wxObject
             StockId = si;
             StockName = name;
 			HistoryDataReady=false;
+			FixedProps[_("Stock Name")] = name;
+			FixedProps[_("Stock Id")] = si;
         };
         ~Stock();
         wxString GetId(){ return StockId; };
@@ -64,7 +66,33 @@ class Stock :public wxObject
         void SetPropertyValue(const wxString& name,const wxString& value){
             RealTimeProps[name] = value;
         };
-
+		void UpdateRealTimeCalcProps();
+		void UpdateHistoryCalcProps();
+		wxString ExplainMePropValue(const wxString& v);
+		wxString GetFixedPropValue(const wxString& v){
+			if (FixedProps.find(v) != FixedProps.end()){
+				return FixedProps[v];
+			}
+			return wxT("");
+		}
+		wxString GetRealTimeValue(const wxString& v){
+			if (RealTimeProps.find(v) != RealTimeProps.end()){
+				return RealTimeProps[v];
+			}
+			return wxT("");
+		}
+		wxString GetRealTimeCalcValue(const wxString& v){
+			if (RealTimeCalcProps.find(v) != RealTimeCalcProps.end()){
+				return RealTimeCalcProps[v];
+			}
+			return wxT("");
+		}
+		wxString GetHistoryCalcValue(const wxString& v){
+			if (HistoryCalcProps.find(v) != HistoryCalcProps.end()){
+				return HistoryCalcProps[v];
+			}
+			return wxT("");
+		}
         bool LoadHistoryDataFromFile();
         bool SaveHistoryDataToFile();
 		void InitHistoryData(int num);
@@ -158,6 +186,7 @@ class StocksDataFetch:public wxEvtHandler
         virtual void RetriveHistoryDayData(Stock* s, void* UserData)=0;
         virtual int GetProptiesNum()=0;
 		virtual int GetHistoryDataGroupNum()=0;
+		virtual bool HasKey(const wxString& k)=0;
         virtual wxString GetPropertyName(int idx)=0;
     protected:
         StockList* stocks;
@@ -183,6 +212,7 @@ class MyStockStru{
         double GetTotalPay();
         int GetCurrentAmount();
         double GetCurValue(double CurPrice);
+		wxString GetPropValue(const wxString& v);
     private:
 };
 WX_DECLARE_STRING_HASH_MAP(MyStockStru*, MyStockDataHash);
