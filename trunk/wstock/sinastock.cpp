@@ -31,11 +31,19 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 
     SinaStock_UserData* data = (SinaStock_UserData*)event.UserData;
     if (data->rType == REALTIME_RETRIVE){ //Real Time Data come!
-        wxLogStatus(wxT(""));
+
+		if (event.requestTime <validRequest){
+			//it is a old request,and has been over time. skip it.
+			delete(data);
+			return;
+		}
+        
+		wxLogStatus(wxT(""));
         if (data->FetchSeed == RealtimeFetchSeed){
             HtmlTableParser *p=new HtmlTableParser();
             MyHtmlParser parser(p);
             parser.Parse(event.Result);
+			//p->DumpTable();
             int idx=p->GetTDIndex(RealTimeKey);
             if (idx>=0){
                 (*stocks)[data->StartIdx]->SetPropertyValue(Props[0], p->GetValue(idx+1));

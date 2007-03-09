@@ -180,7 +180,8 @@ class Stocks:public wxObject
 class StocksDataFetch:public wxEvtHandler
 {
     public:
-        StocksDataFetch(){};
+		wxDateTime validRequest;
+        StocksDataFetch(){validRequest = wxDateTime::Now();};
         void SetParent(wxEvtHandler* P){Parent=P;};
         virtual void RetriveRealTimeData(StockList* stocks, void* UserData)=0;
         virtual void RetriveHistoryDayData(Stock* s, void* UserData)=0;

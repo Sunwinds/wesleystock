@@ -6,6 +6,7 @@
 */
 
 #include "wx/wx.h"
+#include "wx/datetime.h"
 #include "wx/thread.h"
 #include <libxml/parser.h>
 #include <libxml/tree.h>
@@ -16,12 +17,14 @@ class wxUrlGetDoneEvent : public wxNotifyEvent
     public:
     wxUrlGetDoneEvent(wxEventType commandType = wxEVT_NULL, int id = 0, void*data=NULL): wxNotifyEvent(commandType, id){
             UserData = data;
+			requestTime = wxDateTime::Now();
         };
     wxUrlGetDoneEvent(const wxUrlGetDoneEvent& event): wxNotifyEvent(event){
         Result = event.Result;
         RetCode = event.RetCode;
         UserData = event.UserData;
         doc = event.doc;
+		requestTime = event.requestTime;
         };
     virtual wxEvent *Clone() const {
         return new wxUrlGetDoneEvent(*this);
@@ -29,6 +32,7 @@ class wxUrlGetDoneEvent : public wxNotifyEvent
     wxString Result;
     int RetCode;
     void *UserData;
+	wxDateTime requestTime;
     xmlDocPtr doc;//valid when want xml;
     DECLARE_DYNAMIC_CLASS(wxUrlGetDoneEvent);
 };
@@ -49,6 +53,7 @@ class WStockGetUrl:public wxThread
             WantXml=false;
             UserData = data;
             PostData = wxT("");
+			requestTime = wxDateTime::Now();
         };
         void SetPostData(const wxString&data){
             PostData = data;
@@ -70,6 +75,7 @@ class WStockGetUrl:public wxThread
         bool WantXml; //We expect xmlDocPtr in the retrive done event.//user need to release this doc
         void * UserData;
         wxEvtHandler *Parent;
+		wxDateTime requestTime;
 
 };
 
