@@ -108,13 +108,14 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 
 void MyFrame::DoInitData(){
 
-	ColDefs.push_back(new MainGridDef_Stru(_("NAME"),KT_FIXED,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("Stock Name"),KT_FIXED,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("PRICE"),KT_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("DELTA"),KT_REALTIME,VT_COLOR_NUMBER));
+	ColDefs.push_back(new MainGridDef_Stru(_("PRICE 10D AVG"),KT_HISTORY_CALC,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE"),KT_REALTIME,VT_OTHER));
-	ColDefs.push_back(new MainGridDef_Stru(_("Total Amount"),KT_MYSTOCK,VT_OTHER));
-	ColDefs.push_back(new MainGridDef_Stru(_("Earnings Yield"),KT_MYSTOCK,VT_OTHER));
-	ColDefs.push_back(new MainGridDef_Stru(_("Earnings"),KT_MYSTOCK,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("Total Amount"),KT_MYSTOCK_FIXED,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("Earnings Yield"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
+	ColDefs.push_back(new MainGridDef_Stru(_("Earnings"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
 
     StocksDataFetch*stock = GetCurFetchObj();
     stocks.SetParent(this);
@@ -133,20 +134,34 @@ void MyFrame::UpdateMainGrid(int stockidx){
     mainGrid->BeginBatch();
     StocksDataFetch*stock = GetCurFetchObj();
     if (stock){
-        int ColNum = stock->GetProptiesNum()+4; // stockName, earnings, earnings yield
+		//Maybe Data privoder has change so the mainGrid's col label may change as well.
+		//so Let's do mainGrid's col label change here.
+		int SkipCount=0;
+		{
+			for (int i=0;i<ColDefs.size();i++){
+				if (ColDefs[i]->KeyType == KT_REALTIME){
+					//May this dateprovider provide this Key?
+					if (!stock->HasKey(ColDefs[i]->KeyName)){
+						SkipCount++;
+					}
+				}
+			}
+		}
+		
+        int ColNum = ColDefs.size()-SkipCount;
         if (mainGrid->GetNumberCols()>ColNum){
             mainGrid->DeleteCols(mainGrid->GetNumberCols() - ColNum);
         }
         else if (mainGrid->GetNumberCols() < ColNum){
             mainGrid->AppendCols(ColNum - mainGrid->GetNumberCols());
         }
-        mainGrid->SetColLabelValue(0,_("Stock Name"));
-        for (int i=0;i<stock->GetProptiesNum();i++){
-            mainGrid->SetColLabelValue(i+1,stock->GetPropertyName(i));
-        }
-        mainGrid->SetColLabelValue(stock->GetProptiesNum()+1,_("Total Amount"));
-        mainGrid->SetColLabelValue(stock->GetProptiesNum()+2,_("Earnings Yield"));
-        mainGrid->SetColLabelValue(stock->GetProptiesNum()+3,_("Earnings"));
+		int colidx=0;
+		for (int i=0;i<ColDefs.size();i++){
+			if ((ColDefs[i]->KeyType != KT_REALTIME)||(stock->HasKey(ColDefs[i]->KeyName))){
+				mainGrid->SetColLabelValue(colidx,ColDefs[i]->KeyName);
+				colidx++;
+			}
+		}
     }
 
     int TotalLeft = mystocks.GetList()->GetCount() - stockidx;
@@ -162,11 +177,20 @@ void MyFrame::UpdateMainGrid(int stockidx){
         if (name.Length()<=0){
             name = (*mystocks.GetList())[i]->GetId();
         }
-        mainGrid->SetCellValue(i,0,name);
+        
+		for (int ci=0;ci<ColDefs.size();ci++){
+			if ((ColDefs[ci]->KeyType == KT_FIXED) ||
+				(ColDefs[ci]->KeyType == KT_HISTORY_CALC) || 
+				(ColDefs[ci]->KeyType == KT_MYSTOCK_FIXED)){
+				//Init the date
+				UpdateMainGridCell(i,ci);
+			}
+		}
+		/*mainGrid->SetCellValue(i,0,name);
         wxString Id=(*mystocks.GetList())[i]->GetId();
         mainGrid->SetCellValue(i,stock->GetProptiesNum()+1,
                wxString::Format(wxT("%d"),
-                    mystocks.GetDatas()[Id]->GetCurrentAmount()));
+                    mystocks.GetDatas()[Id]->GetCurrentAmount()));*/
     }
     if (mainGrid->GetNumberRows() > TotalLeft){
         mainGrid->DeleteRows(TotalLeft,mainGrid->GetNumberRows() - TotalLeft);
@@ -198,9 +222,66 @@ void MyFrame::OnUpdateFromGoogleDone(wxNotifyEvent&event){
     UpdateMainGrid(0);
 }
 
+void MyFrame::UpdateMainGridCell(int r, int c){
+	Stock*s = (*mystocks.GetList())[r];
+	switch (ColDefs[c]->KeyType){
+	case KT_FIXED:
+		mainGrid->SetCellValue(r,c,s->GetFixedPropValue(ColDefs[c]->KeyName));
+		break;
+	case KT_REALTIME:
+		mainGrid->SetCellValue(r,c,s->GetRealTimeValue(ColDefs[c]->KeyName));
+		break;
+	case KT_REALTIME_CALC:
+		mainGrid->SetCellValue(r,c,s->GetRealTimeCalcValue(ColDefs[c]->KeyName));
+		break;
+	case KT_HISTORY_CALC:
+		mainGrid->SetCellValue(r,c,s->GetHistoryCalcValue(ColDefs[c]->KeyName));
+		break;
+	case KT_MYSTOCK_FIXED:
+	case KT_MYSTOCK_REALTIME:
+		{
+			wxString v=ColDefs[c]->KeyName;
+			MyStockStru*p = mystocks.GetDatas()[s->GetId()];
+			mainGrid->SetCellValue(r,c, p->GetPropValue(v));
+		}
+		break;
+	}
+	if (ColDefs[c]->ValueType == VT_COLOR_NUMBER){
+		if (mainGrid->GetCellValue(r,c).StartsWith(wxT("-"))){
+            mainGrid->SetCellTextColour(r,c,*wxGREEN);
+		}
+		else
+		{
+            mainGrid->SetCellTextColour(r,c,*wxRED);
+		}
+	}
+}
+
 void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
     if (event.rtype == REALTIME_RETRIVE){
-        int idx = (int)event.UserData;
+		//Realtime value may change,what we need to do is:
+		//1: Calc all the Realtime_calc value
+		//2: If some of the value is inside of mainGrid,update it.
+        mainGrid->BeginBatch();
+		for (int si=0;si<mystocks.GetList()->size();si++){
+			Stock* s= (*mystocks.GetList())[si];
+			s->UpdateRealTimeCalcProps();
+			for (int gridci=0;gridci<ColDefs.size();gridci++){
+				if ((ColDefs[gridci]->KeyType == KT_REALTIME_CALC)
+					||(ColDefs[gridci]->KeyType == KT_REALTIME)
+					||(ColDefs[gridci]->KeyType == KT_MYSTOCK_REALTIME)){
+					UpdateMainGridCell(si,gridci);
+				}
+			}
+		}
+        mainGrid->AutoSizeColumns();
+        mainGrid->EndBatch();
+
+        //股票数据已经刷新了一轮了，为了减轻服务器的压力，
+        //休息一下(30秒)再刷新第二轮吧
+        RealTimeDeltaTimer.Start(30000,true);
+
+        /*int idx = (int)event.UserData;
         if (idx<mainGrid->GetNumberRows()){
             mainGrid->BeginBatch();
             for (int j=0;j<mainGrid->GetNumberRows();j++){
@@ -247,18 +328,31 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
                     }
                 }
             }
-            mainGrid->AutoSizeColumns();
-            mainGrid->EndBatch();
-
-            //股票数据已经刷新了一轮了，为了减轻服务器的压力，
-            //休息一下(30秒)再刷新第二轮吧
-            RealTimeDeltaTimer.Start(30000,true);
-        }
+        }*/
     }
     else{
-        int myflag=(int)event.UserData;
+		int myflag=(int)event.UserData;
         Stock* s = (Stock*)event.HistoryStock;
+		
+		//Let's first save the data to file,so nexttime we need the data, just load from file
         s->SaveHistoryDataToFile();
+
+		//Some stock History data may change,what we need to do is:
+		//1: Calc all the KT_HISTORY_CALC value
+		//2: If some of the value is inside of mainGrid,update it.
+        mainGrid->BeginBatch();
+		int si = mystocks.GetList()->IndexOf(s);
+		wxASSERT(si!=wxNOT_FOUND);
+		s->UpdateHistoryCalcProps();
+		for (int gridci=0;gridci<ColDefs.size();gridci++){
+			if (ColDefs[gridci]->KeyType == KT_HISTORY_CALC){
+				UpdateMainGridCell(si,gridci);
+			}
+		}
+        mainGrid->AutoSizeColumns();
+        mainGrid->EndBatch();
+        
+
         if (myflag == 1){ //UserCall
             StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
             dialog.SetStock(s);
@@ -363,14 +457,25 @@ void MyFrame::OnRealtimeDeltaTimer(wxTimerEvent& event){
 void MyFrame::OnGridCellDbClick(wxGridEvent& event){
 	StocksDataFetch*stock = GetCurFetchObj();
 	Stock* s = (*mystocks.GetList())[CurStockStartPos+event.GetRow()];
-	if (stock->GetProptiesNum()<event.GetCol()){
-	    mystockdetail dialog(this,-1,wxString::Format(wxT("%s-%s"),
-                        _("MyStock Detail"),
-                        s->GetName().c_str()));
-	    dialog.SetMyStock(mystocks.GetDatas()[s->GetId()]);
-	    dialog.ShowModal();
+
+	wxString Explain=s->ExplainMePropValue(ColDefs[event.GetCol()]->KeyName);
+	if (!Explain.IsEmpty()){
+		wxMessageBox(Explain,_("Explain me:"));
+		return;
 	}
-	else{
+
+	switch (ColDefs[event.GetCol()]->KeyType){
+	case KT_MYSTOCK_FIXED:
+	case KT_MYSTOCK_REALTIME:
+		{
+			mystockdetail dialog(this,-1,wxString::Format(wxT("%s-%s"),
+							_("MyStock Detail"),
+							s->GetName().c_str()));
+			dialog.SetMyStock(mystocks.GetDatas()[s->GetId()]);
+			dialog.ShowModal();
+		}
+		break;
+	default:
 		if (!s->IsHistoryDataReady()){
 			if (!s->LoadHistoryDataFromFile()){
 				GetCurFetchObj()->RetriveHistoryDayData(s,(void*)1);
@@ -384,6 +489,7 @@ void MyFrame::OnGridCellDbClick(wxGridEvent& event){
 			dialog.SetStock(s);
 			dialog.ShowModal();
 		}
+		break;
 	}
 }
 
@@ -511,6 +617,23 @@ int MyStockStru::GetCurrentAmount(){
         node = node->GetNext();
     }
     return ret;
+}
+
+wxString MyStockStru::GetPropValue(const wxString& v){
+	if (v == _("Total Amount")){
+		return wxString::Format(wxT("%d"),GetCurrentAmount());
+	}
+	else if (v == _("Earnings Yield")){
+		double curprice=0;
+		stock->GetRealTimeValue(_("PRICE")).ToDouble(&curprice);
+		return wxString::Format(wxT("%.2f%%"),GetEarningYield(curprice)*100);
+	}
+	else if (v == _("Earnings")){
+		double curprice=0;
+		stock->GetRealTimeValue(_("PRICE")).ToDouble(&curprice);
+		return wxString::Format(wxT("%.2f"),GetEarnings(curprice));
+	}
+	return wxT("");
 }
 
 MyStockStru* MyStocks::GetMyStockStruByStock(Stock*s){

@@ -16,19 +16,8 @@ typedef struct{
     int RealtimeStockNum;
 } YahooStock_UserData;
 
-wxString YahooStock::Props[]={
-    _("PRICE"),
-    _("DATE"),
-    _("TIME"),
-    _("DELTA"),
-    _("TODAY START"),
-    _("HIGHEST"),
-    _("LOWEREST"),
-    _("EXCHANGE"),
-};
-
 int YahooStock::GetProptiesNum(){
-    return WXSIZEOF(YahooStock::Props);
+    return Props.size();
 };
 
 

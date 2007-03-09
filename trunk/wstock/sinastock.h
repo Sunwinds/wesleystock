@@ -18,7 +18,9 @@ class SinaStock:public StocksDataFetch
         };
         virtual void RetriveRealTimeData(StockList* stocks, void* UserData);
         virtual void RetriveHistoryDayData(Stock* s, void* UserData);
-
+		virtual bool HasKey(const wxString& k){
+			return Props.Index(k) != wxNOT_FOUND;
+		}
         virtual int GetProptiesNum();
         virtual wxString GetPropertyName(int idx){return Props[idx]; };
 		virtual int GetHistoryDataGroupNum(){return 1;};

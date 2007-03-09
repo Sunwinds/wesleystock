@@ -13,7 +13,8 @@ enum{
 	KT_REALTIME,
 	KT_REALTIME_CALC,
 	KT_HISTORY_CALC,
-	KT_MYSTOCK
+	KT_MYSTOCK_FIXED,
+	KT_MYSTOCK_REALTIME,
 };
 
 enum{
@@ -69,6 +70,7 @@ class MyFrame: public wxFrame
         GSpreadSheets * gss;
 		MainGridDef_StruList ColDefs;
 
+		void UpdateMainGridCell(int r, int c);
         void OnUpdateFromGoogleDone(wxNotifyEvent&event);
         void OnUpdateFromGoogle(wxCommandEvent& event);
 		void OnPutToGoogle(wxCommandEvent& event);

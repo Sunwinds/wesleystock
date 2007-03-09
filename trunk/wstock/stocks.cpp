@@ -20,6 +20,40 @@ void Stocks::InitHistoryDatas(int num){
 	}
 }
 
+void Stock::UpdateHistoryCalcProps(){	
+	//Update the 10Day avg price
+	if (HistoryDatas.size()>0){//it is a rule, the first array is the day hostory data in descending order
+		double price=0;
+		if (HistoryDatas[0]->size()>10){
+			for (int i=0;i<10;i++){
+				price += (*HistoryDatas[0])[i]->adjClose;
+			}
+		}
+		HistoryCalcProps[_("PRICE 10D AVG")] = wxString::Format(wxT("%.2f"),price/10);
+	}
+}
+
+wxString Stock::ExplainMePropValue(const wxString& v){
+	if (v ==  _("PRICE 10D AVG")){
+		wxString desc;
+		if (HistoryDatas.size()>0){//it is a rule, the first array is the day hostory data in descending order
+			double price=0;
+			if (HistoryDatas[0]->size()>10){
+				for (int i=0;i<10;i++){
+					desc += (*HistoryDatas[0])[i]->data.Format(wxT("%Y-%m-%d:")); 
+					desc += wxString::Format(wxT("%.2f\n"),(*HistoryDatas[0])[i]->adjClose);
+				}
+			}
+		}
+		return desc;
+	}
+	return wxT("");
+}
+
+void Stock::UpdateRealTimeCalcProps(){
+	//so far,we have no this kind of data;
+}
+
 void Stock::InitHistoryData(int num){
 	for (int i=0;i<num;i++){
 		HistoryDatas.push_back(new StockHistoryDataArray());
@@ -118,6 +152,7 @@ bool Stock::LoadHistoryDataFromFile(){
 			return false;
 		}
 	}
+	UpdateHistoryCalcProps();
 	HistoryDataReady=true;
     return true;
 }
