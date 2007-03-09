@@ -165,6 +165,7 @@ void *WStockGetUrl::Entry(){
 
     if (Parent){
         wxUrlGetDoneEvent event(wxEVT_URL_GET_DONE, -1,UserData);
+		event.requestTime = requestTime;
         if (WantXml){
             event.doc = xmlReadMemory((char*)chunk.memory,
                         strlen((char*)chunk.memory), "noname.xml",NULL,0);

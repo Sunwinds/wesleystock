@@ -423,7 +423,10 @@ void MyFrame::OnAddMyStock(wxCommandEvent& event)
                 return;
             }
         }
-        mystocks.TestRemove(mystocks.GetDatas()[dialog.GetData().StockId]->stock);
+        if (mystocks.TestRemove(mystocks.GetDatas()[dialog.GetData().StockId]->stock)){
+			StocksDataFetch*stock = GetCurFetchObj();
+			stock->validRequest = wxDateTime::Now();
+		}
         UpdateMainGrid(0);
         mystocks.SaveDataToFile();
         gss->PutToGoogle(&mystocks.GetDatas());
@@ -643,12 +646,15 @@ MyStockStru* MyStocks::GetMyStockStruByStock(Stock*s){
     return NULL;
 }
 
-void MyStocks::TestRemove(Stock* s){
+bool MyStocks::TestRemove(Stock* s){
     MyStockStru* p =GetMyStockStruByStock(s);
     if (p){
         if (p->GetCurrentAmount()==0){
+			stocks.DeleteObject(p->stock);
             datas.erase(s->GetId());
             delete(p);
+			return true;
         }
     }
+	return false;
 }
