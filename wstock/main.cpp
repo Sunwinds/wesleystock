@@ -121,8 +121,9 @@ void MyFrame::DoInitData(){
     stocks.SetParent(this);
     stocks.Init(stock->GetHistoryDataGroupNum());
     if (stocks.GetStockNum()==0){
-        wxLogMessage(_("There is no stock Id in %s,you may need add some into it!"),
-            WStockConfig::GetKeyPath().c_str());
+		//Now, this is a normal case.no need worry.
+        //wxLogMessage(_("There is no stock Id in %s,you may need add some into it!"),
+        //    WStockConfig::GetKeyPath().c_str());
     }
     mystocks.LoadDataFromFile();
     mystocks.UpdateStockList(stocks.GetList());
