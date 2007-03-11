@@ -9,7 +9,7 @@ class WStockConfig :public wxObject
 {
     public:
         static wxString GetKeyPath(){
-            wxString keyPath = wxT("stocks.txt");
+            wxString keyPath = wxT("stocks.xml");
             config.Read(STOCK_KEY_PATH, &keyPath);
             return keyPath;
         };
