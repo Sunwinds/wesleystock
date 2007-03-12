@@ -15,6 +15,7 @@ class SinaStock:public StocksDataFetch
                 Props.Add(_("PRICE"));
                 Props.Add(_("DELTA"));
                 Props.Add(_("EXCHANGE"));
+                Props.Add(_("DELTA RATE"));
         };
         virtual void RetriveRealTimeData(StockList* stocks, void* UserData);
         virtual void RetriveHistoryDayData(Stock* s, void* UserData);
