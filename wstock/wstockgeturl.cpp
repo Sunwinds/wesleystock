@@ -97,8 +97,6 @@ void *WStockGetUrl::Entry(){
 		curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, post);
 	}
 	curl_easy_setopt(curl_handle, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
-    curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYHOST, 1);
 	switch (WStockConfig::GetCurlAuth()){
 	case 0:
 		curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH,CURLAUTH_NONE);
@@ -123,6 +121,9 @@ void *WStockGetUrl::Entry(){
 		break;
 	}
   }
+
+  curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);
+  curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYHOST, 1);
 
   char url[255]="";
   strcpy(url,(const char*)Url.mb_str());

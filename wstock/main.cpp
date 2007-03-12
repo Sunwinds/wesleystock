@@ -111,8 +111,10 @@ void MyFrame::DoInitData(){
 	ColDefs.push_back(new MainGridDef_Stru(_("Stock Name"),KT_FIXED,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("PRICE"),KT_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("DELTA"),KT_REALTIME,VT_COLOR_NUMBER));
+	ColDefs.push_back(new MainGridDef_Stru(_("DELTA RATE"),KT_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("PRICE 10D AVG"),KT_HISTORY_CALC,VT_OTHER));
-	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE"),KT_REALTIME,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("PRICE AVG"),KT_MYSTOCK_FIXED,VT_OTHER));
+	//	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE"),KT_REALTIME,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("Total Amount"),KT_MYSTOCK_FIXED,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("Earnings Yield"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("Earnings"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
@@ -668,6 +670,9 @@ int MyStockStru::GetCurrentAmount(){
 wxString MyStockStru::GetPropValue(const wxString& v){
 	if (v == _("Total Amount")){
 		return wxString::Format(wxT("%d"),GetCurrentAmount());
+	}
+	else if (v == _("PRICE AVG")){
+		return wxString::Format(wxT("%.3f"),GetTotalPay()/GetCurrentAmount());
 	}
 	else if (v == _("Earnings Yield")){
 		double curprice=0;

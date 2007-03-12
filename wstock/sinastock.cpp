@@ -61,6 +61,7 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 					(*stocks)[data->StartIdx]->SetPropertyValue(Props[0], p->GetValue(idx+1));
 					(*stocks)[data->StartIdx]->SetPropertyValue(Props[1], p->GetValue(idx+3));
 					(*stocks)[data->StartIdx]->SetPropertyValue(Props[2], p->GetValue(idx+19));
+					(*stocks)[data->StartIdx]->SetPropertyValue(Props[3], p->GetValue(idx+5));
 				}
 				else{
 					wxLogMessage(wxT("Not Found!"));
