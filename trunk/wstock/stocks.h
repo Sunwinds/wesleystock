@@ -228,8 +228,8 @@ class StocksDataFetch:public wxEvtHandler
 class BuyInfo{
     public:
         double BuyPrice;
-        int BuyAmount;
-        int Op; //0:Buy; 1:Sell
+        long BuyAmount;
+        long Op; //0:Buy; 1:Sell
         wxDateTime data;
 };
 

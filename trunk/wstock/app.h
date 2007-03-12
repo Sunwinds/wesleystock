@@ -23,6 +23,7 @@ class MyApp : public wxApp
 		StocksDataFetch* CurFetchObj;
         Stocks* stocks;
         wxLocale m_locale;
+		wxWindow* frame;
 };
 
 DECLARE_APP(MyApp);

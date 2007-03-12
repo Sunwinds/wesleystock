@@ -2,4 +2,6 @@
 <Stocks>
   <Stock Id="600171" Name="上海贝岭"/>
   <Stock Id="600340" Name="国祥股份"/>
+  <Stock Id="000525" Name="红太阳"/>
+  <Stock Id="002046" Name="轴研科技"/>
 </Stocks>
