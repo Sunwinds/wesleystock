@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Stocks>
   <Stock Id="600171" Name="上海贝岭"/>
+  <Stock Id="600340" Name="国祥股份"/>
 </Stocks>
