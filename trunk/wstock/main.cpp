@@ -139,7 +139,7 @@ void MyFrame::UpdateMainGrid(int stockidx){
 		//so Let's do mainGrid's col label change here.
 		int SkipCount=0;
 		{
-			for (int i=0;i<ColDefs.size();i++){
+			for (size_t i=0;i<ColDefs.size();i++){
 				if (ColDefs[i]->KeyType == KT_REALTIME){
 					//May this dateprovider provide this Key?
 					if (!stock->HasKey(ColDefs[i]->KeyName)){
@@ -148,7 +148,7 @@ void MyFrame::UpdateMainGrid(int stockidx){
 				}
 			}
 		}
-		
+
         int ColNum = ColDefs.size()-SkipCount;
         if (mainGrid->GetNumberCols()>ColNum){
             mainGrid->DeleteCols(mainGrid->GetNumberCols() - ColNum);
@@ -157,7 +157,7 @@ void MyFrame::UpdateMainGrid(int stockidx){
             mainGrid->AppendCols(ColNum - mainGrid->GetNumberCols());
         }
 		int colidx=0;
-		for (int i=0;i<ColDefs.size();i++){
+		for (size_t i=0;i<ColDefs.size();i++){
 			if ((ColDefs[i]->KeyType != KT_REALTIME)||(stock->HasKey(ColDefs[i]->KeyName))){
 				mainGrid->SetColLabelValue(colidx,ColDefs[i]->KeyName);
 				colidx++;
@@ -178,10 +178,10 @@ void MyFrame::UpdateMainGrid(int stockidx){
         if (name.Length()<=0){
             name = (*mystocks.GetList())[i]->GetId();
         }
-        
-		for (int ci=0;ci<ColDefs.size();ci++){
+
+		for (size_t ci=0;ci<ColDefs.size();ci++){
 			if ((ColDefs[ci]->KeyType == KT_FIXED) ||
-				(ColDefs[ci]->KeyType == KT_HISTORY_CALC) || 
+				(ColDefs[ci]->KeyType == KT_HISTORY_CALC) ||
 				(ColDefs[ci]->KeyType == KT_MYSTOCK_FIXED)){
 				//Init the date
 				UpdateMainGridCell(i,ci);
@@ -264,10 +264,10 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
 		//1: Calc all the Realtime_calc value
 		//2: If some of the value is inside of mainGrid,update it.
         mainGrid->BeginBatch();
-		for (int si=0;si<mystocks.GetList()->size();si++){
+		for (size_t si=0;si<mystocks.GetList()->size();si++){
 			Stock* s= (*mystocks.GetList())[si];
 			s->UpdateRealTimeCalcProps();
-			for (int gridci=0;gridci<ColDefs.size();gridci++){
+			for (size_t gridci=0;gridci<ColDefs.size();gridci++){
 				if ((ColDefs[gridci]->KeyType == KT_REALTIME_CALC)
 					||(ColDefs[gridci]->KeyType == KT_REALTIME)
 					||(ColDefs[gridci]->KeyType == KT_MYSTOCK_REALTIME)){
@@ -334,7 +334,7 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
     else{
 		int myflag=(int)event.UserData;
         Stock* s = (Stock*)event.HistoryStock;
-		
+
 		//Let's first save the data to file,so nexttime we need the data, just load from file
         s->SaveHistoryDataToFile();
 
@@ -345,14 +345,14 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
 		int si = mystocks.GetList()->IndexOf(s);
 		wxASSERT(si!=wxNOT_FOUND);
 		s->UpdateHistoryCalcProps();
-		for (int gridci=0;gridci<ColDefs.size();gridci++){
+		for (size_t gridci=0;gridci<ColDefs.size();gridci++){
 			if (ColDefs[gridci]->KeyType == KT_HISTORY_CALC){
 				UpdateMainGridCell(si,gridci);
 			}
 		}
         mainGrid->AutoSizeColumns();
         mainGrid->EndBatch();
-        
+
 
         if (myflag == 1){ //UserCall
             StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
@@ -457,7 +457,7 @@ void MyFrame::OnRealtimeDeltaTimer(wxTimerEvent& event){
 }
 
 void MyFrame::OnGridCellDbClick(wxGridEvent& event){
-	StocksDataFetch*stock = GetCurFetchObj();
+	//StocksDataFetch*stock = GetCurFetchObj();
 	Stock* s = (*mystocks.GetList())[CurStockStartPos+event.GetRow()];
 
 	wxString Explain=s->ExplainMePropValue(ColDefs[event.GetCol()]->KeyName);

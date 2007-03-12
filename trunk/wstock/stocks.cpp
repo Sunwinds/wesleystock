@@ -22,7 +22,7 @@ void Stocks::InitHistoryDatas(int num){
 	}
 }
 
-void Stock::UpdateHistoryCalcProps(){	
+void Stock::UpdateHistoryCalcProps(){
 	//Update the 10Day avg price
 	if (HistoryDatas.size()>0){//it is a rule, the first array is the day hostory data in descending order
 		double price=0;
@@ -39,10 +39,10 @@ wxString Stock::ExplainMePropValue(const wxString& v){
 	if (v ==  _("PRICE 10D AVG")){
 		wxString desc;
 		if (HistoryDatas.size()>0){//it is a rule, the first array is the day hostory data in descending order
-			double price=0;
+			//double price=0;
 			if (HistoryDatas[0]->size()>10){
 				for (int i=0;i<10;i++){
-					desc += (*HistoryDatas[0])[i]->data.Format(wxT("%Y-%m-%d:")); 
+					desc += (*HistoryDatas[0])[i]->data.Format(wxT("%Y-%m-%d:"));
 					desc += wxString::Format(wxT("%.2f\n"),(*HistoryDatas[0])[i]->adjClose);
 				}
 			}
@@ -72,8 +72,8 @@ void Stocks::SaveStockIndex(){
     for (size_t i=0;i<stocks.size();i++)    {
 		Stock*s =stocks[i];
 		stock = xmlNewChild(doc->children, NULL, X("Stock"), NULL);
-		wxString utfid(wxConvCurrent->cWX2WC(s->GetId().mb_str()),wxConvUTF8);
-		wxString utfname(wxConvCurrent->cWX2WC(s->GetName().mb_str()),wxConvUTF8);
+		wxString utfid(wxConvCurrent->cWX2WC(s->GetId().c_str()),wxConvUTF8);
+		wxString utfname(wxConvCurrent->cWX2WC(s->GetName().c_str()),wxConvUTF8);
 		xmlSetProp(stock,X("Id"),X(utfid.mb_str()));
 		xmlSetProp(stock,X("Name"),X(utfname.mb_str()));
     }

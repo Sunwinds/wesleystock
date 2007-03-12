@@ -4,13 +4,13 @@
 #include "app.h"
 
 BEGIN_EVENT_TABLE(MyStockDialog, wxDialog)
-	EVT_TEXT_ENTER(-1,OnEnterProcess) 
-	EVT_STOCK_VALIDATE_DONE(-1, OnUrlValidDone)
+	EVT_TEXT_ENTER(-1,MyStockDialog::OnEnterProcess)
+	EVT_STOCK_VALIDATE_DONE(-1, MyStockDialog::OnUrlValidDone)
 END_EVENT_TABLE()
 
 void MyStockDialog::OnUrlValidDone(wxStockValidateDoneEvent &event){
 	if (event.Result.IsEmpty()){
-		wxLogMessage(_("%s is not a valid stock id, or network error!"),event.Id);
+		wxLogMessage(_("%s is not a valid stock id, or network error!"),event.Id.c_str());
 		return;
 	}
 	if (validateStocks){
@@ -21,7 +21,7 @@ void MyStockDialog::OnUrlValidDone(wxStockValidateDoneEvent &event){
 			s->InitHistoryData(stock->GetHistoryDataGroupNum());
             s->LoadHistoryDataFromFile();
             validateStocks->GetList()->Append(s);
-			validateStocks->SaveStockIndex();			
+			validateStocks->SaveStockIndex();
 		}
 		if (t_stockid->GetValue() == event.Id){
 			text_stockname->SetValue(event.Result);
