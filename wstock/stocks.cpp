@@ -151,25 +151,52 @@ bool Stock::LoadHistoryDataFromFile(){
 				now.GetDay(),
 				i));
 		if (fn.FileExists()){
-			wxFileInputStream input(fn.GetFullPath());
-			wxDataInputStream store( input );
-			while (!input.Eof()){
-				StockHistoryDataPiece *p = new StockHistoryDataPiece;
-				int y,m,d;
-				store >> y >> m >> d;
-				if (input.Eof()){
-					delete (p);
-					break;
-				}
-				HistoryDatas[i]->push_back(p);
-				p->data  = wxDateTime(d,(wxDateTime::Month)m,y);
-				store   >> p->open
-						>> p->High
-						>> p->Low
-						>> p->Close
-						>> p->volume
-						>> p->adjClose;
+
+			xmlDocPtr doc = xmlParseFile((const char*)fn.GetFullPath().mb_str());
+			if (doc == NULL ) {
+				wxLogError(_("Document not parsed successfully. \n"));
+				return false;
 			}
+			for (xmlNodePtr node=doc->children->children;node;node=node->next){
+				if (xmlStrcmp(node->name,(const xmlChar*)"HistoryData")==0){
+					wxString Year(wxConvUTF8.cMB2WC(
+						(char*)xmlGetProp(node, (const xmlChar*)"Year")),*wxConvCurrent);
+					wxString Month(wxConvUTF8.cMB2WC(
+						(char*)xmlGetProp(node, (const xmlChar*)"Month")),*wxConvCurrent);
+					wxString Day(wxConvUTF8.cMB2WC(
+						(char*)xmlGetProp(node, (const xmlChar*)"Day")),*wxConvCurrent);
+					wxString Open(wxConvUTF8.cMB2WC(
+						(char*)xmlGetProp(node, (const xmlChar*)"Open")),*wxConvCurrent);
+					wxString High(wxConvUTF8.cMB2WC(
+						(char*)xmlGetProp(node, (const xmlChar*)"High")),*wxConvCurrent);
+					wxString Low(wxConvUTF8.cMB2WC(
+						(char*)xmlGetProp(node, (const xmlChar*)"Low")),*wxConvCurrent);
+					wxString Close(wxConvUTF8.cMB2WC(
+						(char*)xmlGetProp(node, (const xmlChar*)"Close")),*wxConvCurrent);
+					wxString volume(wxConvUTF8.cMB2WC(
+						(char*)xmlGetProp(node, (const xmlChar*)"volume")),*wxConvCurrent);
+					wxString adjClose(wxConvUTF8.cMB2WC(
+						(char*)xmlGetProp(node, (const xmlChar*)"adjClose")),*wxConvCurrent);
+
+					if (!Year.IsEmpty()){
+						StockHistoryDataPiece *p = new StockHistoryDataPiece;
+						long y,m,d;
+						Year.ToLong(&y);
+						Month.ToLong(&m);
+						Day.ToLong(&d);
+						HistoryDatas[i]->push_back(p);
+						p->data  = wxDateTime(d,(wxDateTime::Month)m,y);
+						Open.ToDouble(&p->open);
+						High.ToDouble(&p->High);
+						Low.ToDouble(&p->Low);
+						Close.ToDouble(&p->Close);
+						volume.ToLong(&m);
+						p->volume = m;
+						adjClose.ToDouble(&p->adjClose);
+					}
+				}
+			}
+			xmlFreeDoc(doc);
 		}
 		else{
 			return false;
@@ -199,27 +226,47 @@ bool Stock::SaveHistoryDataToFile(){
 			}
 		}
 
-		wxFileOutputStream output(fn.GetFullPath());
-		if (!output.Ok()){
-			wxLogError(_("Try to open file output stream %s fail!"),fn.GetFullPath().c_str());
-			return false;
-		}
-		wxDataOutputStream store(output);
+		xmlDocPtr doc;
+		xmlNodePtr node;
+		doc = xmlNewDoc(X("1.0"));
+		doc->children = xmlNewDocNode(doc, NULL, X("HistoryDatas"), NULL);
+		xmlDocSetRootElement(doc, doc->children);
 		size_t i;
 		for (i =0;i<HistoryDatas[idx]->GetCount();i++){
-			int y=(*HistoryDatas[idx])[i]->data.GetYear();
-			int m=(*HistoryDatas[idx])[i]->data.GetMonth();
-			int d=(*HistoryDatas[idx])[i]->data.GetDay();
-			store << y
-				  << m
-				  << d
-				  << (*HistoryDatas[idx])[i]->open
-				  << (*HistoryDatas[idx])[i]->High
-				  << (*HistoryDatas[idx])[i]->Low
-				  << (*HistoryDatas[idx])[i]->Close
-				  << (*HistoryDatas[idx])[i]->volume
-				  << (*HistoryDatas[idx])[i]->adjClose;
+			node = xmlNewChild(doc->children, NULL, X("HistoryData"), NULL);
+			char y[20]="",
+				 m[20]="",
+				 d[20]="",
+				 open[20]="",
+				 High[20]="",
+				 Low[20]="",
+				 Close[20]="",
+				 volume[20]="",
+				 adjClose[20]="";
+			sprintf(y,"%d",(*HistoryDatas[idx])[i]->data.GetYear());
+			sprintf(m,"%d",(*HistoryDatas[idx])[i]->data.GetMonth());
+			sprintf(d,"%d",(*HistoryDatas[idx])[i]->data.GetDay());
+			sprintf(open,"%.2f",(*HistoryDatas[idx])[i]->open);
+			sprintf(High,"%.2f",(*HistoryDatas[idx])[i]->High);
+			sprintf(Low,"%.2f",(*HistoryDatas[idx])[i]->Low);
+			sprintf(Close,"%.2f",(*HistoryDatas[idx])[i]->Close);
+			sprintf(volume,"%d",(*HistoryDatas[idx])[i]->volume);
+			sprintf(adjClose,"%.2f",(*HistoryDatas[idx])[i]->adjClose);
+
+			xmlSetProp(node,X("Year"),X(y));
+			xmlSetProp(node,X("Month"),X(m));
+			xmlSetProp(node,X("Day"),X(d));
+			xmlSetProp(node,X("Open"),X(open));
+			xmlSetProp(node,X("High"),X(High));
+			xmlSetProp(node,X("Low"),X(Low));
+			xmlSetProp(node,X("Close"),X(Close));
+			xmlSetProp(node,X("volume"),X(volume));
+			xmlSetProp(node,X("adjClose"),X(adjClose));
 		}
+
+		xmlSaveFormatFileEnc((const char*)fn.GetFullPath().mb_str(),doc,"utf-8",1);
+		xmlFreeDoc(doc);
+
 	}
     return true;
 }

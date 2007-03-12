@@ -101,7 +101,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     CreateStatusBar(2);
     int Widths[]={-1,100};
     SetStatusWidths(2,Widths);
-    SetStatusText(_("Hello Code::Blocks user !"),0);
+    SetStatusText(_("Hello wstock user !"),0);
     SetStatusText(_("WSTOCK"),1);
 #endif // wxUSE_STATUSBAR
 }
@@ -219,7 +219,22 @@ MyFrame::~MyFrame()
 }
 
 void MyFrame::OnUpdateFromGoogleDone(wxNotifyEvent&event){
+
+	MyStockDataHash::iterator i = mystocks.GetDatas().begin();
+	while (i != mystocks.GetDatas().end())    {
+		wxString stockid = i->first;
+		MyStockStru* pmystock = i->second;
+		Stock*s=stocks.GetStockById(stockid);
+		i++;
+		if (!s){
+			wxLogStatus(_("StockId %s is not a valid StockId"),stockid);
+			mystocks.GetDatas().erase(stockid);
+			delete(pmystock);
+		}
+	}
+
     mystocks.UpdateStockList(stocks.GetList());
+	mystocks.SaveDataToFile();
     UpdateMainGrid(0);
 }
 
@@ -443,8 +458,7 @@ void MyFrame::OnQuit(wxCommandEvent& event)
 
 void MyFrame::OnAbout(wxCommandEvent& event)
 {
-    wxString msg = wxbuildinfo(long_f);
-    wxMessageBox(msg, _("Welcome to..."));
+    wxMessageBox(_("Author Blog:http://wxblender.blogspot.com"), _("Welcome to wstock"));
 }
 
 StocksDataFetch*MyFrame::GetCurFetchObj(){
@@ -495,7 +509,7 @@ void MyFrame::OnGridCellDbClick(wxGridEvent& event){
 	}
 }
 
-
+#define X(x) (xmlChar*)((const char*)x)
 bool MyStocks::SaveDataToFile(){
     wxFileName fn(WStockConfig::GetHistoryDataDir(),wxT("mystocks.dat"));
     fn.MakeAbsolute();
@@ -505,30 +519,44 @@ bool MyStocks::SaveDataToFile(){
             return false;
         }
     }
-    wxFileOutputStream output(fn.GetFullPath());
-    if (!output.Ok()){
-        wxLogError(_("Try to open file output stream %s fail!"),fn.GetFullPath().c_str());
-        return false;
-    }
+	{
+		xmlDocPtr doc;
+		xmlNodePtr xmlnode;
+		doc = xmlNewDoc(X("1.0"));
+		doc->children = xmlNewDocNode(doc, NULL, X("MyStocks"), NULL);
+		xmlDocSetRootElement(doc, doc->children);
+		MyStockDataHash::iterator i = datas.begin();
+		while (i != datas.end())    {
+			wxString stockid = i->first;
+			MyStockStru* pmystock = i->second;
 
-    wxDataOutputStream store(output);
-    MyStockDataHash::iterator i = datas.begin();
-    while (i != datas.end())    {
-        wxString stockid = i->first;
-        MyStockStru* pmystock = i->second;
+			BuyInfoList::Node* node = pmystock->buyinfos.GetFirst();
+			while (node)
+			{
+				BuyInfo* pbuyinfo = node->GetData();
+				xmlnode = xmlNewChild(doc->children, NULL, X("MyStock"), NULL);
+				xmlSetProp(xmlnode,X("StockId"),X(stockid.mb_str()));
+				char s1[20]="",
+					 s2[20]="",
+					 s3[20]="",
+					 s4[20]="";
+				sprintf(s1,"%d",pbuyinfo->data.GetTicks());
+				sprintf(s2,"%d",pbuyinfo->BuyAmount);
+				sprintf(s3,"%.2f",pbuyinfo->BuyPrice);
+				sprintf(s4,"%d",pbuyinfo->Op);
 
-        BuyInfoList::Node* node = pmystock->buyinfos.GetFirst();
-        while (node)
-        {
-            BuyInfo* pbuyinfo = node->GetData();
-            store <<stockid << (wxInt32)pbuyinfo->data.GetTicks()
-                            << pbuyinfo->BuyAmount
-                            << pbuyinfo->BuyPrice
-                            << pbuyinfo->Op;
+				xmlSetProp(xmlnode,X("Date"),X(s1));
+				xmlSetProp(xmlnode,X("BuyAmount"),X(s2));
+				xmlSetProp(xmlnode,X("BuyPrice"),X(s3));
+				xmlSetProp(xmlnode,X("Op"),X(s4));
             node = node->GetNext();
-        }
-        i++;
-    }
+			}
+			i++;
+		}
+
+		xmlSaveFormatFileEnc((const char*)fn.GetFullPath().mb_str(),doc,"utf-8",1);
+		xmlFreeDoc(doc);
+	}
     return true;
 }
 
@@ -536,25 +564,41 @@ bool MyStocks::LoadDataFromFile(){
     wxDateTime now = wxDateTime::Now();
     wxFileName fn(WStockConfig::GetHistoryDataDir(),wxT("mystocks.dat"));
     if (fn.FileExists()){
-        wxFileInputStream input(fn.GetFullPath());
-        wxDataInputStream store( input );
-        while (!input.Eof()){
-			if (input.GetSize() <= input.TellI()) break;
-            wxString stockid;
-            store >> stockid;
-            if (input.Eof()){
-                break;
-            }
-            if (datas.find(stockid) == datas.end()){
-                datas[stockid] = new MyStockStru;
-                datas[stockid]->stock = NULL;
-            }
-            BuyInfo* pbuyinfo = new BuyInfo;
-            wxInt32 ticks;
-            store   >>ticks >> pbuyinfo->BuyAmount >> pbuyinfo->BuyPrice >> pbuyinfo->Op;
-            pbuyinfo->data = wxDateTime((time_t)ticks);
-            datas[stockid]->buyinfos.push_back(pbuyinfo);
-        }
+		xmlDocPtr doc = xmlParseFile((const char*)fn.GetFullPath().mb_str());
+		if (doc == NULL ) {
+			wxLogError(_("Document not parsed successfully. \n"));
+			return false;
+		}
+		for (xmlNodePtr node=doc->children->children;node;node=node->next){
+			if (xmlStrcmp(node->name,(const xmlChar*)"MyStock")==0){
+				wxString StockId(wxConvUTF8.cMB2WC(
+					(char*)xmlGetProp(node, (const xmlChar*)"StockId")),*wxConvCurrent);
+				wxString Date(wxConvUTF8.cMB2WC(
+					(char*)xmlGetProp(node, (const xmlChar*)"Date")),*wxConvCurrent);
+				wxString BuyAmount(wxConvUTF8.cMB2WC(
+					(char*)xmlGetProp(node, (const xmlChar*)"BuyAmount")),*wxConvCurrent);
+				wxString BuyPrice(wxConvUTF8.cMB2WC(
+					(char*)xmlGetProp(node, (const xmlChar*)"BuyPrice")),*wxConvCurrent);
+				wxString Op(wxConvUTF8.cMB2WC(
+					(char*)xmlGetProp(node, (const xmlChar*)"Op")),*wxConvCurrent);
+
+				if (!StockId.IsEmpty()){
+					if (datas.find(StockId) == datas.end()){
+						datas[StockId] = new MyStockStru;
+						datas[StockId]->stock = NULL;
+					}
+					BuyInfo* pbuyinfo = new BuyInfo;
+					long ticks;
+					Date.ToLong(&ticks);
+					BuyAmount.ToLong(&pbuyinfo->BuyAmount);
+					BuyPrice.ToDouble(&pbuyinfo->BuyPrice);
+					BuyAmount.ToLong(&pbuyinfo->Op);
+					pbuyinfo->data = wxDateTime((time_t)ticks);
+					datas[StockId]->buyinfos.push_back(pbuyinfo);
+				}
+			}
+		}
+		xmlFreeDoc(doc);
     }
 
     return true;

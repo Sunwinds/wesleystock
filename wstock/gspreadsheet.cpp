@@ -125,6 +125,9 @@ void GSpreadSheets::OnUrlGetDone(wxUrlGetDoneEvent& event){
                 }
                 if (!Good) break;
                 if (Record.size() == 5){
+					if (Record[0].StartsWith(wxT("S_"))){//Google is so strange to remove the 0 before value,so we add "S_"
+						Record[0].Remove(0,2);
+					}
                     if (Data->find(Record[0]) == Data->end()){
                         (*Data)[Record[0]] = new MyStockStru();
                     }
@@ -206,7 +209,7 @@ void GSpreadSheets::PutToGoogle(MyStockDataHash* data){
             {
                 wxString postdata(entry);
                 postdata <<  wxT("<gs:cell row='") << RecordIdx+1 << wxT("' col='1' inputValue='")
-                          <<stockid <<wxT("'/> </entry>");
+                          <<wxT("S_") <<stockid <<wxT("'/> </entry>");
                 cellPostBuffer.Add(postdata);
             }
             {
