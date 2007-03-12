@@ -24,6 +24,7 @@ class SinaStock:public StocksDataFetch
         virtual int GetProptiesNum();
         virtual wxString GetPropertyName(int idx){return Props[idx]; };
 		virtual int GetHistoryDataGroupNum(){return 1;};
+		virtual void ValidateStockId(wxWindow*Owner,const wxString& Id);
 
         void OnUrlGetDone(wxUrlGetDoneEvent& event);
         void FetchHistoryData(Stock* s,int datatype=0,void* UserData=NULL);

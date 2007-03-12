@@ -2,6 +2,8 @@
 
 #include <wx/wx.h>
 #include <wx/image.h>
+#include <wx/valgen.h>
+#include "stocks.h"
 
 #ifndef MYSTOCKDIALOG_H
 #define MYSTOCKDIALOG_H
@@ -9,6 +11,20 @@
 // begin wxGlade: ::dependencies
 #include <wx/statline.h>
 // end wxGlade
+
+#include "wstockgeturl.h"
+
+class wxStockIdValidator: public wxGenericValidator
+{
+public:
+	wxStockIdValidator(wxString *v):wxGenericValidator(v){};
+	virtual bool Validate(wxWindow * parent);
+	virtual wxObject *Clone() const { 
+		wxStockIdValidator*pv= new wxStockIdValidator(m_pString); 
+		return pv;
+	}
+};
+
 
 class wxDoubleValidator: public wxValidator
 {
@@ -104,7 +120,10 @@ public:
         TransferDataToWindow();
     };
     const MyStockDialogData& GetData(){return data;};
-
+	void SetStocks(Stocks *ss){
+		validateStocks = ss;
+	};
+	Stocks*GetValidateStocks(){return validateStocks;};
 private:
     // begin wxGlade: MyStockDialog::methods
     void set_properties();
@@ -113,9 +132,13 @@ private:
     MyStockDialogData data;
 
 protected:
+	Stocks* validateStocks;
+
     // begin wxGlade: MyStockDialog::attributes
     wxStaticText* label_1;
     wxTextCtrl* t_stockid;
+    wxStaticText* label_13;
+    wxTextCtrl* text_stockname;
     wxStaticText* label_2;
     wxTextCtrl* t_acount;
     wxStaticText* label_3;
@@ -126,6 +149,10 @@ protected:
     wxButton* button_2;
     wxButton* button_3;
     // end wxGlade
+    void OnEnterProcess(wxCommandEvent &event); // wxGlade: <event_handler>
+	void OnUrlValidDone(wxStockValidateDoneEvent &event);
+protected:
+    DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
 
 

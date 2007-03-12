@@ -116,6 +116,35 @@ typedef enum {
     HISTORY_RETRIVE
 } StockRetriveType;
 
+class wxStockValidateDoneEvent : public wxNotifyEvent
+{
+    public:
+    wxStockValidateDoneEvent(wxEventType commandType = wxEVT_NULL,
+		const wxString& id=wxT(""),
+		const wxString& result=wxT("")):
+        wxNotifyEvent(commandType, -1){
+			Id= id;
+			Result = result;
+        };
+    wxStockValidateDoneEvent(const wxStockValidateDoneEvent& event): wxNotifyEvent(event){
+			Id = event.Id;
+			Result = event.Result;
+        };
+    virtual wxEvent *Clone() const {
+        return new wxStockValidateDoneEvent(*this);
+    };
+	wxString Id;
+    wxString Result;
+    DECLARE_DYNAMIC_CLASS(wxStockValidateDoneEvent);
+};
+typedef void (wxEvtHandler::*wxStockValidateDoneEventFunction)(wxStockValidateDoneEvent&);
+
+extern const wxEventType wxEVT_STOCK_VALIDATE_DONE;
+#define EVT_STOCK_VALIDATE_DONE(id, fn) DECLARE_EVENT_TABLE_ENTRY( \
+    wxEVT_STOCK_VALIDATE_DONE, id, -1, (wxObjectEventFunction) (wxEventFunction) \
+    (wxStockValidateDoneEventFunction) & fn, \
+    (wxObject *) NULL ),
+
 class wxStockDataGetDoneEvent : public wxNotifyEvent
 {
     public:
@@ -172,6 +201,7 @@ class Stocks:public wxObject
         Stock *GetStockById(const wxString& id);
 		void InitHistoryDatas(int num);
         StockList* GetList(){ return &stocks;};
+		void SaveStockIndex();
     private:
         wxEvtHandler* Parent;
         StockList stocks;
@@ -188,6 +218,7 @@ class StocksDataFetch:public wxEvtHandler
         virtual int GetProptiesNum()=0;
 		virtual int GetHistoryDataGroupNum()=0;
 		virtual bool HasKey(const wxString& k)=0;
+		virtual void ValidateStockId(wxWindow*Owner, const wxString& Id)=0;
         virtual wxString GetPropertyName(int idx)=0;
     protected:
         StockList* stocks;

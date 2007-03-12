@@ -29,6 +29,12 @@ bool HtmlTableParser::HandleTag(const wxHtmlTag& tag){
             tdtexts.Add(GetPureText(Inner));
         }
     }
+	else if (tag.GetName() == wxT("TITLE")){
+        wxString Inner=m_Parser->GetSource()->Mid(tag.GetBeginPos(),tag.GetEndPos1()-tag.GetBeginPos());
+        if (Inner.size()<200){
+            Title = GetPureText(Inner);
+        }
+	}
     ParseInner(tag);
     return true;
 }

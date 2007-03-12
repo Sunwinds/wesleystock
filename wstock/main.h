@@ -66,7 +66,6 @@ class MyFrame: public wxFrame
         Stocks stocks;
         MyStocks mystocks;
         wxTimer RealTimeDeltaTimer;
-        StocksDataFetch* CurFetchObj;
         GSpreadSheets * gss;
 		MainGridDef_StruList ColDefs;
 

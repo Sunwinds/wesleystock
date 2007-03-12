@@ -11,7 +11,7 @@ class HtmlTableParser:public wxHtmlTagHandler
         ~HtmlTableParser(){};
         bool HandleTag(const wxHtmlTag& tag);
         virtual wxString GetSupportedTags(){
-            return wxT("TD");
+            return wxT("TD,TITLE");
         };
         wxString GetPureText(wxString html);
         void HandleText(const wxChar* txt);
@@ -19,8 +19,10 @@ class HtmlTableParser:public wxHtmlTagHandler
         int GetTDIndex(const wxString& value);
         int GetTDCount(){ return tdtexts.size();};
         void DumpTable();
+		wxString GetTitle(){return Title;};
     private:
         wxArrayString tdtexts;
+		wxString Title;
 };
 
 class MyHtmlParser:public wxHtmlParser

@@ -18,7 +18,9 @@ class MyApp : public wxApp
 {
 	public:
 		virtual bool OnInit();
+		StocksDataFetch*GetCurFetchObj();
     private :
+		StocksDataFetch* CurFetchObj;
         Stocks* stocks;
         wxLocale m_locale;
 };

@@ -1,3 +1,4 @@
+#include "app.h"
 #include "main.h"
 #include <wx/datetime.h>
 #include <wx/filename.h>
@@ -89,7 +90,6 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 
     SetMenuBar(mbar);
 #endif // wxUSE_MENUS
-    CurFetchObj = NULL;
     mainGrid = new wxGrid(this,-1);
     mainGrid->CreateGrid(1,5);
     mainGrid->SetDefaultCellAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
@@ -400,12 +400,14 @@ void MyFrame::OnUpdateFromGoogle(wxCommandEvent& event)
 void MyFrame::OnAddMyStock(wxCommandEvent& event)
 {
     MyStockDialog dialog(this,-1,wxT("Add One Stock"));
+	dialog.SetStocks(&stocks);
     if (dialog.ShowModal() == wxID_OK){
         BuyInfo*pinfo =new BuyInfo;
         pinfo->BuyAmount = dialog.GetData().ACount;
         pinfo->BuyPrice = dialog.GetData().Price;
         pinfo->Op = dialog.GetData().Op;
         pinfo->data = wxDateTime::Now();
+		//wxLogMessage(dialog.GetData().StockId);
         if (mystocks.GetDatas().find(dialog.GetData().StockId) != mystocks.GetDatas().end()){
             mystocks.GetDatas()[dialog.GetData().StockId]->buyinfos.push_back(pinfo);
         }
@@ -446,11 +448,7 @@ void MyFrame::OnAbout(wxCommandEvent& event)
 }
 
 StocksDataFetch*MyFrame::GetCurFetchObj(){
-    if (CurFetchObj) return CurFetchObj;
-    wxString DataProviderClass(wxT("SinaStock"));
-    StocksDataFetch* stock = wxDynamicCast(wxCreateDynamicObject(DataProviderClass), StocksDataFetch);
-    if (stock) stock->SetParent(this);
-    return stock;
+	return wxGetApp().GetCurFetchObj();
 }
 
 void MyFrame::OnRealtimeDeltaTimer(wxTimerEvent& event){
