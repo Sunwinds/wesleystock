@@ -10,6 +10,7 @@ bool MyApp::OnInit()
 {
     SetAppName(APP_CFG);
     SetVendorName(VENDOR_CFG);
+    CurFetchObj = NULL;
 
     m_locale.Init(/*wxLANGUAGE_CHINESE_SIMPLIFIED*/);
     wxLocale::AddCatalogLookupPathPrefix(wxT("."));
@@ -23,4 +24,12 @@ bool MyApp::OnInit()
 	frame->Show();
 	frame->Maximize();
 	return true;
+}
+
+StocksDataFetch*MyApp::GetCurFetchObj(){
+    if (CurFetchObj) return CurFetchObj;
+    wxString DataProviderClass(wxT("SinaStock"));
+    StocksDataFetch* stock = wxDynamicCast(wxCreateDynamicObject(DataProviderClass), StocksDataFetch);
+    if (stock) stock->SetParent(this);
+    return stock;
 }

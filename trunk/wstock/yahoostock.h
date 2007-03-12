@@ -26,6 +26,7 @@ class YahooStock:public StocksDataFetch
 		virtual bool HasKey(const wxString& k){
 			return Props.Index(k) != wxNOT_FOUND;
 		}
+		virtual void ValidateStockId(wxWindow*Owner,const wxString& Id){};
         virtual int GetProptiesNum();
         virtual wxString GetPropertyName(int idx){return Props[idx]; };
 		virtual int GetHistoryDataGroupNum(){return 3;};
