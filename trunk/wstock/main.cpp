@@ -592,7 +592,7 @@ bool MyStocks::LoadDataFromFile(){
 					Date.ToLong(&ticks);
 					BuyAmount.ToLong(&pbuyinfo->BuyAmount);
 					BuyPrice.ToDouble(&pbuyinfo->BuyPrice);
-					BuyAmount.ToLong(&pbuyinfo->Op);
+					Op.ToLong(&pbuyinfo->Op);
 					pbuyinfo->data = wxDateTime((time_t)ticks);
 					datas[StockId]->buyinfos.push_back(pbuyinfo);
 				}
