@@ -17,6 +17,11 @@ WX_DEFINE_LIST(wxPointList);
 
 void wxPlotWindow::OnDraw(wxDC& dc)
 {
+	wxColour cs[]={
+		*wxBLACK,
+		*wxBLUE,
+		*wxRED
+	};
     dc.SetFont(*wxSWISS_FONT);
     //dc.SetPen(*wxGREEN_PEN);
     if (!stock){
@@ -27,7 +32,7 @@ void wxPlotWindow::OnDraw(wxDC& dc)
     }
     else{
 		for (size_t i=0;i<stock->HistoryDatas.size();i++){
-			DrawPricePlot(dc, *stock->HistoryDatas[i]);
+			DrawPricePlot(dc, *stock->HistoryDatas[i],i==0,cs[i % WXSIZEOF(cs)]);
 		}
     }
 }

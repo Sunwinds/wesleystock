@@ -61,6 +61,14 @@ class Stock :public wxObject
             return HistoryDataReady;
         }
         void AppendHistoryData(int idx, StockHistoryDataPiece*p){ HistoryDatas[idx]->push_back(p);};
+        void InsertHistoryData(int idx, StockHistoryDataPiece*p){ 
+			if (HistoryDatas[idx]->size()==0){
+				HistoryDatas[idx]->push_back(p);
+			}
+			else{
+				HistoryDatas[idx]->Insert(p,0);
+			}
+		};
         //void AppendWeekData(StockHistoryDataPiece*p){ WeekHistoryData.push_back(p);};
         //void AppendMonthData(StockHistoryDataPiece*p){ MonthHistoryData.push_back(p);};
         void SetPropertyValue(const wxString& name,const wxString& value){

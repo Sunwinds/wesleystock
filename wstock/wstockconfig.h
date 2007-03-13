@@ -58,6 +58,11 @@ class WStockConfig :public wxObject
             config.Read(wxT("Curl/Auth"), &DataDir);
             return DataDir;
         };
+        static int GetDataProvider(){
+            int DataDir = 1;
+            config.Read(wxT("General/DataProvider"), &DataDir);
+            return DataDir;
+        };
         static bool GetCurlNoProxy(){
             bool DataDir = true;
             config.Read(wxT("Curl/NoProxy"), &DataDir);
@@ -83,6 +88,9 @@ class WStockConfig :public wxObject
         };
         static void SetCurlAuth(int keyPath){
             config.Write(wxT("Curl/Auth"), keyPath);
+        };
+        static void SetDataProvider(int keyPath){
+            config.Write(wxT("General/DataProvider"), keyPath);
         };
         static void SetCurlNoProxy(bool keyPath){
             config.Write(wxT("Curl/NoProxy"), keyPath);

@@ -1,13 +1,22 @@
 #include "app.h"
 #include "wstockconfig.h"
+#include "wstockcustomdialog.h"
 #include "main.h"
 
 IMPLEMENT_APP(MyApp);
 
 wxConfig config(APP_CFG, VENDOR_CFG);
 
+#ifdef __WXDEBUG__
+FILE *fp=fopen("log.dat","w");
+#endif
 bool MyApp::OnInit()
 {
+#ifdef __WXDEBUG__
+	wxLogStderr *globallog = new wxLogStderr(fp);
+	wxLog::SetActiveTarget(globallog);
+#endif
+
     SetAppName(APP_CFG);
     SetVendorName(VENDOR_CFG);
     CurFetchObj = NULL;
@@ -28,7 +37,8 @@ bool MyApp::OnInit()
 
 StocksDataFetch*MyApp::GetCurFetchObj(){
     if (CurFetchObj) return CurFetchObj;
-    wxString DataProviderClass(wxT("SinaStock"));
+	wstockcustomdialog dialog(NULL,-1,wxT(""));
+    wxString DataProviderClass(dialog.GetDataProvider());
     StocksDataFetch* stock = wxDynamicCast(wxCreateDynamicObject(DataProviderClass), StocksDataFetch);
     if (stock) stock->SetParent(frame);
     return stock;

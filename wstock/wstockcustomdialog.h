@@ -19,7 +19,7 @@ public:
 
     wstockcustomdialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE);
     void StoreSettings(void);
-
+	wxString GetDataProvider();
 private:
     // begin wxGlade: wstockcustomdialog::methods
     void set_properties();
@@ -32,6 +32,8 @@ protected:
     wxTextCtrl* text_keypath;
     wxStaticText* label_5;
     wxTextCtrl* text_history_dir;
+    wxStaticText* label_14;
+    wxComboBox* combo_data_provider;
     wxPanel* notebook_1_pane_1;
     wxStaticText* label_6;
     wxTextCtrl* text_gacount;

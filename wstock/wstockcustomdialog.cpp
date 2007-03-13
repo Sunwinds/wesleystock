@@ -3,6 +3,10 @@
 #include "wstockcustomdialog.h"
 #include "wstockconfig.h"
 
+wxString wstockcustomdialog::GetDataProvider(){
+	return combo_data_provider->GetString(WStockConfig::GetDataProvider());
+}
+
 wstockcustomdialog::wstockcustomdialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE)
 {
@@ -15,6 +19,12 @@ wstockcustomdialog::wstockcustomdialog(wxWindow* parent, int id, const wxString&
     text_keypath = new wxTextCtrl(notebook_1_pane_1, -1, wxT(""));
     label_5 = new wxStaticText(notebook_1_pane_1, -1, _("History Dir:"));
     text_history_dir = new wxTextCtrl(notebook_1_pane_1, -1, wxT(""));
+    label_14 = new wxStaticText(notebook_1_pane_1, -1, _("Data Provider:"));
+    const wxString combo_data_provider_choices[] = {
+        _("SinaStock"),
+        _("SohuStock")
+    };
+    combo_data_provider = new wxComboBox(notebook_1_pane_1, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 2, combo_data_provider_choices, wxCB_DROPDOWN|wxCB_READONLY);
     label_6 = new wxStaticText(notebook_1_pane_2, -1, _("GoogleAcount:"));
     text_gacount = new wxTextCtrl(notebook_1_pane_2, -1, wxT(""));
     label_7 = new wxStaticText(notebook_1_pane_2, -1, _("GooglePasswd:"));
@@ -51,6 +61,7 @@ void wstockcustomdialog::set_properties()
 {
     // begin wxGlade: wstockcustomdialog::set_properties
     SetSize(wxSize(283, 258));
+    combo_data_provider->SetSelection(-1);
     combo_curl_auth->SetSelection(-1);
     // end wxGlade
     text_keypath->SetValue(WStockConfig::GetKeyPath());
@@ -62,6 +73,7 @@ void wstockcustomdialog::set_properties()
     text_curl_userpwd->SetValue(WStockConfig::GetCurlUserPwd());
     combo_curl_auth->SetSelection(WStockConfig::GetCurlAuth());
     checkbox_curl_noproxy->SetValue(WStockConfig::GetCurlNoProxy());
+	combo_data_provider->SetSelection(WStockConfig::GetDataProvider());
 }
 
 extern wxConfig config;
@@ -75,6 +87,7 @@ void wstockcustomdialog::StoreSettings(void){
     WStockConfig::SetCurlUserPwd(text_curl_userpwd->GetValue());
     WStockConfig::SetCurlAuth(combo_curl_auth->GetSelection());
     WStockConfig::SetCurlNoProxy(checkbox_curl_noproxy->GetValue());
+	WStockConfig::SetDataProvider(combo_data_provider->GetSelection());
     config.Flush(true);
 }
 
@@ -88,11 +101,13 @@ void wstockcustomdialog::do_layout()
     wxFlexGridSizer* grid_sizer_4 = new wxFlexGridSizer(3, 2, 0, 0);
     wxFlexGridSizer* grid_sizer_3 = new wxFlexGridSizer(3, 2, 0, 0);
     wxBoxSizer* sizer_8 = new wxBoxSizer(wxVERTICAL);
-    wxFlexGridSizer* grid_sizer_2 = new wxFlexGridSizer(2, 2, 0, 0);
+    wxFlexGridSizer* grid_sizer_2 = new wxFlexGridSizer(3, 2, 0, 0);
     grid_sizer_2->Add(label_4, 0, wxALL|wxALIGN_RIGHT|wxADJUST_MINSIZE, 5);
     grid_sizer_2->Add(text_keypath, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
     grid_sizer_2->Add(label_5, 0, wxALL|wxALIGN_RIGHT|wxADJUST_MINSIZE, 5);
     grid_sizer_2->Add(text_history_dir, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
+    grid_sizer_2->Add(label_14, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 0);
+    grid_sizer_2->Add(combo_data_provider, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
     grid_sizer_2->AddGrowableCol(1);
     sizer_8->Add(grid_sizer_2, 1, wxEXPAND, 0);
     notebook_1_pane_1->SetAutoLayout(true);

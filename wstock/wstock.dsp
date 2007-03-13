@@ -125,6 +125,14 @@ SOURCE=.\sinastock.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\sohustock.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\sohustock.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\StockHistoryDialog.cpp
 # End Source File
 # Begin Source File
