@@ -37,7 +37,7 @@ bool MyApp::OnInit()
 
 StocksDataFetch*MyApp::GetCurFetchObj(){
     if (CurFetchObj) return CurFetchObj;
-	wstockcustomdialog dialog(NULL,-1,wxT(""));
+	wstockcustomdialog dialog(frame,-1,wxT(""));
     wxString DataProviderClass(dialog.GetDataProvider());
     StocksDataFetch* stock = wxDynamicCast(wxCreateDynamicObject(DataProviderClass), StocksDataFetch);
     if (stock) stock->SetParent(frame);

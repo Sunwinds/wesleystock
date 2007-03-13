@@ -38,7 +38,7 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 			delete(data);
 			return;
 		}
-        
+
 		wxLogStatus(wxT(""));
         if (data->FetchSeed == RealtimeFetchSeed){
             HtmlTableParser *p=new HtmlTableParser();
@@ -60,20 +60,26 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 			else{
 				int idx=p->GetTDIndex(RealTimeKey);
 				wxASSERT(p->GetTDCount()>=(idx+8+(stocks->size()-1)*15));
+				bool IsSucc=true;
 				if (idx>=0){
+				    wxString datetime = p->GetValue(idx-15);
+				    //wxLogMessage(datetime);
 					for (size_t i=0;i<stocks->size();i++){
 						(*stocks)[i]->SetPropertyValue(Props[0], p->GetValue(idx+6+i*14));
 						(*stocks)[i]->SetPropertyValue(Props[1], p->GetValue(idx+7+i*14));
 						(*stocks)[i]->SetPropertyValue(Props[2], p->GetValue(idx+9+i*14));
 						(*stocks)[i]->SetPropertyValue(Props[3], p->GetValue(idx+8+i*14));
+						(*stocks)[i]->SetPropertyValue(Props[4], datetime.BeforeFirst(wxT(' ')));
+						(*stocks)[i]->SetPropertyValue(Props[5], datetime.AfterFirst(wxT(' ')));
 					}
 				}
 				else{
-					wxLogMessage(wxT("Not Found!"));
+					IsSucc = false;
 				}
 				//Tell The main App we have finish this stocks's real time data fetch
 				wxStockDataGetDoneEvent event(wxEVT_STOCK_DATA_GET_DONE,REALTIME_RETRIVE,
 						data->OrignUserData);
+                event.SetSucc(IsSucc);
 				Parent->AddPendingEvent(event);
 			}
         }
@@ -86,6 +92,7 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
             parser.Parse(event.Result);
 			//p->DumpTable();
             int idx=p->GetTDIndex(HistoryKey);
+            bool IsSucc=true;
             if (idx>=0){
                 wxLogStatus(wxT("Get History Data From the url Done!"));
                 while (idx<p->GetTDCount()){
@@ -117,15 +124,23 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
             }
             else{
                 wxLogStatus(wxT("Not Found History Data From the url!"));
+                IsSucc=false;
             }
-            if (data->StartIdx == 2){ //if all day week and month data done!
+            if ((data->StartIdx == 2) || ((!IsSucc) && (data->StartIdx == 0))){ //if all day week and month data done!
                 wxStockDataGetDoneEvent event(wxEVT_STOCK_DATA_GET_DONE,HISTORY_RETRIVE,
                         data->OrignUserData);
+                event.SetSucc(IsSucc);
                 event.SetHistoryStock(data->HistoryStock);
                 Parent->AddPendingEvent(event);
             }
             else{
-                FetchHistoryData(data->HistoryStock,data->StartIdx+1,data->OrignUserData);
+                if (IsSucc){
+                    FetchHistoryData(data->HistoryStock,data->StartIdx+1,data->OrignUserData);
+                }
+                else{
+                    //Retrive it if not success.
+                    FetchHistoryData(data->HistoryStock,data->StartIdx,data->OrignUserData);
+                }
             }
         }
     }

@@ -281,3 +281,59 @@ Stock *Stocks::GetStockById(const wxString& id){
         }
         return NULL;
 }
+
+double MyStocks::GetTotalEarning(){
+        double ret=0;
+        MyStockDataHash::iterator i = datas.begin();
+        while (i != datas.end()){
+            double CurValue=0;
+            MyStockStru* pmystock = i->second;
+            pmystock->stock->GetRealTimeValue(_("PRICE")).ToDouble(&CurValue);
+            ret += pmystock->GetEarnings(CurValue);
+            i++;
+        }
+        return ret;
+}
+
+double MyStocks::GetTotalPay(){
+        double ret=0;
+        MyStockDataHash::iterator i = datas.begin();
+        while (i != datas.end()){
+            MyStockStru* pmystock = i->second;
+            ret += (pmystock->GetTotalPay());
+            i++;
+        }
+        return ret;
+}
+
+double MyStocks::GetCurrentTotal(){
+        double ret=0;
+        MyStockDataHash::iterator i = datas.begin();
+        while (i != datas.end()){
+            double CurValue=0;
+            MyStockStru* pmystock = i->second;
+            pmystock->stock->GetRealTimeValue(_("PRICE")).ToDouble(&CurValue);
+            ret += pmystock->GetCurValue(CurValue);
+            i++;
+        }
+        return ret;
+}
+
+wxString MyStocks::GetMyStockTotalinfo(const wxString& key){
+    if (key == _("MyStock Total Earning")){
+        return wxString::Format(wxT("%.2f"),GetTotalEarning());
+    }
+    else if (key == _("MyStock Total Earning Rate")){
+        double totalpay =GetTotalPay();
+        if (totalpay!=0){
+            return wxString::Format(wxT("%.3f%%"),GetTotalEarning()/totalpay*100);
+        }
+        else{
+            return wxT("N/A");
+        }
+    }
+    else if (key == _("MyStock Total Money")){
+        return wxString::Format(wxT("%.2f"),GetCurrentTotal());
+    }
+    return wxT("");
+}

@@ -56,6 +56,8 @@
 		<Unit filename="mystockdetail.h" />
 		<Unit filename="sinastock.cpp" />
 		<Unit filename="sinastock.h" />
+		<Unit filename="sohustock.cpp" />
+		<Unit filename="sohustock.h" />
 		<Unit filename="stockplot.cpp" />
 		<Unit filename="stockplot.h" />
 		<Unit filename="stocks.cpp" />
@@ -66,6 +68,8 @@
 		<Unit filename="wstockcustomdialog.h" />
 		<Unit filename="wstockgeturl.cpp" />
 		<Unit filename="wstockgeturl.h" />
+		<Unit filename="wstockglobalinfo.cpp" />
+		<Unit filename="wstockglobalinfo.h" />
 		<Unit filename="wx/plot/plot.h" />
 		<Unit filename="wx_pch.h">
 			<Option compile="1" />

@@ -20,6 +20,8 @@ wxString HtmlTableParser::GetPureText(wxString html){
         end=html.Find(wxT(">"));
     }
 	html.Replace(wxT("&nbsp;"),wxT(""));
+	html.Trim();
+	html.Trim(false);
     return html;
 }
 
