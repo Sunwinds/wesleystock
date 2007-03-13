@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-12 13:51+0800\n"
+"POT-Creation-Date: 2007-03-13 13:39+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,76 +20,76 @@ msgstr ""
 msgid "wxWidgets Application Template"
 msgstr ""
 
-#: ../gspreadsheet.cpp:125 ../gspreadsheet.cpp:174
+#: ../gspreadsheet.cpp:125 ../gspreadsheet.cpp:174 ../gspreadsheet.cpp:177
 msgid "No buffer request,exit!"
 msgstr "缓冲区已经没有数据，操作完成"
 
-#: ../gspreadsheet.cpp:129 ../gspreadsheet.cpp:178
+#: ../gspreadsheet.cpp:129 ../gspreadsheet.cpp:178 ../gspreadsheet.cpp:181
 msgid "cellsFeedHref is empty,abort update cells!"
 msgstr "还没有取到cell操作地址，放弃更新!"
 
-#: ../gspreadsheet.cpp:132 ../gspreadsheet.cpp:181
+#: ../gspreadsheet.cpp:132 ../gspreadsheet.cpp:181 ../gspreadsheet.cpp:184
 #, c-format
 msgid "Try to Update mystock data to Google SpreadSheets (%d cell(s) left)..."
 msgstr "正在将我的股票数据更新到Google服务器(还剩%d个)..."
 
-#: ../main.cpp:70 ../main.cpp:73
+#: ../main.cpp:70 ../main.cpp:73 ../main.cpp:76
 msgid "&Quit\tAlt-F4"
 msgstr "退出\tAlt-F4"
 
-#: ../main.cpp:70 ../main.cpp:73
+#: ../main.cpp:70 ../main.cpp:73 ../main.cpp:76
 msgid "Quit the application"
 msgstr "退出应用程序"
 
-#: ../main.cpp:71 ../main.cpp:74
+#: ../main.cpp:71 ../main.cpp:74 ../main.cpp:77
 msgid "&File"
 msgstr "文件"
 
-#: ../main.cpp:74 ../main.cpp:77
+#: ../main.cpp:74 ../main.cpp:77 ../main.cpp:80
 msgid "&Add MyStock\tCtrl-a"
 msgstr "增加我的股票\tCtrl-a"
 
-#: ../main.cpp:74 ../main.cpp:77
+#: ../main.cpp:74 ../main.cpp:77 ../main.cpp:80
 msgid "Add One Stock Buy Record!"
 msgstr "增加一个操作记录"
 
-#: ../main.cpp:76 ../main.cpp:79
+#: ../main.cpp:76 ../main.cpp:79 ../main.cpp:82
 msgid "&Update MyStock\tCtrl-u"
 msgstr "更新我的股票"
 
-#: ../main.cpp:77 ../main.cpp:80
+#: ../main.cpp:77 ../main.cpp:80 ../main.cpp:83
 msgid "Update MyStock Data from google!"
 msgstr "从Google服务器更新我的股票信息到本地"
 
-#: ../main.cpp:78 ../main.cpp:81
+#: ../main.cpp:78 ../main.cpp:81 ../main.cpp:84
 msgid "&Put MyStock\tCtrl-u"
 msgstr "上传我的股票"
 
-#: ../main.cpp:79 ../main.cpp:82
+#: ../main.cpp:79 ../main.cpp:82 ../main.cpp:85
 msgid "Put MyStock Data to google!"
 msgstr "将我的股票信息上传到Google服务器"
 
-#: ../main.cpp:81 ../main.cpp:84
+#: ../main.cpp:81 ../main.cpp:84 ../main.cpp:87
 msgid "&Configure\tCtrl-Alt-c"
 msgstr "配置"
 
-#: ../main.cpp:81 ../main.cpp:84
+#: ../main.cpp:81 ../main.cpp:84 ../main.cpp:87
 msgid "Global Configure"
 msgstr "全局配置"
 
-#: ../main.cpp:82 ../main.cpp:85
+#: ../main.cpp:82 ../main.cpp:85 ../main.cpp:88
 msgid "&Tool"
 msgstr "工具"
 
-#: ../main.cpp:85 ../main.cpp:88
+#: ../main.cpp:85 ../main.cpp:88 ../main.cpp:94
 msgid "&About\tF1"
 msgstr "关于"
 
-#: ../main.cpp:85 ../main.cpp:88
+#: ../main.cpp:85 ../main.cpp:88 ../main.cpp:94
 msgid "Show info about this application"
 msgstr "显示本程序的关于信息"
 
-#: ../main.cpp:86 ../main.cpp:89
+#: ../main.cpp:86 ../main.cpp:89 ../main.cpp:95
 msgid "&Help"
 msgstr "帮助"
 
@@ -97,7 +97,7 @@ msgstr "帮助"
 msgid "Hello Code::Blocks user !"
 msgstr ""
 
-#: ../main.cpp:102 ../main.cpp:105
+#: ../main.cpp:102 ../main.cpp:105 ../main.cpp:111
 msgid "WSTOCK"
 msgstr ""
 
@@ -106,34 +106,38 @@ msgstr ""
 msgid "There is no stock Id in %s,you may need add some into it!"
 msgstr "在配置文件(%s)中找不到任何股票信息"
 
-#: ../main.cpp:131 ../main.cpp:111 ../stocks.h:46
+#: ../main.cpp:131 ../main.cpp:111 ../stocks.h:46 ../main.cpp:117
 msgid "Stock Name"
 msgstr "股票名称"
 
 #: ../main.cpp:135 ../main.cpp:218 ../main.cpp:116 ../main.cpp:625
+#: ../main.cpp:124 ../main.cpp:728
 msgid "Total Amount"
 msgstr "剩余总数"
 
 #: ../main.cpp:136 ../main.cpp:194 ../main.cpp:117 ../main.cpp:628
+#: ../main.cpp:125 ../main.cpp:734
 msgid "Earnings Yield"
 msgstr "收益率"
 
 #: ../main.cpp:137 ../main.cpp:206 ../main.cpp:118 ../main.cpp:633
+#: ../main.cpp:126 ../main.cpp:739
 msgid "Earnings"
 msgstr "当前收益"
 
 #: ../main.cpp:191 ../mystockdetail.cpp:35 ../sinastock.cpp:22
 #: ../yahoostock.cpp:20 ../sinastock.h:15 ../main.cpp:112 ../main.cpp:630
-#: ../main.cpp:635 ../yahoostock.h:15
+#: ../main.cpp:635 ../yahoostock.h:15 ../main.cpp:118 ../main.cpp:736
+#: ../main.cpp:741 ../sohustock.h:15
 msgid "PRICE"
 msgstr "价格"
 
 #: ../main.cpp:222 ../sinastock.cpp:23 ../yahoostock.cpp:23 ../sinastock.h:16
-#: ../main.cpp:113 ../yahoostock.h:18
+#: ../main.cpp:113 ../yahoostock.h:18 ../main.cpp:119 ../sohustock.h:16
 msgid "DELTA"
 msgstr "涨跌额"
 
-#: ../main.cpp:306 ../main.cpp:423
+#: ../main.cpp:306 ../main.cpp:423 ../main.cpp:485
 #, c-format
 msgid "The Stock ID[%s] is unacceptable!"
 msgstr "%s不是一个正确的股票代码，请检查配置文件"
@@ -142,16 +146,16 @@ msgstr "%s不是一个正确的股票代码，请检查配置文件"
 msgid "Welcome to..."
 msgstr ""
 
-#: ../main.cpp:347 ../main.cpp:348 ../main.cpp:474
+#: ../main.cpp:347 ../main.cpp:348 ../main.cpp:474 ../main.cpp:547
 msgid "MyStock Detail"
 msgstr "我的股票详细信息"
 
-#: ../main.cpp:357 ../main.cpp:359 ../main.cpp:486
+#: ../main.cpp:357 ../main.cpp:359 ../main.cpp:486 ../main.cpp:559
 msgid "Load History Data From File!"
 msgstr "从存盘文件中获取历史数据!"
 
 #: ../main.cpp:374 ../stocks.cpp:139 ../main.cpp:376 ../main.cpp:504
-#: ../stocks.cpp:197
+#: ../stocks.cpp:197 ../main.cpp:577 ../stocks.cpp:224
 #, c-format
 msgid "Try to create directory %s fail!"
 msgstr "创建目录%s失败"
@@ -171,15 +175,15 @@ msgid "Sell"
 msgstr "卖出"
 
 #: ../sinastock.cpp:24 ../yahoostock.cpp:27 ../sinastock.h:17 ../main.cpp:115
-#: ../yahoostock.h:22
+#: ../yahoostock.h:22 ../sohustock.h:17
 msgid "EXCHANGE"
 msgstr "换手"
 
-#: ../stockplot.cpp:23
+#: ../stockplot.cpp:23 ../stockplot.cpp:28
 msgid "Please refind a stock data"
 msgstr ""
 
-#: ../stockplot.cpp:26
+#: ../stockplot.cpp:26 ../stockplot.cpp:31
 msgid "stock history data not ready"
 msgstr "股票历史数据不存在"
 
@@ -252,91 +256,91 @@ msgstr "我的股票"
 msgid "OK"
 msgstr "确定"
 
-#: ../wstockcustomdialog.cpp:14
+#: ../wstockcustomdialog.cpp:14 ../wstockcustomdialog.cpp:18
 msgid "Keys Path:"
 msgstr "关键字路径:"
 
-#: ../wstockcustomdialog.cpp:16
+#: ../wstockcustomdialog.cpp:16 ../wstockcustomdialog.cpp:20
 msgid "History Dir:"
 msgstr "历史目录:"
 
-#: ../wstockcustomdialog.cpp:18
+#: ../wstockcustomdialog.cpp:18 ../wstockcustomdialog.cpp:28
 msgid "GoogleAcount:"
 msgstr "Google账号:"
 
-#: ../wstockcustomdialog.cpp:20
+#: ../wstockcustomdialog.cpp:20 ../wstockcustomdialog.cpp:30
 msgid "GooglePasswd:"
 msgstr "Google密码:"
 
-#: ../wstockcustomdialog.cpp:22
+#: ../wstockcustomdialog.cpp:22 ../wstockcustomdialog.cpp:32
 msgid "MystocksTitle:"
 msgstr "股票文件名称:"
 
-#: ../wstockcustomdialog.cpp:24
+#: ../wstockcustomdialog.cpp:24 ../wstockcustomdialog.cpp:34
 msgid "curl proxy:"
 msgstr "网络代理:"
 
-#: ../wstockcustomdialog.cpp:26
+#: ../wstockcustomdialog.cpp:26 ../wstockcustomdialog.cpp:36
 msgid "curl userpwd:"
 msgstr "代理用户名密码:"
 
-#: ../wstockcustomdialog.cpp:28
+#: ../wstockcustomdialog.cpp:28 ../wstockcustomdialog.cpp:38
 msgid "curl proxy auth:"
 msgstr "代理鉴权方式:"
 
-#: ../wstockcustomdialog.cpp:30
+#: ../wstockcustomdialog.cpp:30 ../wstockcustomdialog.cpp:40
 msgid "NONE"
 msgstr "无"
 
-#: ../wstockcustomdialog.cpp:31
+#: ../wstockcustomdialog.cpp:31 ../wstockcustomdialog.cpp:41
 msgid "BASIC"
 msgstr ""
 
-#: ../wstockcustomdialog.cpp:32
+#: ../wstockcustomdialog.cpp:32 ../wstockcustomdialog.cpp:42
 msgid "DIGEST"
 msgstr ""
 
-#: ../wstockcustomdialog.cpp:33
+#: ../wstockcustomdialog.cpp:33 ../wstockcustomdialog.cpp:43
 msgid "GSSNEGOTIATE"
 msgstr ""
 
-#: ../wstockcustomdialog.cpp:34
+#: ../wstockcustomdialog.cpp:34 ../wstockcustomdialog.cpp:44
 msgid "NTLM"
 msgstr ""
 
-#: ../wstockcustomdialog.cpp:35
+#: ../wstockcustomdialog.cpp:35 ../wstockcustomdialog.cpp:45
 msgid "ANY"
 msgstr "任何方式"
 
-#: ../wstockcustomdialog.cpp:36
+#: ../wstockcustomdialog.cpp:36 ../wstockcustomdialog.cpp:46
 msgid "ANYSAFE"
 msgstr "任何安全方式"
 
-#: ../wstockcustomdialog.cpp:39
+#: ../wstockcustomdialog.cpp:39 ../wstockcustomdialog.cpp:49
 msgid "Do not use proxy"
 msgstr "不要使用代理"
 
-#: ../wstockcustomdialog.cpp:127
+#: ../wstockcustomdialog.cpp:127 ../wstockcustomdialog.cpp:142
 msgid "Generic"
 msgstr "常规"
 
-#: ../wstockcustomdialog.cpp:128
+#: ../wstockcustomdialog.cpp:128 ../wstockcustomdialog.cpp:143
 msgid "Google"
 msgstr ""
 
-#: ../wstockcustomdialog.cpp:129
+#: ../wstockcustomdialog.cpp:129 ../wstockcustomdialog.cpp:144
 msgid "CURL"
 msgstr "网络"
 
-#: ../gspreadsheet.cpp:320
+#: ../gspreadsheet.cpp:320 ../gspreadsheet.cpp:323
 msgid "Try to Get mystock data from Google SpreadSheets"
 msgstr "正在从Google服务器更新我的股票"
 
-#: ../main.cpp:114 ../stocks.cpp:34 ../stocks.cpp:39
+#: ../main.cpp:114 ../stocks.cpp:34 ../stocks.cpp:39 ../main.cpp:121
 msgid "PRICE 10D AVG"
 msgstr "10日均价"
 
-#: ../main.cpp:465
+#: ../main.cpp:465 ../main.cpp:538
 msgid "Explain me:"
 msgstr "解释一下:"
 
@@ -362,10 +366,63 @@ msgstr "需要验证"
 msgid "Stock Name:"
 msgstr "股票名称:"
 
-#: ../stocks.cpp:94
+#: ../stocks.cpp:94 ../main.cpp:628 ../stocks.cpp:157
 msgid "Document not parsed successfully. \n"
 msgstr "文档解析失败\n"
 
 #: ../stocks.h:47
 msgid "Stock Id"
 msgstr "股票代码"
+
+#: ../app.cpp:29
+msgid "wstock stock manager software"
+msgstr "wstock股票管理软件"
+
+#: ../main.cpp:92
+msgid "&Test Net\tF2"
+msgstr ""
+
+#: ../main.cpp:92
+msgid "Test the net connection!"
+msgstr ""
+
+#: ../main.cpp:110
+msgid "Hello wstock user !"
+msgstr "欢迎使用wstock!"
+
+#: ../main.cpp:120 ../sinastock.h:18 ../sohustock.h:18
+msgid "DELTA RATE"
+msgstr "涨跌幅"
+
+#: ../main.cpp:122 ../main.cpp:731
+msgid "PRICE AVG"
+msgstr ""
+
+#: ../main.cpp:238
+#, c-format
+msgid "StockId %s is not a valid StockId"
+msgstr "%s不是一个有效的股票代码"
+
+#: ../main.cpp:410
+msgid "Some of the change may only take place when you restart the app!"
+msgstr "你可能需要重新启动本程序，您的设置才能生效!"
+
+#: ../main.cpp:520
+msgid "Author Blog:http://wxblender.blogspot.com"
+msgstr "欢迎访问:http://wxblender.blogspot.com"
+
+#: ../main.cpp:520
+msgid "Welcome to wstock"
+msgstr "欢迎使用wstock"
+
+#: ../wstockcustomdialog.cpp:22
+msgid "Data Provider:"
+msgstr "数据提供者:"
+
+#: ../wstockcustomdialog.cpp:24
+msgid "SinaStock"
+msgstr ""
+
+#: ../wstockcustomdialog.cpp:25
+msgid "SohuStock"
+msgstr ""

@@ -147,7 +147,7 @@ bool Stock::LoadHistoryDataFromFile(){
 				GetId().c_str(),
 				GetStockType().c_str(),
 				now.GetYear(),
-				now.GetMonth(),
+				now.GetMonth()+1,
 				now.GetDay(),
 				i));
 		if (fn.FileExists()){
@@ -211,11 +211,11 @@ bool Stock::SaveHistoryDataToFile(){
     wxDateTime now = wxDateTime::Now();
     HistoryDataReady = true;
 	for (size_t idx=0;idx<HistoryDatas.size();idx++){
-		wxFileName fn(WStockConfig::GetHistoryDataDir(),wxString::Format(wxT("%s.%s.%d_%d_%d_%d.dat"),				
+		wxFileName fn(WStockConfig::GetHistoryDataDir(),wxString::Format(wxT("%s.%s.%d_%d_%d_%d.dat"),
 				GetId().c_str(),
 				GetStockType().c_str(),
 				now.GetYear(),
-				now.GetMonth(),
+				now.GetMonth()+1,
 				now.GetDay(),
 				idx));
 		fn.MakeAbsolute();

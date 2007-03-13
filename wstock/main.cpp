@@ -113,7 +113,6 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 }
 
 void MyFrame::DoInitData(){
-	ClearDataFile();
 	ColDefs.push_back(new MainGridDef_Stru(_("Stock Name"),KT_FIXED,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("PRICE"),KT_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("DELTA"),KT_REALTIME,VT_COLOR_NUMBER));
@@ -133,6 +132,7 @@ void MyFrame::DoInitData(){
         //wxLogMessage(_("There is no stock Id in %s,you may need add some into it!"),
         //    WStockConfig::GetKeyPath().c_str());
     }
+	ClearDataFile();
     mystocks.LoadDataFromFile();
     mystocks.UpdateStockList(stocks.GetList());
 }
@@ -235,7 +235,7 @@ void MyFrame::OnUpdateFromGoogleDone(wxNotifyEvent&event){
 		Stock*s=stocks.GetStockById(stockid);
 		i++;
 		if (!s){
-			wxLogStatus(_("StockId %s is not a valid StockId"),stockid);
+			wxLogStatus(_("StockId %s is not a valid StockId"),stockid.c_str());
 			mystocks.GetDatas().erase(stockid);
 			delete(pmystock);
 		}
@@ -430,18 +430,24 @@ void MyFrame::ClearDataFile(bool KeepToday){
 		s = stocks.GetStockById(Id);
 		if (s){
 			wxDateTime date;
-			wxString Format=wxString::Format(wxT("%s.%s.%%Y_%%m_%%d"),				
+			wxString Format=wxString::Format(wxT("%s.%s.%%Y_%%m_%%d"),
 				s->GetId().c_str(),
 				s->GetStockType().c_str());
 			if (date.ParseFormat(filename,Format)){
+			    wxLogMessage(wxT("%d %d %d %d %d %d"),
+                        now.GetYear(),now.GetMonth(),now.GetDay(),
+                        date.GetYear(),date.GetMonth(),date.GetDay());
 				if ((!KeepToday)||(!date.IsSameDate(now))){
 					wxRemoveFile(wxFileName(WStockConfig::GetHistoryDataDir(),filename).GetFullPath());
 				}
 			}
 			else{
-				wxLogMessage(filename);
+				wxLogDebug(filename);
 			}
 		}
+        else{
+            wxLogDebug(filename);
+        }
         cont = dir.GetNext(&filename);
     }
 }
@@ -551,15 +557,7 @@ void MyFrame::OnGridCellDbClick(wxGridEvent& event){
 		}
 		break;
 	default:
-		if (!s->IsHistoryDataReady()){
-			if (!s->LoadHistoryDataFromFile()){
-				GetCurFetchObj()->RetriveHistoryDayData(s,(void*)1);
-			}
-			else{
-				wxLogStatus(_("Load History Data From File!"));
-			}
-		}
-		else{
+		if (s->IsHistoryDataReady()){
 			StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
 			dialog.SetStock(s);
 			dialog.ShowModal();
@@ -599,10 +597,10 @@ bool MyStocks::SaveDataToFile(){
 					 s2[20]="",
 					 s3[20]="",
 					 s4[20]="";
-				sprintf(s1,"%d",pbuyinfo->data.GetTicks());
-				sprintf(s2,"%d",pbuyinfo->BuyAmount);
+				sprintf(s1,"%ld",(long)pbuyinfo->data.GetTicks());
+				sprintf(s2,"%ld",pbuyinfo->BuyAmount);
 				sprintf(s3,"%.2f",pbuyinfo->BuyPrice);
-				sprintf(s4,"%d",pbuyinfo->Op);
+				sprintf(s4,"%ld",pbuyinfo->Op);
 
 				xmlSetProp(xmlnode,X("Date"),X(s1));
 				xmlSetProp(xmlnode,X("BuyAmount"),X(s2));
