@@ -51,11 +51,15 @@ void wstockglobalinfo::UpdateInfoGridCellColor(int r){
 	        CurV=grid_infos->GetCellValue(ColDefs[r]->ColorCol,1);
 	    }
 		if (CurV.StartsWith(wxT("-"))){
-            grid_infos->SetCellTextColour(r,1,*wxGREEN);
+			if (grid_infos->GetCellTextColour(r,1) != *wxGREEN){
+				grid_infos->SetCellTextColour(r,1,*wxGREEN);
+			}
 		}
 		else
 		{
-            grid_infos->SetCellTextColour(r,1,*wxRED);
+			if (grid_infos->GetCellTextColour(r,1) != *wxRED){
+				grid_infos->SetCellTextColour(r,1,*wxRED);
+			}
 		}
 	}
 }
@@ -68,9 +72,11 @@ void wstockglobalinfo::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
                     UpdateInfoGridCell(gridci);
                 }
             }
-            for (size_t gridci=0;gridci<ColDefs.size();gridci++){
-                UpdateInfoGridCellColor(gridci);
-            }
+			{
+				for (size_t gridci=0;gridci<ColDefs.size();gridci++){
+					UpdateInfoGridCellColor(gridci);
+				}
+			}
             grid_infos->AutoSizeColumns();
             grid_infos->EndBatch();
             RealTimeDeltaTimer.Start(30000,true);

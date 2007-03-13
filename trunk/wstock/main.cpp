@@ -186,8 +186,10 @@ void MyFrame::UpdateMainGrid(int stockidx){
 				UpdateMainGridCell(i,ci);
 			}
 		}
-		for (size_t ci=0;ci<ColDefs.size();ci++){
-			UpdateMainGridCellColor(i,ci);
+		{
+			for (size_t ci=0;ci<ColDefs.size();ci++){
+				UpdateMainGridCellColor(i,ci);
+			}
 		}
 		/*mainGrid->SetCellValue(i,0,name);
         wxString Id=(*mystocks.GetList())[i]->GetId();
@@ -247,11 +249,15 @@ void MyFrame::UpdateMainGridCellColor(int r, int c){
 	        CurV=mainGrid->GetCellValue(r,ColDefs[c]->ColorCol);
 	    }
 		if (CurV.StartsWith(wxT("-"))){
-            mainGrid->SetCellTextColour(r,c,*wxGREEN);
+			if (mainGrid->GetCellTextColour(r,c) != *wxGREEN){
+				mainGrid->SetCellTextColour(r,c,*wxGREEN);
+			}
 		}
 		else
 		{
-            mainGrid->SetCellTextColour(r,c,*wxRED);
+			if (mainGrid->GetCellTextColour(r,c) != *wxRED){
+				mainGrid->SetCellTextColour(r,c,*wxRED);
+			}
 		}
 	}
 }
@@ -299,9 +305,11 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
                         UpdateMainGridCell(si,gridci);
                     }
                 }
-                for (size_t gridci=0;gridci<ColDefs.size();gridci++){
-                    UpdateMainGridCellColor(si,gridci);
-                }
+				{
+					for (size_t gridci=0;gridci<ColDefs.size();gridci++){
+						UpdateMainGridCellColor(si,gridci);
+					}
+				}
                 globalInfo->UpdateRealtimeCell();
             }
             mainGrid->AutoSizeColumns();
@@ -331,9 +339,11 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
                     UpdateMainGridCell(si,gridci);
                 }
             }
-            for (size_t gridci=0;gridci<ColDefs.size();gridci++){
-                 UpdateMainGridCellColor(si,gridci);
-            }
+			{
+				for (size_t gridci=0;gridci<ColDefs.size();gridci++){
+					 UpdateMainGridCellColor(si,gridci);
+				}
+			}
             mainGrid->AutoSizeColumns();
             mainGrid->EndBatch();
 
