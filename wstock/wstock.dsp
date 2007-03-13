@@ -153,6 +153,14 @@ SOURCE=.\wstockgeturl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\wstockglobalinfo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\wstockglobalinfo.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\yahoostock.cpp
 # End Source File
 # End Group
