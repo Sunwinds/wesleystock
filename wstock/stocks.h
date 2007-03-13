@@ -61,7 +61,7 @@ class Stock :public wxObject
             return HistoryDataReady;
         }
         void AppendHistoryData(int idx, StockHistoryDataPiece*p){ HistoryDatas[idx]->push_back(p);};
-        void InsertHistoryData(int idx, StockHistoryDataPiece*p){ 
+        void InsertHistoryData(int idx, StockHistoryDataPiece*p){
 			if (HistoryDatas[idx]->size()==0){
 				HistoryDatas[idx]->push_back(p);
 			}
@@ -87,7 +87,7 @@ class Stock :public wxObject
 			if (RealTimeProps.find(v) != RealTimeProps.end()){
 				return RealTimeProps[v];
 			}
-			return wxT("");
+			return wxT("N/A");
 		}
 		wxString GetRealTimeCalcValue(const wxString& v){
 			if (RealTimeCalcProps.find(v) != RealTimeCalcProps.end()){
@@ -162,19 +162,23 @@ class wxStockDataGetDoneEvent : public wxNotifyEvent
             rtype = t;
             UserData = data;
             HistoryStock = NULL;
+            IsSucc=true;
         };
     wxStockDataGetDoneEvent(const wxStockDataGetDoneEvent& event): wxNotifyEvent(event){
         UserData = event.UserData;
         rtype = event.rtype;
         HistoryStock  = event.HistoryStock;
+        IsSucc=event.IsSucc;
         };
     virtual wxEvent *Clone() const {
         return new wxStockDataGetDoneEvent(*this);
     };
     void SetHistoryStock(Stock*s){HistoryStock=s;};
+    void SetSucc(bool v){IsSucc=v;};
     StockRetriveType rtype;
     void *UserData;
     Stock* HistoryStock;
+    bool IsSucc;
     DECLARE_DYNAMIC_CLASS(wxStockDataGetDoneEvent);
 };
 typedef void (wxEvtHandler::*wxStockDataGetDoneEventFunction)(wxStockDataGetDoneEvent&);
@@ -256,5 +260,24 @@ class MyStockStru{
     private:
 };
 WX_DECLARE_STRING_HASH_MAP(MyStockStru*, MyStockDataHash);
+
+class MyStocks : public wxObject{
+    public:
+        MyStocks(){};
+        StockList* GetList(){ return &stocks;};
+        MyStockDataHash& GetDatas(){return datas;};
+        MyStockStru* GetMyStockStruByStock(Stock*s);
+        bool SaveDataToFile();
+        bool LoadDataFromFile();
+        bool TestRemove(Stock* s);//if we have no amount of one stock, remove it;
+        void UpdateStockList(StockList* source);
+        double GetTotalEarning();
+        double GetTotalPay();
+        double GetCurrentTotal();
+        wxString GetMyStockTotalinfo(const wxString& key);
+    private:
+        StockList stocks;
+        MyStockDataHash datas;
+};
 
 #endif // STOCKS_H_INCLUDED

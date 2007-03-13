@@ -16,6 +16,8 @@ class SohuStock:public StocksDataFetch
                 Props.Add(_("DELTA"));
                 Props.Add(_("EXCHANGE"));
                 Props.Add(_("DELTA RATE"));
+                Props.Add(_("DATE"));
+                Props.Add(_("TIME"));
         };
         virtual void RetriveRealTimeData(StockList* stocks, void* UserData);
         virtual void RetriveHistoryDayData(Stock* s, void* UserData);

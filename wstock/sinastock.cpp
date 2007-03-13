@@ -40,7 +40,7 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 			delete(data);
 			return;
 		}
-        
+
 		wxLogStatus(wxT(""));
         if (data->FetchSeed == RealtimeFetchSeed){
             HtmlTableParser *p=new HtmlTableParser();
@@ -57,6 +57,7 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 			}
 			else{
 				int idx=p->GetTDIndex(RealTimeKey);
+				bool IsSucc=true;
 				if (idx>=0){
 					(*stocks)[data->StartIdx]->SetPropertyValue(Props[0], p->GetValue(idx+1));
 					(*stocks)[data->StartIdx]->SetPropertyValue(Props[1], p->GetValue(idx+3));
@@ -64,12 +65,13 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 					(*stocks)[data->StartIdx]->SetPropertyValue(Props[3], p->GetValue(idx+5));
 				}
 				else{
-					wxLogMessage(wxT("Not Found!"));
+					IsSucc=false;
 				}
-				if (data->StartIdx + data->RealtimeStockNum >= (int)stocks->size()){
+				if ((data->StartIdx + data->RealtimeStockNum >= (int)stocks->size()) || (!IsSucc)){
 					//Tell The main App we have finish this stocks's real time data fetch
 					wxStockDataGetDoneEvent event(wxEVT_STOCK_DATA_GET_DONE,REALTIME_RETRIVE,
 							data->OrignUserData);
+                    event.SetSucc(IsSucc);
 					Parent->AddPendingEvent(event);
 				}
 				else{
@@ -86,6 +88,7 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
             parser.Parse(event.Result);
 			//p->DumpTable();
             int idx=p->GetTDIndex(HistoryKey);
+            bool IsSucc=true;
             if (idx>=0){
                 wxLogStatus(wxT("Get History Data From the url Done!"));
                 while (idx<p->GetTDCount()){
@@ -115,15 +118,22 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
             }
             else{
                 wxLogStatus(wxT("Not Found History Data From the url!"));
+                IsSucc=false;
             }
-            if (data->StartIdx == 3){ //if all 4 season data get done
+            if ((data->StartIdx == 3) || ((!IsSucc)&&(data->StartIdx==0))){ //if all 4 season data get done
                 wxStockDataGetDoneEvent event(wxEVT_STOCK_DATA_GET_DONE,HISTORY_RETRIVE,
                         data->OrignUserData);
+                event.SetSucc(IsSucc);
                 event.SetHistoryStock(data->HistoryStock);
                 Parent->AddPendingEvent(event);
             }
             else{
-                FetchHistoryData(data->HistoryStock,data->StartIdx+1,data->OrignUserData);
+                if (IsSucc){
+                    FetchHistoryData(data->HistoryStock,data->StartIdx+1,data->OrignUserData);
+                }
+                else{
+                    FetchHistoryData(data->HistoryStock,data->StartIdx,data->OrignUserData);
+                }
             }
         }
     }
@@ -141,6 +151,7 @@ void SinaStock::FetchRealTimeData(StockList* ss, void* UserData, int StartIdx){
     data->RealtimeStockNum = 1;
     wxString country=wxT("sz");
     if ((*ss)[StartIdx]->GetId().StartsWith(wxT("6"))) country=wxT("sh");
+    if ((*ss)[StartIdx]->GetId() == wxT("000001")) country=wxT("sh");
     wxString Url(wxT("http://stock.finance.sina.com.cn/cgi-bin/stock/quote/quote.cgi?symbol="));
     Url << (*ss)[StartIdx]->GetId() << wxT("&country=") << country;
     wxLogStatus(Url);

@@ -5,4 +5,5 @@
   <Stock Id="000525" Name="红太阳"/>
   <Stock Id="002046" Name="轴研科技"/>
   <Stock Id="000002" Name="万  科Ａ"/>
+  <Stock Id="399001" Name="深证成指"/>
 </Stocks>

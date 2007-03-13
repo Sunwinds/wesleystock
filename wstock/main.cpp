@@ -50,6 +50,7 @@ int idMenuUpdateMyStockFromGoogle = wxNewId();
 int idMenuPutMyStockToGoogle = wxNewId();
 int REALTIME_DELTA_TIMER_ID=wxNewId();
 int idMenuTestNet=wxNewId();
+int idMenuGlobalInfo=wxNewId();
 
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(idMenuQuit, MyFrame::OnQuit)
@@ -57,6 +58,7 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(idMenuTestNet, MyFrame::OnTestNet)
     EVT_MENU(idMenuAddMyStock, MyFrame::OnAddMyStock)
     EVT_MENU(idMenuConfig, MyFrame::OnConfigure)
+    EVT_MENU(idMenuGlobalInfo,MyFrame::OnGlobalInfo)
     EVT_MENU(idMenuUpdateMyStockFromGoogle, MyFrame::OnUpdateFromGoogle)
     EVT_MENU(idMenuPutMyStockToGoogle, MyFrame::OnPutToGoogle)
     EVT_STOCK_DATA_GET_DONE(-1, MyFrame::OnStockDataGetDone)
@@ -84,6 +86,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     ToolMenu->Append(idMenuPutMyStockToGoogle, _("&Put MyStock\tCtrl-u"),
                         _("Put MyStock Data to google!"));
     ToolMenu->AppendSeparator();
+    ToolMenu->Append(idMenuGlobalInfo, _("&Hide(/Show) Global Info\tCtrl-Alt-s"), _("Hide(/Show) Global Info"));
     ToolMenu->Append(idMenuConfig, _("&Configure\tCtrl-Alt-c"), _("Global Configure"));
     mbar->Append(ToolMenu, _("&Tool"));
 
@@ -110,11 +113,17 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     SetStatusText(_("Hello wstock user !"),0);
     SetStatusText(_("WSTOCK"),1);
 #endif // wxUSE_STATUSBAR
+    globalInfo = new wstockglobalinfo(this,-1,wxT(""),&mystocks);
+    int x = wxSystemSettings::GetMetric(wxSYS_SCREEN_X) - globalInfo->GetSize().x;
+    int y = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y) - globalInfo->GetSize().y;
+    globalInfo->SetPosition(wxPoint(x,y));
+    globalInfo->Show();
 }
 
 void MyFrame::DoInitData(){
 	ColDefs.push_back(new MainGridDef_Stru(_("Stock Name"),KT_FIXED,VT_OTHER));
-	ColDefs.push_back(new MainGridDef_Stru(_("PRICE"),KT_REALTIME,VT_COLOR_NUMBER));
+	ColDefs.push_back(new MainGridDef_Stru(_("TIME"),KT_REALTIME,VT_COLOR_NUMBER));
+	ColDefs.push_back(new MainGridDef_Stru(_("PRICE"),KT_REALTIME,VT_COLOR_NUMBER,3));
 	ColDefs.push_back(new MainGridDef_Stru(_("DELTA"),KT_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("DELTA RATE"),KT_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("PRICE 10D AVG"),KT_HISTORY_CALC,VT_OTHER));
@@ -143,33 +152,15 @@ void MyFrame::UpdateMainGrid(int stockidx){
     mainGrid->BeginBatch();
     StocksDataFetch*stock = GetCurFetchObj();
     if (stock){
-		//Maybe Data privoder has change so the mainGrid's col label may change as well.
-		//so Let's do mainGrid's col label change here.
-		int SkipCount=0;
-		{
-			for (size_t i=0;i<ColDefs.size();i++){
-				if (ColDefs[i]->KeyType == KT_REALTIME){
-					//May this dateprovider provide this Key?
-					if (!stock->HasKey(ColDefs[i]->KeyName)){
-						SkipCount++;
-					}
-				}
-			}
-		}
-
-        int ColNum = ColDefs.size()-SkipCount;
+        int ColNum = ColDefs.size();
         if (mainGrid->GetNumberCols()>ColNum){
             mainGrid->DeleteCols(mainGrid->GetNumberCols() - ColNum);
         }
         else if (mainGrid->GetNumberCols() < ColNum){
             mainGrid->AppendCols(ColNum - mainGrid->GetNumberCols());
         }
-		int colidx=0;
 		for (size_t i=0;i<ColDefs.size();i++){
-			if ((ColDefs[i]->KeyType != KT_REALTIME)||(stock->HasKey(ColDefs[i]->KeyName))){
-				mainGrid->SetColLabelValue(colidx,ColDefs[i]->KeyName);
-				colidx++;
-			}
+            mainGrid->SetColLabelValue(i,ColDefs[i]->KeyName);
 		}
     }
 
@@ -194,6 +185,9 @@ void MyFrame::UpdateMainGrid(int stockidx){
 				//Init the date
 				UpdateMainGridCell(i,ci);
 			}
+		}
+		for (size_t ci=0;ci<ColDefs.size();ci++){
+			UpdateMainGridCellColor(i,ci);
 		}
 		/*mainGrid->SetCellValue(i,0,name);
         wxString Id=(*mystocks.GetList())[i]->GetId();
@@ -246,6 +240,22 @@ void MyFrame::OnUpdateFromGoogleDone(wxNotifyEvent&event){
     UpdateMainGrid(0);
 }
 
+void MyFrame::UpdateMainGridCellColor(int r, int c){
+	if (ColDefs[c]->ValueType == VT_COLOR_NUMBER){
+	    wxString CurV=mainGrid->GetCellValue(r,c);
+	    if (ColDefs[c]->ColorCol>=0){
+	        CurV=mainGrid->GetCellValue(r,ColDefs[c]->ColorCol);
+	    }
+		if (CurV.StartsWith(wxT("-"))){
+            mainGrid->SetCellTextColour(r,c,*wxGREEN);
+		}
+		else
+		{
+            mainGrid->SetCellTextColour(r,c,*wxRED);
+		}
+	}
+}
+
 void MyFrame::UpdateMainGridCell(int r, int c){
 	Stock*s = (*mystocks.GetList())[r];
 	switch (ColDefs[c]->KeyType){
@@ -270,15 +280,6 @@ void MyFrame::UpdateMainGridCell(int r, int c){
 		}
 		break;
 	}
-	if (ColDefs[c]->ValueType == VT_COLOR_NUMBER){
-		if (mainGrid->GetCellValue(r,c).StartsWith(wxT("-"))){
-            mainGrid->SetCellTextColour(r,c,*wxGREEN);
-		}
-		else
-		{
-            mainGrid->SetCellTextColour(r,c,*wxRED);
-		}
-	}
 }
 
 void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
@@ -286,101 +287,62 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
 		//Realtime value may change,what we need to do is:
 		//1: Calc all the Realtime_calc value
 		//2: If some of the value is inside of mainGrid,update it.
-        mainGrid->BeginBatch();
-		for (size_t si=0;si<mystocks.GetList()->size();si++){
-			Stock* s= (*mystocks.GetList())[si];
-			s->UpdateRealTimeCalcProps();
-			for (size_t gridci=0;gridci<ColDefs.size();gridci++){
-				if ((ColDefs[gridci]->KeyType == KT_REALTIME_CALC)
-					||(ColDefs[gridci]->KeyType == KT_REALTIME)
-					||(ColDefs[gridci]->KeyType == KT_MYSTOCK_REALTIME)){
-					UpdateMainGridCell(si,gridci);
-				}
-			}
+		if (event.IsSucc){
+            mainGrid->BeginBatch();
+            for (size_t si=0;si<mystocks.GetList()->size();si++){
+                Stock* s= (*mystocks.GetList())[si];
+                s->UpdateRealTimeCalcProps();
+                for (size_t gridci=0;gridci<ColDefs.size();gridci++){
+                    if ((ColDefs[gridci]->KeyType == KT_REALTIME_CALC)
+                        ||(ColDefs[gridci]->KeyType == KT_REALTIME)
+                        ||(ColDefs[gridci]->KeyType == KT_MYSTOCK_REALTIME)){
+                        UpdateMainGridCell(si,gridci);
+                    }
+                }
+                for (size_t gridci=0;gridci<ColDefs.size();gridci++){
+                    UpdateMainGridCellColor(si,gridci);
+                }
+                globalInfo->UpdateRealtimeCell();
+            }
+            mainGrid->AutoSizeColumns();
+            mainGrid->EndBatch();
 		}
-        mainGrid->AutoSizeColumns();
-        mainGrid->EndBatch();
-
         //股票数据已经刷新了一轮了，为了减轻服务器的压力，
         //休息一下(30秒)再刷新第二轮吧
         RealTimeDeltaTimer.Start(30000,true);
-
-        /*int idx = (int)event.UserData;
-        if (idx<mainGrid->GetNumberRows()){
-            mainGrid->BeginBatch();
-            for (int j=0;j<mainGrid->GetNumberRows();j++){
-                double CurValue=0;
-                (*mystocks.GetList())[idx+j]->GetPropertyValue(_("PRICE")).ToDouble(&CurValue);
-                for (int i=1;i<mainGrid->GetNumberCols();i++){
-                    MyStockStru* pmystock = mystocks.GetMyStockStruByStock((*mystocks.GetList())[idx+j]);
-                    if ((mainGrid->GetColLabelValue(i)) == _("Earnings Yield")){
-                        if (pmystock){
-                            mainGrid->SetCellValue(idx+j,i, wxString::Format(wxT("%.3f%%"),
-                                    pmystock->GetEarningYield(CurValue)*100));
-                            if (pmystock->GetEarningYield(CurValue)>0){
-                                mainGrid->SetCellTextColour(idx+j,i,*wxRED);
-                            }
-                            else{
-                                mainGrid->SetCellTextColour(idx+j,i,*wxGREEN);
-                            }
-                        }
-                    }
-                    else if ((mainGrid->GetColLabelValue(i)) == _("Earnings")){
-                        if (pmystock){
-                            mainGrid->SetCellValue(idx+j,i, wxString::Format(wxT("%.2f"),
-                                    pmystock->GetEarnings(CurValue)));
-                            if (pmystock->GetEarnings(CurValue)>0){
-                                mainGrid->SetCellTextColour(idx+j,i,*wxRED);
-                            }
-                            else{
-                                mainGrid->SetCellTextColour(idx+j,i,*wxGREEN);
-                            }
-                        }
-                    }
-                    else if ((mainGrid->GetColLabelValue(i)) != _("Total Amount")){
-                        wxString CellValue = (*mystocks.GetList())[idx+j]->GetPropertyValue(
-                                mainGrid->GetColLabelValue(i));
-                        mainGrid->SetCellValue(idx+j,i,CellValue);
-                        if (mainGrid->GetColLabelValue(i) == _("DELTA")){
-                            if (CellValue.StartsWith(wxT("-"))){
-                                mainGrid->SetCellTextColour(idx+j,i,*wxGREEN);
-                            }
-                            else{
-                                mainGrid->SetCellTextColour(idx+j,i,*wxRED);
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
     }
     else{
 		int myflag=(int)event.UserData;
         Stock* s = (Stock*)event.HistoryStock;
 
-		//Let's first save the data to file,so nexttime we need the data, just load from file
-        s->SaveHistoryDataToFile();
+        if (event.IsSucc){
+            //Let's first save the data to file,so nexttime we need the data, just load from file
+            s->SaveHistoryDataToFile();
 
-		//Some stock History data may change,what we need to do is:
-		//1: Calc all the KT_HISTORY_CALC value
-		//2: If some of the value is inside of mainGrid,update it.
-        mainGrid->BeginBatch();
-		int si = mystocks.GetList()->IndexOf(s);
-		wxASSERT(si!=wxNOT_FOUND);
-		s->UpdateHistoryCalcProps();
-		for (size_t gridci=0;gridci<ColDefs.size();gridci++){
-			if (ColDefs[gridci]->KeyType == KT_HISTORY_CALC){
-				UpdateMainGridCell(si,gridci);
-			}
-		}
-        mainGrid->AutoSizeColumns();
-        mainGrid->EndBatch();
+            //Some stock History data may change,what we need to do is:
+            //1: Calc all the KT_HISTORY_CALC value
+            //2: If some of the value is inside of mainGrid,update it.
+            mainGrid->BeginBatch();
+            int si = mystocks.GetList()->IndexOf(s);
+            wxASSERT(si!=wxNOT_FOUND);
+            s->UpdateHistoryCalcProps();
+            for (size_t gridci=0;gridci<ColDefs.size();gridci++){
+                if (ColDefs[gridci]->KeyType == KT_HISTORY_CALC){
+                    UpdateMainGridCell(si,gridci);
+                }
+            }
+            for (size_t gridci=0;gridci<ColDefs.size();gridci++){
+                 UpdateMainGridCellColor(si,gridci);
+            }
+            mainGrid->AutoSizeColumns();
+            mainGrid->EndBatch();
 
 
-        if (myflag == 1){ //UserCall
-            StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
-            dialog.SetStock(s);
-            dialog.ShowModal();
+            if (myflag == 1){ //UserCall
+                StockHistoryDialog dialog(NULL, -1, wxT("Stock History"));
+                dialog.SetStock(s);
+                dialog.ShowModal();
+            }
         }
         StocksDataFetch*stock = GetCurFetchObj();
         StockList::Node* node = mystocks.GetList()->GetFirst();
@@ -397,6 +359,9 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
     //if the check fail, just discard this event.
 }
 
+void MyFrame::OnGlobalInfo(wxCommandEvent& event){
+    globalInfo->Show(!globalInfo->IsShown());
+}
 
 void MyFrame::OnConfigure(wxCommandEvent& event)
 {
@@ -434,9 +399,9 @@ void MyFrame::ClearDataFile(bool KeepToday){
 				s->GetId().c_str(),
 				s->GetStockType().c_str());
 			if (date.ParseFormat(filename,Format)){
-			    wxLogMessage(wxT("%d %d %d %d %d %d"),
-                        now.GetYear(),now.GetMonth(),now.GetDay(),
-                        date.GetYear(),date.GetMonth(),date.GetDay());
+			    //wxLogMessage(wxT("%d %d %d %d %d %d"),
+                //        now.GetYear(),now.GetMonth(),now.GetDay(),
+                //        date.GetYear(),date.GetMonth(),date.GetDay());
 				if ((!KeepToday)||(!date.IsSameDate(now))){
 					wxRemoveFile(wxFileName(WStockConfig::GetHistoryDataDir(),filename).GetFullPath());
 				}
