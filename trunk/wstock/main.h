@@ -60,6 +60,7 @@ class MyFrame: public wxFrame
 		void DoInitData();
 		StockList*  GetMyStockList(){return mystocks.GetList();};
 		void UpdateMainGrid(int stockidx);
+		void ClearDataFile(bool KeepToday=true);
 	private:
         int CurStockStartPos;
         wxGrid *mainGrid;
@@ -69,6 +70,7 @@ class MyFrame: public wxFrame
         GSpreadSheets * gss;
 		MainGridDef_StruList ColDefs;
 
+		void OnTestNet(wxCommandEvent& event);
 		void UpdateMainGridCell(int r, int c);
         void OnUpdateFromGoogleDone(wxNotifyEvent&event);
         void OnUpdateFromGoogle(wxCommandEvent& event);

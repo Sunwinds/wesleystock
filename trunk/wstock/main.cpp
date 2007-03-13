@@ -1,6 +1,7 @@
 #include "app.h"
 #include "main.h"
 #include <wx/datetime.h>
+#include <wx/dir.h>
 #include <wx/filename.h>
 #include "wx/wfstream.h"
 #include "wx/datstrm.h"
@@ -48,10 +49,12 @@ int idMenuConfig = wxNewId();
 int idMenuUpdateMyStockFromGoogle = wxNewId();
 int idMenuPutMyStockToGoogle = wxNewId();
 int REALTIME_DELTA_TIMER_ID=wxNewId();
+int idMenuTestNet=wxNewId();
 
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(idMenuQuit, MyFrame::OnQuit)
     EVT_MENU(idMenuAbout, MyFrame::OnAbout)
+    EVT_MENU(idMenuTestNet, MyFrame::OnTestNet)
     EVT_MENU(idMenuAddMyStock, MyFrame::OnAddMyStock)
     EVT_MENU(idMenuConfig, MyFrame::OnConfigure)
     EVT_MENU(idMenuUpdateMyStockFromGoogle, MyFrame::OnUpdateFromGoogle)
@@ -85,6 +88,9 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     mbar->Append(ToolMenu, _("&Tool"));
 
     wxMenu* helpMenu = new wxMenu(_T(""));
+#ifdef __WXDEBUG__
+    helpMenu->Append(idMenuTestNet, _("&Test Net\tF2"), _("Test the net connection!"));
+#endif
     helpMenu->Append(idMenuAbout, _("&About\tF1"), _("Show info about this application"));
     mbar->Append(helpMenu, _("&Help"));
 
@@ -107,7 +113,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 }
 
 void MyFrame::DoInitData(){
-
+	ClearDataFile();
 	ColDefs.push_back(new MainGridDef_Stru(_("Stock Name"),KT_FIXED,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("PRICE"),KT_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("DELTA"),KT_REALTIME,VT_COLOR_NUMBER));
@@ -394,11 +400,50 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
 
 void MyFrame::OnConfigure(wxCommandEvent& event)
 {
+	int DataProvider = WStockConfig::GetDataProvider();
     wstockcustomdialog dialog(this,-1,wxT("Global Configure"));
     if (dialog.ShowModal() == wxID_OK){
         //change the configure and save to file.
         dialog.StoreSettings();
+		if (DataProvider != WStockConfig::GetDataProvider()){
+			ClearDataFile(false);
+			wxLogMessage(_("Some of the change may only take place when you restart the app!"));
+		}
     };
+}
+
+void MyFrame::ClearDataFile(bool KeepToday){
+    wxDir dir(WStockConfig::GetHistoryDataDir());
+    if ( !dir.IsOpened() )
+    {
+        // deal with the error here - wxDir would already log an error message
+        // explaining the exact reason of the failure
+        return;
+    }
+    wxString filename;
+	wxDateTime now=wxDateTime::Now();
+    bool cont = dir.GetFirst(&filename);
+    while ( cont )
+    {
+		Stock*s;
+		wxString Id=filename.BeforeFirst(wxT('.'));
+		s = stocks.GetStockById(Id);
+		if (s){
+			wxDateTime date;
+			wxString Format=wxString::Format(wxT("%s.%s.%%Y_%%m_%%d"),				
+				s->GetId().c_str(),
+				s->GetStockType().c_str());
+			if (date.ParseFormat(filename,Format)){
+				if ((!KeepToday)||(!date.IsSameDate(now))){
+					wxRemoveFile(wxFileName(WStockConfig::GetHistoryDataDir(),filename).GetFullPath());
+				}
+			}
+			else{
+				wxLogMessage(filename);
+			}
+		}
+        cont = dir.GetNext(&filename);
+    }
 }
 
 void MyFrame::OnPutToGoogle(wxCommandEvent& event)
@@ -456,6 +501,18 @@ void MyFrame::OnAddMyStock(wxCommandEvent& event)
 void MyFrame::OnQuit(wxCommandEvent& event)
 {
     Close();
+}
+
+void MyFrame::OnTestNet(wxCommandEvent& event)
+{
+    WStockGetUrl* geturl=new WStockGetUrl(NULL,
+            wxT("http://stock.business.sohu.com/p/fl.php"),(void*)-1);
+    wxString PostData(wxT("code=002069,&flsopt=uptcode&opt=update"));
+    PostData << WStockConfig::GetGmailUserName() << wxT("&Passwd=")
+              << WStockConfig::GetGmailPasswd() << wxT("&service=wise&source=wstock");
+    geturl->SetPostData(PostData);
+    geturl->Create();
+    geturl->Run();
 }
 
 void MyFrame::OnAbout(wxCommandEvent& event)

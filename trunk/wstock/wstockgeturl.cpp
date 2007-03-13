@@ -76,6 +76,11 @@ WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
   return realsize;
 }
 
+
+#ifdef __WXDEBUG__
+extern FILE *fp;
+#endif
+
 void *WStockGetUrl::Entry(){
   CURL *curl_handle;
 
@@ -183,6 +188,12 @@ void *WStockGetUrl::Entry(){
         }
         Parent->AddPendingEvent(event);
     }
+#ifdef __WXDEBUG__
+	else{
+		fwrite(chunk.memory, 1, strlen(chunk.memory) , fp);
+		fflush(fp);
+	}
+#endif
 
   if(chunk.memory)
     free(chunk.memory);
