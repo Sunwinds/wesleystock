@@ -13,7 +13,12 @@ class WStockConfig :public wxObject
             config.Read(STOCK_KEY_PATH, &keyPath);
             return keyPath;
         };
-
+		static wxColour GetGoodColor(){
+			return *wxRED;
+		}
+		static wxColour GetBadColor(){
+			return *wxBLUE;
+		}
         static wxString SetKeyPath(const wxString& keyPath){
             config.Write(STOCK_KEY_PATH, keyPath);
             return keyPath;
