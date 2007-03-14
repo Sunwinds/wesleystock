@@ -462,22 +462,22 @@ msgstr "上证指数"
 #: ../wstockglobalinfo.cpp:18 ../wstockglobalinfo.cpp:80
 #: ../wstockglobalinfo.cpp:30 ../wstockglobalinfo.cpp:98
 msgid "ShenZhen Delta"
-msgstr "涨跌额"
+msgstr "深市涨跌额"
 
 #: ../wstockglobalinfo.cpp:21 ../wstockglobalinfo.cpp:83
 #: ../wstockglobalinfo.cpp:33 ../wstockglobalinfo.cpp:101
 msgid "ShangHai Delta"
-msgstr "涨跌额"
+msgstr "沪市涨跌额"
 
 #: ../wstockglobalinfo.cpp:24 ../wstockglobalinfo.cpp:81
 #: ../wstockglobalinfo.cpp:36 ../wstockglobalinfo.cpp:99
 msgid "ShenZhen Delta Rate"
-msgstr "涨跌幅"
+msgstr "深市涨跌幅"
 
 #: ../wstockglobalinfo.cpp:27 ../wstockglobalinfo.cpp:84
 #: ../wstockglobalinfo.cpp:39 ../wstockglobalinfo.cpp:102
 msgid "ShangHai Delta Rate"
-msgstr "涨跌幅"
+msgstr "沪市涨跌幅"
 
 #: ../wstockglobalinfo.cpp:115 ../wstockglobalinfo.cpp:118
 #: ../wstockglobalinfo.cpp:139

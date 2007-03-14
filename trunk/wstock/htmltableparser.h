@@ -7,9 +7,10 @@
 class HtmlTableParser:public wxHtmlTagHandler
 {
     public:
-        HtmlTableParser(){};
+        HtmlTableParser(){WantBigTd=false;};
         ~HtmlTableParser(){};
         bool HandleTag(const wxHtmlTag& tag);
+		void SetWantBigTd(bool v){WantBigTd=v;};
         virtual wxString GetSupportedTags(){
             return wxT("TD,TITLE");
         };
@@ -18,11 +19,13 @@ class HtmlTableParser:public wxHtmlTagHandler
         wxString GetValue(int idx){ if (idx<(int)tdtexts.size()) return tdtexts[idx]; return wxT("");};
         int GetTDIndex(const wxString& value);
         int GetTDCount(){ return tdtexts.size();};
+
         void DumpTable();
 		wxString GetTitle(){return Title;};
     private:
         wxArrayString tdtexts;
 		wxString Title;
+		bool WantBigTd;
 };
 
 class MyHtmlParser:public wxHtmlParser

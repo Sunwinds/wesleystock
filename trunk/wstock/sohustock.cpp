@@ -42,6 +42,11 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 		wxLogStatus(wxT(""));
         if (data->FetchSeed == RealtimeFetchSeed){
             HtmlTableParser *p=new HtmlTableParser();
+			if ((stocks)&&(stocks->size()>0)){
+				if ((*stocks)[0]->GetId() == wxT("399001")){//People want retrive Global Info
+					p->SetWantBigTd(true);
+				}
+			}
             MyHtmlParser parser(p);
             parser.Parse(event.Result);
 			//p->DumpTable();
@@ -57,20 +62,59 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 				((wxWindow*)data->OrignUserData)->AddPendingEvent(event);
 
 			}
-			else{
+			else{//Normal realtime data
 				int idx=p->GetTDIndex(RealTimeKey);
-				wxASSERT(p->GetTDCount()>=(idx+8+(stocks->size()-1)*15));
 				bool IsSucc=true;
 				if (idx>=0){
-				    wxString datetime = p->GetValue(idx-15);
-				    //wxLogMessage(datetime);
-					for (size_t i=0;i<stocks->size();i++){
-						(*stocks)[i]->SetPropertyValue(Props[0], p->GetValue(idx+6+i*14));
-						(*stocks)[i]->SetPropertyValue(Props[1], p->GetValue(idx+7+i*14));
-						(*stocks)[i]->SetPropertyValue(Props[2], p->GetValue(idx+9+i*14));
-						(*stocks)[i]->SetPropertyValue(Props[3], p->GetValue(idx+8+i*14));
-						(*stocks)[i]->SetPropertyValue(Props[4], datetime.BeforeFirst(wxT(' ')));
-						(*stocks)[i]->SetPropertyValue(Props[5], datetime.AfterFirst(wxT(' ')));
+					//wxLogMessage((*stocks)[0]->GetId());
+					if ((*stocks)[0]->GetId() == wxT("399001")){//People want retrive Global Info
+						wxString v=p->GetValue(idx-16);
+                        wxStringTokenizer tkz(v, wxT(" "));
+                        int subidx=0;
+                        while (tkz.HasMoreTokens()){
+                            wxString token = tkz.GetNextToken();
+							//wxLogMessage(wxT("%d:%s"),subidx,token.c_str());
+							switch (subidx){
+							case 1://深圳成指 当前价格
+								(*stocks)[1]->SetPropertyValue(Props[0], token);
+								break;
+							case 2:
+								(*stocks)[1]->SetPropertyValue(Props[1], token);
+								break;
+							case 3:
+								token.Replace(wxT("("),wxT(""));
+								token.Replace(wxT(")"),wxT(""));
+								(*stocks)[1]->SetPropertyValue(Props[3], token);
+								break;
+							case 6:
+								(*stocks)[0]->SetPropertyValue(Props[0], token);
+								break;
+							case 7:
+								(*stocks)[0]->SetPropertyValue(Props[1], token);
+								break;
+							case 8:
+								token.Replace(wxT("("),wxT(""));
+								token.Replace(wxT(")"),wxT(""));
+								(*stocks)[0]->SetPropertyValue(Props[3], token);
+								break;
+							}
+						    subidx++;
+						}
+
+						//p->DumpTable();
+					}
+					else{
+						wxASSERT(p->GetTDCount()>=(idx+8+(stocks->size()-1)*15));
+						wxString datetime = p->GetValue(idx-15);
+						//wxLogMessage(datetime);
+						for (size_t i=0;i<stocks->size();i++){
+							(*stocks)[i]->SetPropertyValue(Props[0], p->GetValue(idx+6+i*14));
+							(*stocks)[i]->SetPropertyValue(Props[1], p->GetValue(idx+7+i*14));
+							(*stocks)[i]->SetPropertyValue(Props[2], p->GetValue(idx+9+i*14));
+							(*stocks)[i]->SetPropertyValue(Props[3], p->GetValue(idx+8+i*14));
+							(*stocks)[i]->SetPropertyValue(Props[4], datetime.BeforeFirst(wxT(' ')));
+							(*stocks)[i]->SetPropertyValue(Props[5], datetime.AfterFirst(wxT(' ')));
+						}
 					}
 				}
 				else{

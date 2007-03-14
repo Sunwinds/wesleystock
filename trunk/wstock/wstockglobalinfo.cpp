@@ -22,22 +22,22 @@ void wstockglobalinfo::UpdateRealtimeCell(){
 
 void wstockglobalinfo::UpdateInfoGridCell(int r){
     if (ColDefs[r]->KeyName == (_("ShenZhen Value"))){
-        grid_infos->SetCellValue(r,1,stocks[1]->GetRealTimeValue(_("PRICE")));
-    }
-    else if (ColDefs[r]->KeyName == (_("ShangHai Value"))){
         grid_infos->SetCellValue(r,1,stocks[0]->GetRealTimeValue(_("PRICE")));
     }
-    else if (ColDefs[r]->KeyName == (_("ShenZhen Delta"))){
-        grid_infos->SetCellValue(r,1,stocks[1]->GetRealTimeValue(_("DELTA")));
+    else if (ColDefs[r]->KeyName == (_("ShangHai Value"))){
+        grid_infos->SetCellValue(r,1,stocks[1]->GetRealTimeValue(_("PRICE")));
     }
-    else if (ColDefs[r]->KeyName == (_("ShangHai Delta"))){
+    else if (ColDefs[r]->KeyName == (_("ShenZhen Delta"))){
         grid_infos->SetCellValue(r,1,stocks[0]->GetRealTimeValue(_("DELTA")));
     }
+    else if (ColDefs[r]->KeyName == (_("ShangHai Delta"))){
+        grid_infos->SetCellValue(r,1,stocks[1]->GetRealTimeValue(_("DELTA")));
+    }
     else if (ColDefs[r]->KeyName == (_("ShenZhen Delta Rate"))){
-        grid_infos->SetCellValue(r,1,stocks[1]->GetRealTimeValue(_("DELTA RATE")));
+        grid_infos->SetCellValue(r,1,stocks[0]->GetRealTimeValue(_("DELTA RATE")));
     }
     else if (ColDefs[r]->KeyName == (_("ShangHai Delta Rate"))){
-        grid_infos->SetCellValue(r,1,stocks[0]->GetRealTimeValue(_("DELTA RATE")));
+        grid_infos->SetCellValue(r,1,stocks[1]->GetRealTimeValue(_("DELTA RATE")));
     }
     else if (ColDefs[r]->KeyType ==KT_MYSTOCK_REALTIME){
         grid_infos->SetCellValue(r,1, mystocks->GetMyStockTotalinfo(ColDefs[r]->KeyName));
@@ -65,6 +65,14 @@ void wstockglobalinfo::UpdateInfoGridCellColor(int r){
 }
 
 void wstockglobalinfo::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
+		wxLogDebug(wxT("%s %s %s %s %s %s"),
+					stocks[0]->GetRealTimeValue(_("PRICE")).c_str(),
+					stocks[0]->GetRealTimeValue(_("DELTA")).c_str(),
+					stocks[0]->GetRealTimeValue(_("DELTA RATE")).c_str(),
+					stocks[1]->GetRealTimeValue(_("PRICE")).c_str(),
+					stocks[1]->GetRealTimeValue(_("DELTA")).c_str(),
+					stocks[1]->GetRealTimeValue(_("DELTA RATE")).c_str()
+					);
 		if (event.IsSucc){
             grid_infos->BeginBatch();
             for (size_t gridci=0;gridci<ColDefs.size();gridci++){
@@ -124,13 +132,13 @@ wstockglobalinfo::wstockglobalinfo(wxWindow* parent, int id, const wxString& tit
     }
     grid_infos->AutoSizeColumns();
 
-    stocks.Append(new Stock(wxT("000001"),_("ShangHai Value")));
     stocks.Append(new Stock(wxT("399001"),_("ShenZhen Value")));
+    stocks.Append(new Stock(wxT("000001"),_("ShangHai Value")));
 
     mystocks = ms;
 
-	//wstockcustomdialog dialog(NULL,-1,wxT(""));
-    wxString DataProviderClass(wxT("SinaStock"));
+	wstockcustomdialog dialog(NULL,-1,wxT(""));
+    wxString DataProviderClass(dialog.GetDataProvider());
     fetchObj = wxDynamicCast(wxCreateDynamicObject(DataProviderClass), StocksDataFetch);
     if (fetchObj) {
         fetchObj->SetParent(this);

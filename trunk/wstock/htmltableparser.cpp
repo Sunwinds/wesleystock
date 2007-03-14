@@ -19,7 +19,7 @@ wxString HtmlTableParser::GetPureText(wxString html){
         start=html.Find(wxT("<"));
         end=html.Find(wxT(">"));
     }
-	html.Replace(wxT("&nbsp;"),wxT(""));
+	html.Replace(wxT("&nbsp;"),wxT(" "));
 	html.Trim();
 	html.Trim(false);
     return html;
@@ -27,7 +27,13 @@ wxString HtmlTableParser::GetPureText(wxString html){
 
 bool HtmlTableParser::HandleTag(const wxHtmlTag& tag){
     if (tag.GetName() == wxT("TD")){
-        wxString Inner=m_Parser->GetSource()->Mid(tag.GetBeginPos(),tag.GetEndPos1()-tag.GetBeginPos());
+		wxString Inner;
+		if (WantBigTd){
+			Inner=GetPureText(m_Parser->GetSource()->Mid(tag.GetBeginPos(),tag.GetEndPos1()-tag.GetBeginPos()));
+		}
+		else{
+			Inner=m_Parser->GetSource()->Mid(tag.GetBeginPos(),tag.GetEndPos1()-tag.GetBeginPos());
+		}
         if (Inner.size()<200){
             tdtexts.Add(GetPureText(Inner));
         }
