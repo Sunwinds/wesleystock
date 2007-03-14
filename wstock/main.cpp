@@ -231,9 +231,20 @@ void MyFrame::OnUpdateFromGoogleDone(wxNotifyEvent&event){
 		Stock*s=stocks.GetStockById(stockid);
 		i++;
 		if (!s){
-			wxLogStatus(_("StockId %s is not a valid StockId"),stockid.c_str());
-			mystocks.GetDatas().erase(stockid);
-			delete(pmystock);
+			MyStockDialog dialog(this,-1,wxT("Add One Stock"));
+			dialog.SetStocks(&stocks);
+			MyStockDialogData d;
+			d.ACount=0;
+			d.Price = 0;
+			d.StockId = stockid;
+			dialog.SetData(d);
+			dialog.SetTitle(wxString::Format(_("You may want verify this stockid is a valid stockId:%s"),stockid.c_str()));
+			dialog.ShowModal();
+			if (!stocks.GetStockById(stockid)){//Still?
+				wxLogMessage(_("StockId %s is not a valid StockId"),stockid.c_str());
+				mystocks.GetDatas().erase(stockid);
+				delete(pmystock);
+			}
 		}
 	}
 

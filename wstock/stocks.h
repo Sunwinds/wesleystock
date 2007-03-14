@@ -223,7 +223,7 @@ class StocksDataFetch:public wxEvtHandler
 {
     public:
 		wxDateTime validRequest;
-        StocksDataFetch(){validRequest = wxDateTime::Now();};
+        StocksDataFetch(){validRequest = wxDateTime::Now();stocks=NULL;};
         void SetParent(wxEvtHandler* P){Parent=P;};
         virtual void RetriveRealTimeData(StockList* stocks, void* UserData)=0;
         virtual void RetriveHistoryDayData(Stock* s, void* UserData)=0;
