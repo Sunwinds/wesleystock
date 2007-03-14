@@ -2,6 +2,7 @@
 
 #include "wstockglobalinfo.h"
 #include "wstockcustomdialog.h"
+#include "wstockconfig.h"
 
 BEGIN_EVENT_TABLE(wstockglobalinfo, wxDialog)
     EVT_STOCK_DATA_GET_DONE(-1, wstockglobalinfo::OnStockDataGetDone)
@@ -51,14 +52,14 @@ void wstockglobalinfo::UpdateInfoGridCellColor(int r){
 	        CurV=grid_infos->GetCellValue(ColDefs[r]->ColorCol,1);
 	    }
 		if (CurV.StartsWith(wxT("-"))){
-			if (grid_infos->GetCellTextColour(r,1) != *wxGREEN){
-				grid_infos->SetCellTextColour(r,1,*wxGREEN);
+			if (grid_infos->GetCellTextColour(r,1) != WStockConfig::GetBadColor()){
+				grid_infos->SetCellTextColour(r,1,WStockConfig::GetBadColor());
 			}
 		}
 		else
 		{
-			if (grid_infos->GetCellTextColour(r,1) != *wxRED){
-				grid_infos->SetCellTextColour(r,1,*wxRED);
+			if (grid_infos->GetCellTextColour(r,1) != WStockConfig::GetGoodColor()){
+				grid_infos->SetCellTextColour(r,1,WStockConfig::GetGoodColor());
 			}
 		}
 	}

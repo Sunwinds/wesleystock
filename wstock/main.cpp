@@ -122,7 +122,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 
 void MyFrame::DoInitData(){
 	ColDefs.push_back(new MainGridDef_Stru(_("Stock Name"),KT_FIXED,VT_OTHER));
-	ColDefs.push_back(new MainGridDef_Stru(_("TIME"),KT_REALTIME,VT_COLOR_NUMBER));
+	ColDefs.push_back(new MainGridDef_Stru(_("TIME"),KT_REALTIME,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("PRICE"),KT_REALTIME,VT_COLOR_NUMBER,3));
 	ColDefs.push_back(new MainGridDef_Stru(_("DELTA"),KT_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("DELTA RATE"),KT_REALTIME,VT_COLOR_NUMBER));
@@ -260,14 +260,14 @@ void MyFrame::UpdateMainGridCellColor(int r, int c){
 	        CurV=mainGrid->GetCellValue(r,ColDefs[c]->ColorCol);
 	    }
 		if (CurV.StartsWith(wxT("-"))){
-			if (mainGrid->GetCellTextColour(r,c) != *wxGREEN){
-				mainGrid->SetCellTextColour(r,c,*wxGREEN);
+			if (mainGrid->GetCellTextColour(r,c) != WStockConfig::GetBadColor()){
+				mainGrid->SetCellTextColour(r,c,WStockConfig::GetBadColor());
 			}
 		}
 		else
 		{
-			if (mainGrid->GetCellTextColour(r,c) != *wxRED){
-				mainGrid->SetCellTextColour(r,c,*wxRED);
+			if (mainGrid->GetCellTextColour(r,c) != WStockConfig::GetGoodColor()){
+				mainGrid->SetCellTextColour(r,c,WStockConfig::GetGoodColor());
 			}
 		}
 	}
