@@ -68,8 +68,7 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
 END_EVENT_TABLE()
 
 MyFrame::MyFrame(wxFrame *frame, const wxString& title)
-    : wxFrame(frame, -1, title),
-    RealTimeDeltaTimer(this,REALTIME_DELTA_TIMER_ID)
+    : wxFrame(frame, -1, title)
 {
 #if wxUSE_MENUS
     // create a menu bar
@@ -113,9 +112,16 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     SetStatusText(_("Hello wstock user !"),0);
     SetStatusText(_("WSTOCK"),1);
 #endif // wxUSE_STATUSBAR
+	//globalInfo=NULL;
     globalInfo = new wstockglobalinfo(this,-1,wxT(""),&mystocks);
-    int x = wxSystemSettings::GetMetric(wxSYS_SCREEN_X) - globalInfo->GetSize().x;
-    int y = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y) - globalInfo->GetSize().y;
+	int x = WStockConfig::GetGlobalInfoX();
+	if (x<0){
+		x = wxSystemSettings::GetMetric(wxSYS_SCREEN_X) - globalInfo->GetSize().x;
+	}
+	int y = WStockConfig::GetGlobalInfoY();
+	if (y<0){
+		y = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y) - globalInfo->GetSize().y;
+	}
     globalInfo->SetPosition(wxPoint(x,y));
     globalInfo->Show();
 }
@@ -144,12 +150,14 @@ void MyFrame::DoInitData(){
 	ClearDataFile();
     mystocks.LoadDataFromFile();
     mystocks.UpdateStockList(stocks.GetList());
+	RealTimeDeltaTimer.SetOwner(this,REALTIME_DELTA_TIMER_ID);
+
 }
 
 void MyFrame::UpdateMainGrid(int stockidx){
 
     CurStockStartPos = stockidx;
-    mainGrid->BeginBatch();
+    //mainGrid->BeginBatch();
     StocksDataFetch*stock = GetCurFetchObj();
     if (stock){
         int ColNum = ColDefs.size();
@@ -201,7 +209,7 @@ void MyFrame::UpdateMainGrid(int stockidx){
         mainGrid->DeleteRows(TotalLeft,mainGrid->GetNumberRows() - TotalLeft);
     }
     mainGrid->AutoSizeColumns();
-    mainGrid->EndBatch();
+    //mainGrid->EndBatch();
     if (mystocks.GetList()->size()>0){//if we have some custom value,start update it.
         stock->RetriveRealTimeData(mystocks.GetList(), (void*)0);
         //if some of the stock history data not ready, retrive it
@@ -275,27 +283,32 @@ void MyFrame::UpdateMainGridCellColor(int r, int c){
 
 void MyFrame::UpdateMainGridCell(int r, int c){
 	Stock*s = (*mystocks.GetList())[r];
+	wxString NewValue;
 	switch (ColDefs[c]->KeyType){
 	case KT_FIXED:
-		mainGrid->SetCellValue(r,c,s->GetFixedPropValue(ColDefs[c]->KeyName));
+		NewValue = s->GetFixedPropValue(ColDefs[c]->KeyName);
 		break;
 	case KT_REALTIME:
-		mainGrid->SetCellValue(r,c,s->GetRealTimeValue(ColDefs[c]->KeyName));
+		NewValue = s->GetRealTimeValue(ColDefs[c]->KeyName);
 		break;
 	case KT_REALTIME_CALC:
-		mainGrid->SetCellValue(r,c,s->GetRealTimeCalcValue(ColDefs[c]->KeyName));
+		NewValue = s->GetRealTimeCalcValue(ColDefs[c]->KeyName);
 		break;
 	case KT_HISTORY_CALC:
-		mainGrid->SetCellValue(r,c,s->GetHistoryCalcValue(ColDefs[c]->KeyName));
+		NewValue = s->GetHistoryCalcValue(ColDefs[c]->KeyName);
 		break;
 	case KT_MYSTOCK_FIXED:
 	case KT_MYSTOCK_REALTIME:
 		{
 			wxString v=ColDefs[c]->KeyName;
 			MyStockStru*p = mystocks.GetDatas()[s->GetId()];
-			mainGrid->SetCellValue(r,c, p->GetPropValue(v));
+			NewValue = p->GetPropValue(v);
 		}
 		break;
+	}
+
+	if (NewValue!=mainGrid->GetCellValue(r,c)){
+		mainGrid->SetCellValue(r,c,NewValue);
 	}
 }
 
@@ -305,7 +318,7 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
 		//1: Calc all the Realtime_calc value
 		//2: If some of the value is inside of mainGrid,update it.
 		if (event.IsSucc){
-            mainGrid->BeginBatch();
+            //mainGrid->BeginBatch();
             for (size_t si=0;si<mystocks.GetList()->size();si++){
                 Stock* s= (*mystocks.GetList())[si];
                 s->UpdateRealTimeCalcProps();
@@ -321,14 +334,20 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
 						UpdateMainGridCellColor(si,gridci);
 					}
 				}
-                globalInfo->UpdateRealtimeCell();
+				if (globalInfo){
+					globalInfo->UpdateRealtimeCell();
+				}
             }
             mainGrid->AutoSizeColumns();
-            mainGrid->EndBatch();
+            //mainGrid->EndBatch();
 		}
-        //股票数据已经刷新了一轮了，为了减轻服务器的压力，
-        //休息一下(30秒)再刷新第二轮吧
-        RealTimeDeltaTimer.Start(30000,true);
+
+        if (RealTimeDeltaTimer.Start(5000,true)){
+			wxLogDebug(wxT("Ok,Now we start this timer."));
+		}
+		else{
+			wxLogDebug(wxT("Oh My God,start timer fail!"));
+		}
     }
     else{
 		int myflag=(int)event.UserData;
@@ -341,7 +360,7 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
             //Some stock History data may change,what we need to do is:
             //1: Calc all the KT_HISTORY_CALC value
             //2: If some of the value is inside of mainGrid,update it.
-            mainGrid->BeginBatch();
+            //mainGrid->BeginBatch();
             int si = mystocks.GetList()->IndexOf(s);
             wxASSERT(si!=wxNOT_FOUND);
             s->UpdateHistoryCalcProps();
@@ -356,7 +375,7 @@ void MyFrame::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
 				}
 			}
             mainGrid->AutoSizeColumns();
-            mainGrid->EndBatch();
+            //mainGrid->EndBatch();
 
 
             if (myflag == 1){ //UserCall
@@ -517,6 +536,7 @@ StocksDataFetch*MyFrame::GetCurFetchObj(){
 }
 
 void MyFrame::OnRealtimeDeltaTimer(wxTimerEvent& event){
+	wxLogDebug(wxT("Ok now This timer timeout!"));
     StocksDataFetch*stock = GetCurFetchObj();
     if (stock) stock->RetriveRealTimeData(mystocks.GetList(), (void*)(0));
 }

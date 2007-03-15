@@ -4,10 +4,17 @@
 #include "wstockcustomdialog.h"
 #include "wstockconfig.h"
 
+int idMyTimerId=wxNewId();
 BEGIN_EVENT_TABLE(wstockglobalinfo, wxDialog)
     EVT_STOCK_DATA_GET_DONE(-1, wstockglobalinfo::OnStockDataGetDone)
-    EVT_TIMER(-1, wstockglobalinfo::OnRealtimeDeltaTimer)
+    EVT_TIMER(idMyTimerId, wstockglobalinfo::OnRealtimeDeltaTimer)
+	EVT_MOVE(wstockglobalinfo::OnMoved)
 END_EVENT_TABLE()
+
+void wstockglobalinfo::OnMoved(wxMoveEvent& event ){
+	WStockConfig::SetGlobalInfoX(GetPosition().x);
+	WStockConfig::SetGlobalInfoY(GetPosition().y);
+}
 
 void wstockglobalinfo::UpdateRealtimeCell(){
     for (size_t i=0;i<ColDefs.size();i++){
@@ -88,7 +95,7 @@ void wstockglobalinfo::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
 			}
             grid_infos->AutoSizeColumns();
             grid_infos->EndBatch();
-            RealTimeDeltaTimer.Start(30000,true);
+            RealTimeDeltaTimer.Start(5000,true);
 		}
 }
 
@@ -99,11 +106,10 @@ void wstockglobalinfo::OnRealtimeDeltaTimer(wxTimerEvent& event){
 }
 
 wstockglobalinfo::wstockglobalinfo(wxWindow* parent, int id, const wxString& title, MyStocks*ms,const wxPoint& pos, const wxSize& size, long style):
-    wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME|wxSTAY_ON_TOP),
-    RealTimeDeltaTimer(this,-1)
+    wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME|wxSTAY_ON_TOP)    
 {
     // begin wxGlade: wstockglobalinfo::wstockglobalinfo
-    grid_infos = new wxGrid(this, -1);
+    grid_infos = new wxGrid(this, idMyTimerId);
 
     set_properties();
     do_layout();
@@ -137,6 +143,7 @@ wstockglobalinfo::wstockglobalinfo(wxWindow* parent, int id, const wxString& tit
     stocks.Append(new Stock(wxT("000001"),_("ShangHai Value")));
 
     mystocks = ms;
+	RealTimeDeltaTimer.SetOwner(this,-1);
 
 	wstockcustomdialog dialog(NULL,-1,wxT(""));
     wxString DataProviderClass(dialog.GetDataProvider());

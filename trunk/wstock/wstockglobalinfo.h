@@ -60,6 +60,7 @@ private:
     void OnRealtimeDeltaTimer(wxTimerEvent& event);
     void UpdateInfoGridCellColor(int r);
     void UpdateInfoGridCell(int r);
+	void OnMoved(wxMoveEvent& event );
 protected:
     // begin wxGlade: wstockglobalinfo::attributes
     wxGrid* grid_infos;
