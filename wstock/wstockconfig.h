@@ -28,6 +28,22 @@ class WStockConfig :public wxObject
             config.Read(wxT("General/Proxy"), &keyPath);
             return keyPath;
         };
+        static int GetGlobalInfoX(){
+            int x= -1;
+            config.Read(wxT("General/GlobalX"), &x);
+            return x;
+        };
+        static int GetGlobalInfoY(){
+            int x= -1;
+            config.Read(wxT("General/GlobalY"), &x);
+            return x;
+        };
+        static void SetGlobalInfoX(int x){
+            config.Write(wxT("General/GlobalX"), x);
+        };
+        static void SetGlobalInfoY(int v){
+            config.Write(wxT("General/GlobalY"), v);
+        };
         static wxString GetHistoryDataDir(){
             wxString DataDir = wxT("./data");
             config.Read(STOCK_HISTORY_DATA_DIR_KEY, &DataDir);
