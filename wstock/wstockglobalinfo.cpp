@@ -14,6 +14,7 @@ END_EVENT_TABLE()
 void wstockglobalinfo::OnMoved(wxMoveEvent& event ){
 	WStockConfig::SetGlobalInfoX(GetPosition().x);
 	WStockConfig::SetGlobalInfoY(GetPosition().y);
+	WStockConfig::Flush();
 }
 
 void wstockglobalinfo::UpdateRealtimeCell(){
@@ -106,7 +107,7 @@ void wstockglobalinfo::OnRealtimeDeltaTimer(wxTimerEvent& event){
 }
 
 wstockglobalinfo::wstockglobalinfo(wxWindow* parent, int id, const wxString& title, MyStocks*ms,const wxPoint& pos, const wxSize& size, long style):
-    wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME|wxSTAY_ON_TOP)    
+    wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME|wxSTAY_ON_TOP)
 {
     // begin wxGlade: wstockglobalinfo::wstockglobalinfo
     grid_infos = new wxGrid(this, idMyTimerId);

@@ -418,12 +418,17 @@ void MyFrame::OnConfigure(wxCommandEvent& event)
 }
 
 void MyFrame::ClearDataFile(bool KeepToday){
+    wxFileName fs(WStockConfig::GetHistoryDataDir());
+    if (!fs.DirExists()) return;
     wxDir dir(WStockConfig::GetHistoryDataDir());
-    if ( !dir.IsOpened() )
     {
-        // deal with the error here - wxDir would already log an error message
-        // explaining the exact reason of the failure
-        return;
+        wxLogNull logNo;
+        if ( !dir.IsOpened() )
+        {
+            // deal with the error here - wxDir would already log an error message
+            // explaining the exact reason of the failure
+            return;
+        }
     }
     wxString filename;
 	wxDateTime now=wxDateTime::Now();
@@ -626,6 +631,7 @@ bool MyStocks::SaveDataToFile(){
 bool MyStocks::LoadDataFromFile(){
     wxDateTime now = wxDateTime::Now();
     wxFileName fn(WStockConfig::GetHistoryDataDir(),wxT("mystocks.dat"));
+    fn.MakeAbsolute();
     if (fn.FileExists()){
 		xmlDocPtr doc = xmlParseFile((const char*)fn.GetFullPath().mb_str());
 		if (doc == NULL ) {

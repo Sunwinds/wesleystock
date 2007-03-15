@@ -1,0 +1,7 @@
+[General]
+KeyPath=~/.wstock_data/stocks.xml
+HistoryDataDir=~/.wstock_data/data
+DataProvider=1
+[Google]
+[Curl]
+NoProxy=1
