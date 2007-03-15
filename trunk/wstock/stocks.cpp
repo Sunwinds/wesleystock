@@ -86,10 +86,10 @@ bool Stocks::Init(int HistoryDataNum){
     wxString keyPath=WStockConfig::GetKeyPath();
     wxFileName keyf(keyPath);
     keyf.MakeAbsolute();
-    if (wxFileName::FileExists(keyPath)){
+    if (keyf.FileExists()){
         //Load Stocks Name From file
         //wxTextFile file;
-		xmlDocPtr doc = xmlParseFile((const char*)keyPath.mb_str());
+		xmlDocPtr doc = xmlParseFile((const char*)keyf.GetFullPath().mb_str());
 		if (doc == NULL ) {
 			wxLogError(_("Document not parsed successfully. \n"));
 			return false;
@@ -150,6 +150,7 @@ bool Stock::LoadHistoryDataFromFile(){
 				now.GetMonth()+1,
 				now.GetDay(),
 				i));
+        fn.MakeAbsolute();
 		if (fn.FileExists()){
 
 			xmlDocPtr doc = xmlParseFile((const char*)fn.GetFullPath().mb_str());

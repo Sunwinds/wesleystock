@@ -8,6 +8,9 @@ extern wxConfig config;
 class WStockConfig :public wxObject
 {
     public:
+        static void Flush(){
+            config.Flush();
+        };
         static wxString GetKeyPath(){
             wxString keyPath = wxT("stocks.xml");
             config.Read(STOCK_KEY_PATH, &keyPath);
