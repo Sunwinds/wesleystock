@@ -31,8 +31,8 @@
 	<File name="htmltableparser.h" open="1" top="0" tabpos="17">
 		<Cursor position="379" topLine="4" />
 	</File>
-	<File name="main.cpp" open="1" top="0" tabpos="3">
-		<Cursor position="19270" topLine="568" />
+	<File name="main.cpp" open="1" top="1" tabpos="3">
+		<Cursor position="5439" topLine="124" />
 	</File>
 	<File name="main.h" open="1" top="0" tabpos="5">
 		<Cursor position="1352" topLine="23" />
@@ -61,11 +61,11 @@
 	<File name="stockplot.h" open="0" top="0" tabpos="4">
 		<Cursor position="360" topLine="0" />
 	</File>
-	<File name="stocks.cpp" open="1" top="1" tabpos="4">
-		<Cursor position="3529" topLine="84" />
+	<File name="stocks.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="0" topLine="0" />
 	</File>
 	<File name="stocks.h" open="1" top="0" tabpos="7">
-		<Cursor position="9195" topLine="256" />
+		<Cursor position="1781" topLine="34" />
 	</File>
 	<File name="wstockconfig.h" open="1" top="0" tabpos="19">
 		<Cursor position="146" topLine="0" />

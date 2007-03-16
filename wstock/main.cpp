@@ -127,6 +127,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 }
 
 void MyFrame::DoInitData(){
+	ColDefs.push_back(new MainGridDef_Stru(_("Stock Id"),KT_FIXED,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("Stock Name"),KT_FIXED,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("TIME"),KT_REALTIME,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("PRICE"),KT_REALTIME,VT_COLOR_NUMBER,3));
