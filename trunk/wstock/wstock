@@ -1,0 +1,7 @@
+#!/bin/sh
+if [ ! -f ~/.wstock ]; then 
+	cp /usr/share/wstock/wstock_cfg_linux ~/.wstock
+	mkdir -p ~/.wstock_data/
+	cp /usr/share/wstock/stocks.xml ~/.wstock_data/stocks.xml
+fi
+wstock.bin
