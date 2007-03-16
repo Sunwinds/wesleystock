@@ -321,6 +321,7 @@ void GSpreadSheets::GetFromGoogle(MyStockDataHash* data){
     else{
         Data = data;
         wxLogStatus(_("Try to Get mystock data from Google SpreadSheets"));
+		wxLogDebug(cellsFeedHref);
         WStockGetUrl* geturl=new WStockGetUrl(this,cellsFeedHref,(void*)1);
         wxString GoogleAuthHead(wxT("Authorization: GoogleLogin auth=\""));
         GoogleAuthHead << AuthKey<< wxT("\"");

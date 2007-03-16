@@ -67,6 +67,10 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 				bool IsSucc=true;
 				if (idx>=0){
 					//wxLogMessage((*stocks)[0]->GetId());
+					if (stocks->size()<=0){
+						delete(data);
+						return;
+					}
 					if ((*stocks)[0]->GetId() == wxT("399001")){//People want retrive Global Info
 						wxString v=p->GetValue(idx-16);
                         wxStringTokenizer tkz(v, wxT(" "));
