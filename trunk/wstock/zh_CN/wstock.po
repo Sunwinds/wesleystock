@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-13 17:52+0800\n"
+"POT-Creation-Date: 2007-03-19 13:43+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,63 +33,63 @@ msgstr "还没有取到cell操作地址，放弃更新!"
 msgid "Try to Update mystock data to Google SpreadSheets (%d cell(s) left)..."
 msgstr "正在将我的股票数据更新到Google服务器(还剩%d个)..."
 
-#: ../main.cpp:70 ../main.cpp:73 ../main.cpp:76 ../main.cpp:78
+#: ../main.cpp:70 ../main.cpp:73 ../main.cpp:76 ../main.cpp:78 ../main.cpp:77
 msgid "&Quit\tAlt-F4"
 msgstr "退出\tAlt-F4"
 
-#: ../main.cpp:70 ../main.cpp:73 ../main.cpp:76 ../main.cpp:78
+#: ../main.cpp:70 ../main.cpp:73 ../main.cpp:76 ../main.cpp:78 ../main.cpp:77
 msgid "Quit the application"
 msgstr "退出应用程序"
 
-#: ../main.cpp:71 ../main.cpp:74 ../main.cpp:77 ../main.cpp:79
+#: ../main.cpp:71 ../main.cpp:74 ../main.cpp:77 ../main.cpp:79 ../main.cpp:78
 msgid "&File"
 msgstr "文件"
 
-#: ../main.cpp:74 ../main.cpp:77 ../main.cpp:80 ../main.cpp:82
+#: ../main.cpp:74 ../main.cpp:77 ../main.cpp:80 ../main.cpp:82 ../main.cpp:81
 msgid "&Add MyStock\tCtrl-a"
 msgstr "增加我的股票\tCtrl-a"
 
-#: ../main.cpp:74 ../main.cpp:77 ../main.cpp:80 ../main.cpp:82
+#: ../main.cpp:74 ../main.cpp:77 ../main.cpp:80 ../main.cpp:82 ../main.cpp:81
 msgid "Add One Stock Buy Record!"
 msgstr "增加一个操作记录"
 
-#: ../main.cpp:76 ../main.cpp:79 ../main.cpp:82 ../main.cpp:84
+#: ../main.cpp:76 ../main.cpp:79 ../main.cpp:82 ../main.cpp:84 ../main.cpp:83
 msgid "&Update MyStock\tCtrl-u"
 msgstr "更新我的股票"
 
-#: ../main.cpp:77 ../main.cpp:80 ../main.cpp:83 ../main.cpp:85
+#: ../main.cpp:77 ../main.cpp:80 ../main.cpp:83 ../main.cpp:85 ../main.cpp:84
 msgid "Update MyStock Data from google!"
 msgstr "从Google服务器更新我的股票信息到本地"
 
-#: ../main.cpp:78 ../main.cpp:81 ../main.cpp:84 ../main.cpp:86
+#: ../main.cpp:78 ../main.cpp:81 ../main.cpp:84 ../main.cpp:86 ../main.cpp:85
 msgid "&Put MyStock\tCtrl-u"
 msgstr "上传我的股票"
 
-#: ../main.cpp:79 ../main.cpp:82 ../main.cpp:85 ../main.cpp:87
+#: ../main.cpp:79 ../main.cpp:82 ../main.cpp:85 ../main.cpp:87 ../main.cpp:86
 msgid "Put MyStock Data to google!"
 msgstr "将我的股票信息上传到Google服务器"
 
-#: ../main.cpp:81 ../main.cpp:84 ../main.cpp:87 ../main.cpp:90
+#: ../main.cpp:81 ../main.cpp:84 ../main.cpp:87 ../main.cpp:90 ../main.cpp:89
 msgid "&Configure\tCtrl-Alt-c"
 msgstr "配置"
 
-#: ../main.cpp:81 ../main.cpp:84 ../main.cpp:87 ../main.cpp:90
+#: ../main.cpp:81 ../main.cpp:84 ../main.cpp:87 ../main.cpp:90 ../main.cpp:89
 msgid "Global Configure"
 msgstr "全局配置"
 
-#: ../main.cpp:82 ../main.cpp:85 ../main.cpp:88 ../main.cpp:91
+#: ../main.cpp:82 ../main.cpp:85 ../main.cpp:88 ../main.cpp:91 ../main.cpp:90
 msgid "&Tool"
 msgstr "工具"
 
-#: ../main.cpp:85 ../main.cpp:88 ../main.cpp:94 ../main.cpp:97
+#: ../main.cpp:85 ../main.cpp:88 ../main.cpp:94 ../main.cpp:97 ../main.cpp:96
 msgid "&About\tF1"
 msgstr "关于"
 
-#: ../main.cpp:85 ../main.cpp:88 ../main.cpp:94 ../main.cpp:97
+#: ../main.cpp:85 ../main.cpp:88 ../main.cpp:94 ../main.cpp:97 ../main.cpp:96
 msgid "Show info about this application"
 msgstr "显示本程序的关于信息"
 
-#: ../main.cpp:86 ../main.cpp:89 ../main.cpp:95 ../main.cpp:98
+#: ../main.cpp:86 ../main.cpp:89 ../main.cpp:95 ../main.cpp:98 ../main.cpp:97
 msgid "&Help"
 msgstr "帮助"
 
@@ -98,6 +98,7 @@ msgid "Hello Code::Blocks user !"
 msgstr ""
 
 #: ../main.cpp:102 ../main.cpp:105 ../main.cpp:111 ../main.cpp:114
+#: ../main.cpp:113
 msgid "WSTOCK"
 msgstr ""
 
@@ -113,19 +114,19 @@ msgstr "股票名称"
 
 #: ../main.cpp:135 ../main.cpp:218 ../main.cpp:116 ../main.cpp:625
 #: ../main.cpp:124 ../main.cpp:728 ../main.cpp:129 ../main.cpp:684
-#: ../main.cpp:132 ../main.cpp:691
+#: ../main.cpp:132 ../main.cpp:691 ../main.cpp:139 ../main.cpp:739
 msgid "Total Amount"
 msgstr "剩余总数"
 
 #: ../main.cpp:136 ../main.cpp:194 ../main.cpp:117 ../main.cpp:628
 #: ../main.cpp:125 ../main.cpp:734 ../main.cpp:130 ../main.cpp:690
-#: ../main.cpp:133 ../main.cpp:697
+#: ../main.cpp:133 ../main.cpp:697 ../main.cpp:140 ../main.cpp:745
 msgid "Earnings Yield"
 msgstr "收益率"
 
 #: ../main.cpp:137 ../main.cpp:206 ../main.cpp:118 ../main.cpp:633
 #: ../main.cpp:126 ../main.cpp:739 ../main.cpp:131 ../main.cpp:695
-#: ../main.cpp:134 ../main.cpp:702
+#: ../main.cpp:134 ../main.cpp:702 ../main.cpp:141 ../main.cpp:750
 msgid "Earnings"
 msgstr "当前收益"
 
@@ -136,6 +137,9 @@ msgstr "当前收益"
 #: ../main.cpp:697 ../wstockglobalinfo.cpp:13 ../wstockglobalinfo.cpp:16
 #: ../main.cpp:126 ../main.cpp:699 ../main.cpp:704 ../stocks.cpp:291
 #: ../stocks.cpp:315 ../wstockglobalinfo.cpp:25 ../wstockglobalinfo.cpp:28
+#: ../main.cpp:133 ../main.cpp:747 ../main.cpp:752 ../stocks.cpp:292
+#: ../stocks.cpp:316 ../wstockglobalinfo.cpp:34 ../wstockglobalinfo.cpp:40
+#: ../wstockglobalinfo.cpp:81 ../wstockglobalinfo.cpp:84
 msgid "PRICE"
 msgstr "价格"
 
@@ -143,11 +147,13 @@ msgstr "价格"
 #: ../main.cpp:113 ../yahoostock.h:18 ../main.cpp:119 ../sohustock.h:16
 #: ../main.cpp:124 ../wstockglobalinfo.cpp:19 ../wstockglobalinfo.cpp:22
 #: ../main.cpp:127 ../wstockglobalinfo.cpp:31 ../wstockglobalinfo.cpp:34
+#: ../main.cpp:134 ../wstockglobalinfo.cpp:43 ../wstockglobalinfo.cpp:46
+#: ../wstockglobalinfo.cpp:82 ../wstockglobalinfo.cpp:85
 msgid "DELTA"
 msgstr "涨跌额"
 
 #: ../main.cpp:306 ../main.cpp:423 ../main.cpp:485 ../main.cpp:449
-#: ../main.cpp:456
+#: ../main.cpp:456 ../main.cpp:502
 #, c-format
 msgid "The Stock ID[%s] is unacceptable!"
 msgstr "%s不是一个正确的股票代码，请检查配置文件"
@@ -157,7 +163,7 @@ msgid "Welcome to..."
 msgstr ""
 
 #: ../main.cpp:347 ../main.cpp:348 ../main.cpp:474 ../main.cpp:547
-#: ../main.cpp:511 ../main.cpp:518
+#: ../main.cpp:511 ../main.cpp:518 ../main.cpp:565
 msgid "MyStock Detail"
 msgstr "我的股票详细信息"
 
@@ -167,7 +173,7 @@ msgstr "从存盘文件中获取历史数据!"
 
 #: ../main.cpp:374 ../stocks.cpp:139 ../main.cpp:376 ../main.cpp:504
 #: ../stocks.cpp:197 ../main.cpp:577 ../stocks.cpp:224 ../main.cpp:533
-#: ../main.cpp:540
+#: ../main.cpp:540 ../main.cpp:587 ../stocks.cpp:225
 #, c-format
 msgid "Try to create directory %s fail!"
 msgstr "创建目录%s失败"
@@ -209,7 +215,7 @@ msgid "DATE"
 msgstr "日期"
 
 #: ../yahoostock.cpp:22 ../yahoostock.h:17 ../main.cpp:122 ../sohustock.h:20
-#: ../main.cpp:125
+#: ../main.cpp:125 ../main.cpp:132 ../wstockglobalinfo.cpp:37
 msgid "TIME"
 msgstr "时间"
 
@@ -350,11 +356,12 @@ msgid "Try to Get mystock data from Google SpreadSheets"
 msgstr "正在从Google服务器更新我的股票"
 
 #: ../main.cpp:114 ../stocks.cpp:34 ../stocks.cpp:39 ../main.cpp:121
-#: ../main.cpp:126 ../main.cpp:129
+#: ../main.cpp:126 ../main.cpp:129 ../main.cpp:136
 msgid "PRICE 10D AVG"
 msgstr "10日均价"
 
 #: ../main.cpp:465 ../main.cpp:538 ../main.cpp:502 ../main.cpp:509
+#: ../main.cpp:556
 msgid "Explain me:"
 msgstr "解释一下:"
 
@@ -381,11 +388,11 @@ msgid "Stock Name:"
 msgstr "股票名称:"
 
 #: ../stocks.cpp:94 ../main.cpp:628 ../stocks.cpp:157 ../main.cpp:584
-#: ../main.cpp:591
+#: ../main.cpp:591 ../main.cpp:639 ../stocks.cpp:158
 msgid "Document not parsed successfully. \n"
 msgstr "文档解析失败\n"
 
-#: ../stocks.h:47
+#: ../stocks.h:47 ../main.cpp:130
 msgid "Stock Id"
 msgstr "股票代码"
 
@@ -393,43 +400,45 @@ msgstr "股票代码"
 msgid "wstock stock manager software"
 msgstr "wstock股票管理软件"
 
-#: ../main.cpp:92 ../main.cpp:95
+#: ../main.cpp:92 ../main.cpp:95 ../main.cpp:94
 msgid "&Test Net\tF2"
 msgstr ""
 
-#: ../main.cpp:92 ../main.cpp:95
+#: ../main.cpp:92 ../main.cpp:95 ../main.cpp:94
 msgid "Test the net connection!"
 msgstr ""
 
-#: ../main.cpp:110 ../main.cpp:113
+#: ../main.cpp:110 ../main.cpp:113 ../main.cpp:112
 msgid "Hello wstock user !"
 msgstr "欢迎使用wstock!"
 
 #: ../main.cpp:120 ../sinastock.h:18 ../sohustock.h:18 ../main.cpp:125
 #: ../wstockglobalinfo.cpp:25 ../wstockglobalinfo.cpp:28 ../main.cpp:128
-#: ../wstockglobalinfo.cpp:37 ../wstockglobalinfo.cpp:40
+#: ../wstockglobalinfo.cpp:37 ../wstockglobalinfo.cpp:40 ../main.cpp:135
+#: ../wstockglobalinfo.cpp:49 ../wstockglobalinfo.cpp:52
+#: ../wstockglobalinfo.cpp:83 ../wstockglobalinfo.cpp:86
 msgid "DELTA RATE"
 msgstr "涨跌幅"
 
 #: ../main.cpp:122 ../main.cpp:731 ../main.cpp:127 ../main.cpp:687
-#: ../main.cpp:130 ../main.cpp:694
+#: ../main.cpp:130 ../main.cpp:694 ../main.cpp:137 ../main.cpp:742
 msgid "PRICE AVG"
 msgstr "成本价"
 
-#: ../main.cpp:238 ../main.cpp:229 ../main.cpp:232
+#: ../main.cpp:238 ../main.cpp:229 ../main.cpp:232 ../main.cpp:253
 #, c-format
 msgid "StockId %s is not a valid StockId"
 msgstr "%s不是一个有效的股票代码"
 
-#: ../main.cpp:410 ../main.cpp:368 ../main.cpp:375
+#: ../main.cpp:410 ../main.cpp:368 ../main.cpp:375 ../main.cpp:416
 msgid "Some of the change may only take place when you restart the app!"
 msgstr "你可能需要重新启动本程序，您的设置才能生效!"
 
-#: ../main.cpp:520 ../main.cpp:484 ../main.cpp:491
+#: ../main.cpp:520 ../main.cpp:484 ../main.cpp:491 ../main.cpp:537
 msgid "Author Blog:http://wxblender.blogspot.com"
 msgstr "欢迎访问:http://wxblender.blogspot.com"
 
-#: ../main.cpp:520 ../main.cpp:484 ../main.cpp:491
+#: ../main.cpp:520 ../main.cpp:484 ../main.cpp:491 ../main.cpp:537
 msgid "Welcome to wstock"
 msgstr "欢迎使用wstock"
 
@@ -448,58 +457,76 @@ msgstr ""
 #: ../wstockglobalinfo.cpp:12 ../wstockglobalinfo.cpp:79
 #: ../wstockglobalinfo.cpp:100 ../wstockglobalinfo.cpp:103
 #: ../wstockglobalinfo.cpp:24 ../wstockglobalinfo.cpp:97
-#: ../wstockglobalinfo.cpp:122
+#: ../wstockglobalinfo.cpp:122 ../wstockglobalinfo.cpp:33
+#: ../wstockglobalinfo.cpp:123 ../wstockglobalinfo.cpp:147
 msgid "ShenZhen Value"
 msgstr "深证成指"
 
 #: ../wstockglobalinfo.cpp:15 ../wstockglobalinfo.cpp:82
 #: ../wstockglobalinfo.cpp:99 ../wstockglobalinfo.cpp:102
 #: ../wstockglobalinfo.cpp:27 ../wstockglobalinfo.cpp:100
-#: ../wstockglobalinfo.cpp:121
+#: ../wstockglobalinfo.cpp:121 ../wstockglobalinfo.cpp:39
+#: ../wstockglobalinfo.cpp:126 ../wstockglobalinfo.cpp:148
 msgid "ShangHai Value"
 msgstr "上证指数"
 
 #: ../wstockglobalinfo.cpp:18 ../wstockglobalinfo.cpp:80
 #: ../wstockglobalinfo.cpp:30 ../wstockglobalinfo.cpp:98
+#: ../wstockglobalinfo.cpp:42 ../wstockglobalinfo.cpp:124
 msgid "ShenZhen Delta"
 msgstr "深市涨跌额"
 
 #: ../wstockglobalinfo.cpp:21 ../wstockglobalinfo.cpp:83
 #: ../wstockglobalinfo.cpp:33 ../wstockglobalinfo.cpp:101
+#: ../wstockglobalinfo.cpp:45 ../wstockglobalinfo.cpp:127
 msgid "ShangHai Delta"
 msgstr "沪市涨跌额"
 
 #: ../wstockglobalinfo.cpp:24 ../wstockglobalinfo.cpp:81
 #: ../wstockglobalinfo.cpp:36 ../wstockglobalinfo.cpp:99
+#: ../wstockglobalinfo.cpp:48 ../wstockglobalinfo.cpp:125
 msgid "ShenZhen Delta Rate"
 msgstr "深市涨跌幅"
 
 #: ../wstockglobalinfo.cpp:27 ../wstockglobalinfo.cpp:84
 #: ../wstockglobalinfo.cpp:39 ../wstockglobalinfo.cpp:102
+#: ../wstockglobalinfo.cpp:51 ../wstockglobalinfo.cpp:128
 msgid "ShangHai Delta Rate"
 msgstr "沪市涨跌幅"
 
 #: ../wstockglobalinfo.cpp:115 ../wstockglobalinfo.cpp:118
-#: ../wstockglobalinfo.cpp:139
+#: ../wstockglobalinfo.cpp:139 ../wstockglobalinfo.cpp:166
 msgid "wstock global info"
 msgstr "wstock全局信息"
 
 #: ../wstockglobalinfo.cpp:85 ../stocks.cpp:323 ../wstockglobalinfo.cpp:103
+#: ../stocks.cpp:324 ../wstockglobalinfo.cpp:129
 msgid "MyStock Total Earning"
 msgstr "我的总盈利"
 
 #: ../wstockglobalinfo.cpp:86 ../stocks.cpp:326 ../wstockglobalinfo.cpp:104
+#: ../stocks.cpp:327 ../wstockglobalinfo.cpp:130
 msgid "MyStock Total Earning Rate"
 msgstr "总盈利幅度"
 
 #: ../wstockglobalinfo.cpp:87 ../stocks.cpp:335 ../wstockglobalinfo.cpp:105
+#: ../stocks.cpp:336 ../wstockglobalinfo.cpp:131
 msgid "MyStock Total Money"
 msgstr "我的总资产"
 
-#: ../main.cpp:89
+#: ../main.cpp:89 ../main.cpp:88
 msgid "&Hide(/Show) Global Info\tCtrl-Alt-s"
 msgstr "显示(隐藏)全局信息窗口\tCtrl-Alt-s"
 
-#: ../main.cpp:89
+#: ../main.cpp:89 ../main.cpp:88
 msgid "Hide(/Show) Global Info"
 msgstr "显示(隐藏)全局信息窗口"
+
+#: ../main.cpp:250
+#, c-format
+msgid "You may want verify this stockid is a valid stockId:%s"
+msgstr "也许你希望校验一下股票编号:%s"
+
+#: ../wstockglobalinfo.cpp:36 ../wstockglobalinfo.cpp:122
+msgid "Global Time"
+msgstr "大盘时间"
