@@ -33,6 +33,9 @@ void wstockglobalinfo::UpdateInfoGridCell(int r){
     if (ColDefs[r]->KeyName == (_("ShenZhen Value"))){
         grid_infos->SetCellValue(r,1,stocks[0]->GetRealTimeValue(_("PRICE")));
     }
+    else if (ColDefs[r]->KeyName == (_("Global Time"))){
+        grid_infos->SetCellValue(r,1,stocks[0]->GetRealTimeValue(_("TIME")));
+    }
     else if (ColDefs[r]->KeyName == (_("ShangHai Value"))){
         grid_infos->SetCellValue(r,1,stocks[1]->GetRealTimeValue(_("PRICE")));
     }
@@ -116,10 +119,11 @@ wstockglobalinfo::wstockglobalinfo(wxWindow* parent, int id, const wxString& tit
     do_layout();
     // end wxGlade
 
-	ColDefs.push_back(new MainGridDef_Stru(_("ShenZhen Value"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER,1));
+	ColDefs.push_back(new MainGridDef_Stru(_("Global Time"),KT_GLOBAL_REALTIME,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("ShenZhen Value"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER,2));
 	ColDefs.push_back(new MainGridDef_Stru(_("ShenZhen Delta"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("ShenZhen Delta Rate"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER));
-	ColDefs.push_back(new MainGridDef_Stru(_("ShangHai Value"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER,4));
+	ColDefs.push_back(new MainGridDef_Stru(_("ShangHai Value"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER,5));
 	ColDefs.push_back(new MainGridDef_Stru(_("ShangHai Delta"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("ShangHai Delta Rate"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("MyStock Total Earning"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
@@ -144,7 +148,7 @@ wstockglobalinfo::wstockglobalinfo(wxWindow* parent, int id, const wxString& tit
     stocks.Append(new Stock(wxT("000001"),_("ShangHai Value")));
 
     mystocks = ms;
-	RealTimeDeltaTimer.SetOwner(this,-1);
+	RealTimeDeltaTimer.SetOwner(this,idMyTimerId);
 
 	wstockcustomdialog dialog(NULL,-1,wxT(""));
     wxString DataProviderClass(dialog.GetDataProvider());
