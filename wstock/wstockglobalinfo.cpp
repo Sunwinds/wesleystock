@@ -113,7 +113,7 @@ wstockglobalinfo::wstockglobalinfo(wxWindow* parent, int id, const wxString& tit
     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME|wxSTAY_ON_TOP)
 {
     // begin wxGlade: wstockglobalinfo::wstockglobalinfo
-    grid_infos = new wxGrid(this, idMyTimerId);
+    grid_infos = new wxGrid(this, -1);
 
     set_properties();
     do_layout();
