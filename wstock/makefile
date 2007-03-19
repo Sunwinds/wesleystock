@@ -3,6 +3,10 @@ DIST_DIR_BASE=wstock-$(VERSION)
 DIST_DIR=/tmp/$(DIST_DIR_BASE)/
 wstock_bin: 
 	`wx-config --cxx --cflags --libs` `xml2-config --cflags --libs` `curl-config --cflags --libs` *.cpp -o wstock.bin
+
+debug: 
+	`wx-config --cxx --cflags --libs` `xml2-config --cflags --libs` `curl-config --cflags --libs` *.cpp  -g -o wstock.bin
+
 install:
 	install -d $(DESTDIR)/usr/bin/
 	install wstock $(DESTDIR)/usr/bin/wstock
