@@ -7,4 +7,5 @@
   <Stock Id="000002" Name="万  科Ａ"/>
   <Stock Id="399001" Name="深证成指"/>
   <Stock Id="600021" Name="上海电力"/>
+  <Stock Id="600737" Name="中粮屯河"/>
 </Stocks>
