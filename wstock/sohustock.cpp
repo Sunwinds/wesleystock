@@ -72,6 +72,9 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 						return;
 					}
 					if ((*stocks)[0]->GetId() == wxT("399001")){//People want retrive Global Info
+						wxString datetime = p->GetValue(idx-15);
+						(*stocks)[0]->SetPropertyValue(Props[5], datetime.AfterFirst(wxT(' ')));
+						(*stocks)[1]->SetPropertyValue(Props[5], datetime.AfterFirst(wxT(' ')));
 						wxString v=p->GetValue(idx-16);
                         wxStringTokenizer tkz(v, wxT(" "));
                         int subidx=0;
