@@ -8,4 +8,5 @@
   <Stock Id="399001" Name="深证成指"/>
   <Stock Id="600021" Name="上海电力"/>
   <Stock Id="600737" Name="中粮屯河"/>
+  <Stock Id="600332" Name="广州药业"/>
 </Stocks>

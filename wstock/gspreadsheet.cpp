@@ -104,6 +104,7 @@ void GSpreadSheets::OnUrlGetDone(wxUrlGetDoneEvent& event){
         Data->clear();
         if (event.doc != NULL){
             wxArrayString Record;
+            int NextRow=1;
             for (xmlNodePtr node=event.doc->children->children;node;node=node->next){
                bool Good=true;
                 if (xmlStrcmp(node->name,(const xmlChar*)"entry")==0){
@@ -111,8 +112,9 @@ void GSpreadSheets::OnUrlGetDone(wxUrlGetDoneEvent& event){
                         if (xmlStrcmp(entrysubnode->name,(const xmlChar*)"cell")==0){
                             int r=atoi((char*)xmlGetProp(entrysubnode, (const xmlChar*)"row"));
                             int c=atoi((char*)xmlGetProp(entrysubnode, (const xmlChar*)"col"));
+                            //printf("Got one cell %d %d\n",r,c);
                             xmlChar* v=xmlGetProp(entrysubnode, (const xmlChar*)"inputValue");
-                            if ((r == ((int)Data->size()+1)) && (c == ((int)Record.size()+1))){
+                            if ((r == NextRow) && (c == ((int)Record.size()+1))){
                                 Record.Add(wxString(wxConvUTF8.cMB2WC((const char*)v),*wxConvCurrent));
                                 //wxLogMessage(wxT("%d %d %s"),r,c,Record[Record.size()-1].c_str());
                             }
@@ -125,6 +127,7 @@ void GSpreadSheets::OnUrlGetDone(wxUrlGetDoneEvent& event){
                 }
                 if (!Good) break;
                 if (Record.size() == 5){
+                    NextRow++;
 					if (Record[0].StartsWith(wxT("S_"))){//Google is so strange to remove the 0 before value,so we add "S_"
 						Record[0].Remove(0,2);
 					}

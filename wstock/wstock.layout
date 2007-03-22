@@ -19,10 +19,10 @@
 	<File name="app.h" open="1" top="0" tabpos="14">
 		<Cursor position="338" topLine="6" />
 	</File>
-	<File name="gspreadsheet.cpp" open="0" top="0" tabpos="9">
-		<Cursor position="5322" topLine="258" />
+	<File name="gspreadsheet.cpp" open="1" top="1" tabpos="19">
+		<Cursor position="5816" topLine="116" />
 	</File>
-	<File name="gspreadsheet.h" open="1" top="1" tabpos="1">
+	<File name="gspreadsheet.h" open="1" top="0" tabpos="1">
 		<Cursor position="729" topLine="19" />
 	</File>
 	<File name="htmltableparser.cpp" open="1" top="0" tabpos="9">
@@ -44,7 +44,7 @@
 		<Cursor position="536" topLine="9" />
 	</File>
 	<File name="sinastock.cpp" open="1" top="0" tabpos="6">
-		<Cursor position="1258" topLine="56" />
+		<Cursor position="1258" topLine="57" />
 	</File>
 	<File name="sinastock.h" open="1" top="0" tabpos="16">
 		<Cursor position="482" topLine="1" />
@@ -65,7 +65,7 @@
 		<Cursor position="0" topLine="0" />
 	</File>
 	<File name="stocks.h" open="1" top="0" tabpos="5">
-		<Cursor position="1781" topLine="34" />
+		<Cursor position="1781" topLine="38" />
 	</File>
 	<File name="wstockconfig.h" open="1" top="0" tabpos="17">
 		<Cursor position="146" topLine="0" />
@@ -80,7 +80,7 @@
 		<Cursor position="599" topLine="27" />
 	</File>
 	<File name="wstockgeturl.cpp" open="1" top="0" tabpos="18">
-		<Cursor position="5802" topLine="162" />
+		<Cursor position="5802" topLine="163" />
 	</File>
 	<File name="wstockgeturl.h" open="0" top="0" tabpos="1">
 		<Cursor position="2240" topLine="53" />
