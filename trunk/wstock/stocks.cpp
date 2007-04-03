@@ -26,22 +26,30 @@ void Stock::UpdateHistoryCalcProps(){
 	//Update the 10Day avg price
 	if (HistoryDatas.size()>0){//it is a rule, the first array is the day hostory data in descending order
 		double price=0;
-		if (HistoryDatas[0]->size()>10){
-			for (int i=0;i<10;i++){
+		if (HistoryDatas[0]->size()>5){
+			for (int i=0;i<5;i++){
 				price += (*HistoryDatas[0])[i]->adjClose;
 			}
 		}
-		HistoryCalcProps[_("PRICE 10D AVG")] = wxString::Format(wxT("%.2f"),price/10);
+		HistoryCalcProps[_("PRICE 5D AVG")] = wxString::Format(wxT("%.2f"),price/5);
+
+        long amount=0;
+		if (HistoryDatas[0]->size()>5){
+			for (int i=0;i<5;i++){
+				amount += (*HistoryDatas[0])[i]->volume;
+			}
+		}
+        HistoryCalcProps[_("EXCHANGE 5D AVG")] = wxString::Format(wxT("%ld"),amount/5);
 	}
 }
 
 wxString Stock::ExplainMePropValue(const wxString& v){
-	if (v ==  _("PRICE 10D AVG")){
+	if (v ==  _("PRICE 5D AVG")){
 		wxString desc;
 		if (HistoryDatas.size()>0){//it is a rule, the first array is the day hostory data in descending order
 			//double price=0;
-			if (HistoryDatas[0]->size()>10){
-				for (int i=0;i<10;i++){
+			if (HistoryDatas[0]->size()>5){
+				for (int i=0;i<5;i++){
 					desc += (*HistoryDatas[0])[i]->data.Format(wxT("%Y-%m-%d:"));
 					desc += wxString::Format(wxT("%.2f\n"),(*HistoryDatas[0])[i]->adjClose);
 				}
@@ -53,7 +61,16 @@ wxString Stock::ExplainMePropValue(const wxString& v){
 }
 
 void Stock::UpdateRealTimeCalcProps(){
-	//so far,we have no this kind of data;
+    long v=0;
+    double dv=0;
+    RealTimeProps[_("EXCHANGE")].ToLong(&v);
+    RealTimeProps[_("EXCHANGE PRICE")].ToDouble(&dv);
+    if (v==0){
+        RealTimeCalcProps[_("EXCHANGE AVG PRICE")] = wxT("N/A");
+    }
+    else{
+        RealTimeCalcProps[_("EXCHANGE AVG PRICE")] = wxString::Format(wxT("%.3f"),dv/v);
+    }
 }
 
 void Stock::InitHistoryData(int num){

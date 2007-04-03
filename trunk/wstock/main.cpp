@@ -133,9 +133,14 @@ void MyFrame::DoInitData(){
 	ColDefs.push_back(new MainGridDef_Stru(_("PRICE"),KT_REALTIME,VT_COLOR_NUMBER,4));
 	ColDefs.push_back(new MainGridDef_Stru(_("DELTA"),KT_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("DELTA RATE"),KT_REALTIME,VT_COLOR_NUMBER));
-	ColDefs.push_back(new MainGridDef_Stru(_("PRICE 10D AVG"),KT_HISTORY_CALC,VT_OTHER));
+
+	ColDefs.push_back(new MainGridDef_Stru(_("PRICE 5D AVG"),KT_HISTORY_CALC,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("PRICE AVG"),KT_MYSTOCK_FIXED,VT_OTHER));
-	//	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE"),KT_REALTIME,VT_OTHER));
+
+	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE AVG PRICE"),KT_REALTIME_CALC,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE"),KT_REALTIME,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE 5D AVG"),KT_HISTORY_CALC,VT_OTHER));
+
 	ColDefs.push_back(new MainGridDef_Stru(_("Total Amount"),KT_MYSTOCK_FIXED,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("Earnings Yield"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("Earnings"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));

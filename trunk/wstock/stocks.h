@@ -14,7 +14,8 @@ typedef struct{
     double     High;
     double     Low;
     double     Close;
-    int        volume;
+    int         volume;
+    double     volPrice;
     double     adjClose;
 }StockHistoryDataPiece;
 WX_DEFINE_ARRAY (StockHistoryDataPiece *, StockHistoryDataArray);
