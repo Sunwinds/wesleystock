@@ -119,8 +119,15 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 						for (size_t i=0;i<stocks->size();i++){
 							(*stocks)[i]->SetPropertyValue(Props[0], p->GetValue(idx+6+i*14));
 							(*stocks)[i]->SetPropertyValue(Props[1], p->GetValue(idx+7+i*14));
-							(*stocks)[i]->SetPropertyValue(Props[2], p->GetValue(idx+9+i*14));
+							wxString v = p->GetValue(idx+9+i*14);
+							v.Replace(wxT(","),wxT(""));
+							(*stocks)[i]->SetPropertyValue(Props[2],v);
 							(*stocks)[i]->SetPropertyValue(Props[3], p->GetValue(idx+8+i*14));
+							v = p->GetValue(idx+10+i*14);
+							v.Replace(wxT(","),wxT(""));
+							double dv;
+							v.ToDouble(&dv);
+							(*stocks)[i]->SetPropertyValue(Props[6], wxString::Format(wxT("%.2f"),dv*100));
 							(*stocks)[i]->SetPropertyValue(Props[4], datetime.BeforeFirst(wxT(' ')));
 							(*stocks)[i]->SetPropertyValue(Props[5], datetime.AfterFirst(wxT(' ')));
 						}
@@ -163,14 +170,20 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
                         if (pp){
                             s->InsertHistoryData(data->StartIdx,pp);
                             pp->data = date;
+                            wxString sv;
                             p->GetValue(idx+2).ToDouble(&pp->open);
                             p->GetValue(idx+3).ToDouble(&pp->High);
                             p->GetValue(idx+4).ToDouble(&pp->Low);
                             p->GetValue(idx+5).ToDouble(&pp->Close);
+                            sv = p->GetValue(idx+7);
+                            sv.Replace(wxT(","),wxT(""));
+                            sv.ToDouble(&pp->volPrice);
                             pp->adjClose = pp->Close;
 
                             long v=0;
-                            p->GetValue(idx+6).ToLong(&v);
+                            sv = p->GetValue(idx+6);
+                            sv.Replace(wxT(","),wxT(""));
+                            sv.ToLong(&v);
                             pp->volume = v;
 
                         }
