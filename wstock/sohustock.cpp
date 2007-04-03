@@ -82,7 +82,7 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
                             wxString token = tkz.GetNextToken();
 							//wxLogMessage(wxT("%d:%s"),subidx,token.c_str());
 							switch (subidx){
-							case 1://深圳成指 当前价格
+							case 1://脡卯脹脷鲁脡脰赂 碌卤脟掳录脹赂帽
 								(*stocks)[1]->SetPropertyValue(Props[0], token);
 								break;
 							case 2:
@@ -141,7 +141,8 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
             Stock*s = (Stock*)data->HistoryStock;
             MyHtmlParser parser(p);
             parser.Parse(event.Result);
-			//p->DumpTable();
+            wxLogMessage(event.Result);
+			p->DumpTable();
             int idx=p->GetTDIndex(HistoryKey);
             bool IsSucc=true;
             if (idx>=0){
