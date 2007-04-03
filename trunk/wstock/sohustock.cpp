@@ -23,7 +23,9 @@ int SohuStock::GetProptiesNum(){
     return SohuStock::Props.size();
 };
 
-
+#ifdef __WXDEBUG__
+extern FILE *fp;
+#endif
 void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 	wxString key1(wxT("浮动盈亏"));
 	wxString key2(wxT("交易金额"));
@@ -141,8 +143,13 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
             Stock*s = (Stock*)data->HistoryStock;
             MyHtmlParser parser(p);
             parser.Parse(event.Result);
-            wxLogMessage(event.Result);
-			p->DumpTable();
+
+#ifdef __WXDEBUG__
+			//fwrite(event.Result.c_str(),event.Result.Length(),1,fp);
+			//fflush(fp);
+#endif
+            //wxLogMessage(event.Result);
+			//p->DumpTable();
             int idx=p->GetTDIndex(HistoryKey);
             bool IsSucc=true;
             if (idx>=0){
@@ -255,14 +262,15 @@ void SohuStock::FetchHistoryData(Stock* s,int datatype,void* UserData){
 		break;
 	}
     PostData << wxT("code=") << s->GetId()
+			 << wxT("&submit=%CC%E1%BD%BB")
 			 << wxT("&start_year=") << (int)date.GetYear()
 			 << wxT("&start_month=") << wxString::Format(wxT("%02d"),((int)date.GetMonth())+1)
-			 << wxT("&start_day=") << (int)date.GetDay()
+			 << wxT("&start_day=") << wxString::Format(wxT("%02d"),(int)date.GetDay())
 			 << wxT("&end_year=") << (int)now.GetYear()
 			 << wxT("&end_month=") << wxString::Format(wxT("%02d"),((int)now.GetMonth())+1)
-			 << wxT("&end_day=") << (int)now.GetDay()
+			 << wxT("&end_day=") << wxString::Format(wxT("%02d"),(int)now.GetDay())
 			 << wxT("&ss=") << ss;
-    wxLogStatus(PostData);
+    //wxLogStatus(PostData);
     geturl->SetPostData(PostData);
     geturl->Create();
     geturl->Run();
