@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-03 13:31+0800\n"
+"POT-Creation-Date: 2007-05-14 11:29+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,7 +155,7 @@ msgstr "价格"
 #: ../main.cpp:124 ../wstockglobalinfo.cpp:19 ../wstockglobalinfo.cpp:22
 #: ../main.cpp:127 ../wstockglobalinfo.cpp:31 ../wstockglobalinfo.cpp:34
 #: ../main.cpp:134 ../wstockglobalinfo.cpp:43 ../wstockglobalinfo.cpp:46
-#: ../wstockglobalinfo.cpp:82 ../wstockglobalinfo.cpp:85
+#: ../wstockglobalinfo.cpp:82 ../wstockglobalinfo.cpp:85 ../stocks.cpp:346
 msgid "DELTA"
 msgstr "涨跌额"
 
@@ -473,6 +473,7 @@ msgstr ""
 #: ../wstockglobalinfo.cpp:24 ../wstockglobalinfo.cpp:97
 #: ../wstockglobalinfo.cpp:122 ../wstockglobalinfo.cpp:33
 #: ../wstockglobalinfo.cpp:123 ../wstockglobalinfo.cpp:147
+#: ../wstockglobalinfo.cpp:149
 msgid "ShenZhen Value"
 msgstr "深证成指"
 
@@ -481,6 +482,7 @@ msgstr "深证成指"
 #: ../wstockglobalinfo.cpp:27 ../wstockglobalinfo.cpp:100
 #: ../wstockglobalinfo.cpp:121 ../wstockglobalinfo.cpp:39
 #: ../wstockglobalinfo.cpp:126 ../wstockglobalinfo.cpp:148
+#: ../wstockglobalinfo.cpp:150
 msgid "ShangHai Value"
 msgstr "上证指数"
 
@@ -510,21 +512,25 @@ msgstr "沪市涨跌幅"
 
 #: ../wstockglobalinfo.cpp:115 ../wstockglobalinfo.cpp:118
 #: ../wstockglobalinfo.cpp:139 ../wstockglobalinfo.cpp:166
+#: ../wstockglobalinfo.cpp:168
 msgid "wstock global info"
 msgstr "wstock全局信息"
 
 #: ../wstockglobalinfo.cpp:85 ../stocks.cpp:323 ../wstockglobalinfo.cpp:103
 #: ../stocks.cpp:324 ../wstockglobalinfo.cpp:129 ../stocks.cpp:341
+#: ../stocks.cpp:354
 msgid "MyStock Total Earning"
 msgstr "我的总盈利"
 
 #: ../wstockglobalinfo.cpp:86 ../stocks.cpp:326 ../wstockglobalinfo.cpp:104
 #: ../stocks.cpp:327 ../wstockglobalinfo.cpp:130 ../stocks.cpp:344
+#: ../stocks.cpp:357
 msgid "MyStock Total Earning Rate"
 msgstr "总盈利幅度"
 
 #: ../wstockglobalinfo.cpp:87 ../stocks.cpp:335 ../wstockglobalinfo.cpp:105
 #: ../stocks.cpp:336 ../wstockglobalinfo.cpp:131 ../stocks.cpp:353
+#: ../stocks.cpp:366
 msgid "MyStock Total Money"
 msgstr "我的总资产"
 
@@ -545,7 +551,7 @@ msgstr "也许你希望校验一下股票编号:%s"
 msgid "Global Time"
 msgstr "大盘时间"
 
-#: ../main.cpp:137 ../stocks.cpp:34
+#: ../main.cpp:137 ../stocks.cpp:34 ../stocks.cpp:47
 msgid "PRICE 5D AVG"
 msgstr "5日均价"
 
@@ -560,3 +566,7 @@ msgstr "5日平均换手"
 #: ../stocks.cpp:67 ../sohustock.h:21
 msgid "EXCHANGE PRICE"
 msgstr "今日换手价"
+
+#: ../stocks.cpp:369 ../wstockglobalinfo.cpp:133
+msgid "Today Earnings"
+msgstr "今日盈利"
