@@ -337,6 +337,19 @@ double MyStocks::GetCurrentTotal(){
         return ret;
 }
 
+double MyStocks::GetTodayTotalEarnings(){
+        double ret=0;
+        MyStockDataHash::iterator i = datas.begin();
+        while (i != datas.end()){
+            double CurValue=0;
+            MyStockStru* pmystock = i->second;
+            pmystock->stock->GetRealTimeValue(_("DELTA")).ToDouble(&CurValue);
+            ret += pmystock->GetCurrentAmount() * CurValue;
+            i++;
+        }
+        return ret;
+}
+
 wxString MyStocks::GetMyStockTotalinfo(const wxString& key){
     if (key == _("MyStock Total Earning")){
         return wxString::Format(wxT("%.2f"),GetTotalEarning());
@@ -352,6 +365,9 @@ wxString MyStocks::GetMyStockTotalinfo(const wxString& key){
     }
     else if (key == _("MyStock Total Money")){
         return wxString::Format(wxT("%.2f"),GetCurrentTotal());
+    }
+    else if (key == _("Today Earnings")){
+        return wxString::Format(wxT("%.2f"),GetTodayTotalEarnings());
     }
     return wxT("");
 }

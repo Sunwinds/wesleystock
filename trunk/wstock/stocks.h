@@ -275,6 +275,7 @@ class MyStocks : public wxObject{
         double GetTotalEarning();
         double GetTotalPay();
         double GetCurrentTotal();
+        double GetTodayTotalEarnings();
         wxString GetMyStockTotalinfo(const wxString& key);
     private:
         StockList stocks;

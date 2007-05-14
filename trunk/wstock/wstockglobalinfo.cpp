@@ -99,8 +99,8 @@ void wstockglobalinfo::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
 			}
             grid_infos->AutoSizeColumns();
             grid_infos->EndBatch();
-            RealTimeDeltaTimer.Start(5000,true);
 		}
+        RealTimeDeltaTimer.Start(5000,true);
 }
 
 void wstockglobalinfo::OnRealtimeDeltaTimer(wxTimerEvent& event){
@@ -129,6 +129,8 @@ wstockglobalinfo::wstockglobalinfo(wxWindow* parent, int id, const wxString& tit
 	ColDefs.push_back(new MainGridDef_Stru(_("MyStock Total Earning"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("MyStock Total Earning Rate"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("MyStock Total Money"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
+
+	ColDefs.push_back(new MainGridDef_Stru(_("Today Earnings"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
 
     grid_infos->SetRowLabelSize(0);
     grid_infos->SetColLabelSize(0);
