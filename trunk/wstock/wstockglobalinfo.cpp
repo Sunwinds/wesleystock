@@ -18,6 +18,7 @@ void wstockglobalinfo::OnMoved(wxMoveEvent& event ){
 }
 
 void wstockglobalinfo::UpdateRealtimeCell(){
+		    GlobalStatus.Empty();
     for (size_t i=0;i<ColDefs.size();i++){
         if (ColDefs[i]->KeyType == KT_MYSTOCK_REALTIME){
             UpdateInfoGridCell(i);
@@ -27,6 +28,7 @@ void wstockglobalinfo::UpdateRealtimeCell(){
         UpdateInfoGridCellColor(gridci);
     }
     grid_infos->AutoSizeColumns();
+    UpdateStatusBar();
 }
 
 void wstockglobalinfo::UpdateInfoGridCell(int r){
@@ -54,6 +56,16 @@ void wstockglobalinfo::UpdateInfoGridCell(int r){
     else if (ColDefs[r]->KeyType ==KT_MYSTOCK_REALTIME){
         grid_infos->SetCellValue(r,1, mystocks->GetMyStockTotalinfo(ColDefs[r]->KeyName));
     }
+}
+
+void wstockglobalinfo::UpdateStatusBar(void){
+    GlobalStatus.Empty();
+    for (size_t i=0;i<ColDefs.size();i++){
+        if (ColDefs[i]->ViewInStatus){
+            GlobalStatus << ColDefs[i]->KeyName << wxT(":") <<grid_infos->GetCellValue(i,1)<<wxT(" ");
+        }
+    }
+    wxLogStatus(GlobalStatus);
 }
 
 void wstockglobalinfo::UpdateInfoGridCellColor(int r){
@@ -99,6 +111,7 @@ void wstockglobalinfo::OnStockDataGetDone(wxStockDataGetDoneEvent&event){
 			}
             grid_infos->AutoSizeColumns();
             grid_infos->EndBatch();
+            UpdateStatusBar();
 		}
         RealTimeDeltaTimer.Start(5000,true);
 }
@@ -121,16 +134,16 @@ wstockglobalinfo::wstockglobalinfo(wxWindow* parent, int id, const wxString& tit
 
 	ColDefs.push_back(new MainGridDef_Stru(_("Global Time"),KT_GLOBAL_REALTIME,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("ShenZhen Value"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER,2));
-	ColDefs.push_back(new MainGridDef_Stru(_("ShenZhen Delta"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER));
+	ColDefs.push_back(new MainGridDef_Stru(_("ShenZhen Delta"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER,-1,true));
 	ColDefs.push_back(new MainGridDef_Stru(_("ShenZhen Delta Rate"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER));
 	ColDefs.push_back(new MainGridDef_Stru(_("ShangHai Value"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER,5));
-	ColDefs.push_back(new MainGridDef_Stru(_("ShangHai Delta"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER));
+	ColDefs.push_back(new MainGridDef_Stru(_("ShangHai Delta"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER,-1,true));
 	ColDefs.push_back(new MainGridDef_Stru(_("ShangHai Delta Rate"),KT_GLOBAL_REALTIME,VT_COLOR_NUMBER));
-	ColDefs.push_back(new MainGridDef_Stru(_("MyStock Total Earning"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
-	ColDefs.push_back(new MainGridDef_Stru(_("MyStock Total Earning Rate"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
-	ColDefs.push_back(new MainGridDef_Stru(_("MyStock Total Money"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
+	ColDefs.push_back(new MainGridDef_Stru(_("MyStock Total Earning"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER,-1,true));
+	ColDefs.push_back(new MainGridDef_Stru(_("MyStock Total Earning Rate"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER,-1,true));
+	ColDefs.push_back(new MainGridDef_Stru(_("MyStock Total Money"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER,-1,true));
 
-	ColDefs.push_back(new MainGridDef_Stru(_("Today Earnings"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
+	ColDefs.push_back(new MainGridDef_Stru(_("Today Earnings"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER,-1,true));
 
     grid_infos->SetRowLabelSize(0);
     grid_infos->SetColLabelSize(0);

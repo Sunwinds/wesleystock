@@ -141,7 +141,6 @@ void YahooStock::FetchRealTimeData(StockList* ss, void* UserData, int StartIdx){
         if (data->RealtimeStockNum>MaxRealtimeNum) break;
     }
     Url <<wxT("&f=sl1d1t1c1ohgv&e=.csv");
-    wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
     geturl->Create();
     geturl->Run();
@@ -177,7 +176,6 @@ void YahooStock::FetchHistoryData(Stock* s,int datatype,void* UserData){
                 AYearBefore.GetMonth(),
                 AYearBefore.GetDay(),
                 AYearBefore.GetYear());
-    wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
     geturl->Create();
     geturl->Run();

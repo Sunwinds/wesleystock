@@ -41,7 +41,6 @@ void SinaStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 			return;
 		}
 
-		wxLogStatus(wxT(""));
         if (data->FetchSeed == RealtimeFetchSeed){
             HtmlTableParser *p=new HtmlTableParser();
             MyHtmlParser parser(p);
@@ -154,7 +153,6 @@ void SinaStock::FetchRealTimeData(StockList* ss, void* UserData, int StartIdx){
     if ((*ss)[StartIdx]->GetId() == wxT("000001")) country=wxT("sh");
     wxString Url(wxT("http://stock.finance.sina.com.cn/cgi-bin/stock/quote/quote.cgi?symbol="));
     Url << (*ss)[StartIdx]->GetId() << wxT("&country=") << country;
-    wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
     geturl->Create();
     geturl->Run();
@@ -184,7 +182,6 @@ void SinaStock::FetchHistoryData(Stock* s,int datatype,void* UserData){
     else{
         Url << wxT("http://biz.finance.sina.com.cn/company/history.php");
     }
-    wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
     if (datatype>0){
         wxDateTime date=wxDateTime::Now() - wxDateSpan(0,datatype * 3);
@@ -211,7 +208,7 @@ void SinaStock::ValidateStockId(wxWindow*Owner,const wxString& Id){
     if (Id.StartsWith(wxT("6"))) country=wxT("sh");
     wxString Url(wxT("http://stock.finance.sina.com.cn/cgi-bin/stock/quote/quote.cgi?symbol="));
     Url << Id << wxT("&country=") << country;
-    wxLogStatus(Url);
+
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
     geturl->Create();
     geturl->Run();

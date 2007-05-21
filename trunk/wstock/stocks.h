@@ -7,6 +7,7 @@
 #include <wx/event.h>
 
 WX_DECLARE_STRING_HASH_MAP(wxString, StrStrHash);
+#define X(x) (xmlChar*)((const char*)x)
 
 typedef struct{
     wxDateTime data;
@@ -281,5 +282,7 @@ class MyStocks : public wxObject{
         StockList stocks;
         MyStockDataHash datas;
 };
+
+WX_DECLARE_LIST(wxPoint, wxPointList);
 
 #endif // STOCKS_H_INCLUDED

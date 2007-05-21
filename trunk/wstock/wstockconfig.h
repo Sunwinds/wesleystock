@@ -16,6 +16,11 @@ class WStockConfig :public wxObject
             config.Read(STOCK_KEY_PATH, &keyPath);
             return keyPath;
         };
+        static wxString GetMyDayInfoPath(){
+            wxString keyPath = wxT("myday.xml");
+            config.Read(wxT("General/mydayinfo"), &keyPath);
+            return keyPath;
+        };
 		static wxColour GetGoodColor(){
 			return *wxRED;
 		}

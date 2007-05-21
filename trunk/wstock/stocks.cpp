@@ -79,7 +79,6 @@ void Stock::InitHistoryData(int num){
 	}
 }
 
-#define X(x) (xmlChar*)((const char*)x)
 void Stocks::SaveStockIndex(){
     xmlDocPtr doc;
     xmlNodePtr stock;
@@ -371,3 +370,6 @@ wxString MyStocks::GetMyStockTotalinfo(const wxString& key){
     }
     return wxT("");
 }
+
+#include <wx/listimpl.cpp>
+WX_DEFINE_LIST(wxPointList);

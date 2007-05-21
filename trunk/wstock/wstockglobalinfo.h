@@ -31,16 +31,18 @@ enum{
 
 class MainGridDef_Stru:public wxObject{
 public:
-	MainGridDef_Stru(const wxString &k, int kt,int vt,int cc=-1){
+	MainGridDef_Stru(const wxString &k, int kt,int vt,int cc=-1,int vis=false){
 		KeyName = k;
 		KeyType = kt;
 		ValueType = vt;
 		ColorCol = cc;
+		ViewInStatus=vis;
 	};
 	wxString KeyName;
 	int KeyType; //0:Fixed 1: RealTime 2:RealTimeCalc 3:HistoryCalc
 	int ValueType; //0: Number With Color 1:Number Without Color 2:Other
 	int ColorCol;
+	bool ViewInStatus;
 };
 WX_DECLARE_LIST(MainGridDef_Stru,MainGridDef_StruList);
 
@@ -48,7 +50,7 @@ class wstockglobalinfo: public wxDialog {
 public:
     // begin wxGlade: wstockglobalinfo::ids
     // end wxGlade
-
+    StockList stocks;
     wstockglobalinfo(wxWindow* parent, int id, const wxString& title, MyStocks*ms, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE);
     void UpdateRealtimeCell();
 private:
@@ -61,12 +63,13 @@ private:
     void UpdateInfoGridCellColor(int r);
     void UpdateInfoGridCell(int r);
 	void OnMoved(wxMoveEvent& event );
+	void UpdateStatusBar(void);
 protected:
     // begin wxGlade: wstockglobalinfo::attributes
     wxGrid* grid_infos;
     // end wxGlade
+    wxString GlobalStatus;
     MainGridDef_StruList ColDefs;
-    StockList stocks;
     MyStocks *mystocks;
     StocksDataFetch*fetchObj;
     wxTimer RealTimeDeltaTimer;

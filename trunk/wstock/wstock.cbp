@@ -40,6 +40,8 @@
 			<Add option="`curl-config --libs`" />
 			<Add option="`xml2-config --libs`" />
 		</Linker>
+		<Unit filename="MyDayInfoDialog.cpp" />
+		<Unit filename="MyDayInfoDialog.h" />
 		<Unit filename="MyStockDialog.cpp" />
 		<Unit filename="MyStockDialog.h" />
 		<Unit filename="StockHistoryDialog.cpp" />
