@@ -41,7 +41,6 @@ void SohuStock::OnUrlGetDone(wxUrlGetDoneEvent& event){
 			return;
 		}
 
-		wxLogStatus(wxT(""));
         if (data->FetchSeed == RealtimeFetchSeed){
             HtmlTableParser *p=new HtmlTableParser();
 			if ((stocks)&&(stocks->size()>0)){
@@ -239,7 +238,6 @@ void SohuStock::FetchRealTimeData(StockList* ss, void* UserData, int StartIdx){
         }
     }
 	PostData <<wxT(",&flsopt=uptcode&opt=update");
-    wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
 	geturl->SetPostData(PostData);
     geturl->Create();
@@ -261,7 +259,6 @@ void SohuStock::FetchHistoryData(Stock* s,int datatype,void* UserData){
     data->StartIdx = datatype;
     data->HistoryStock = s;
     wxString Url(wxT("http://stock.business.sohu.com/q/hp.php"));
-    wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
     wxDateTime date=now - wxDateSpan(1);
     wxString PostData;
@@ -301,7 +298,6 @@ void SohuStock::ValidateStockId(wxWindow*Owner,const wxString& Id){
     wxString PostData(wxT("code="));
     PostData << Id;
 	PostData <<wxT(",&flsopt=uptcode&opt=update");
-    wxLogStatus(Url);
     WStockGetUrl* geturl=new WStockGetUrl(this,Url,data);
 	geturl->SetPostData(PostData);
     geturl->Create();

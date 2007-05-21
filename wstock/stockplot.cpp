@@ -11,10 +11,6 @@ wxPlotWindow::wxPlotWindow(wxWindow*parent, int id):wxScrolledWindow(parent, wxI
     stock = NULL;
 };
 
-WX_DECLARE_LIST(wxPoint, wxPointList);
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(wxPointList);
-
 void wxPlotWindow::OnDraw(wxDC& dc)
 {
 	wxColour cs[]={
@@ -57,7 +53,7 @@ void wxPlotWindow::DrawPricePlot(wxDC&dc,StockHistoryDataArray& value,bool DrawX
         }
 
 		double Highest=0;
-        double Lowest=10000; 
+        double Lowest=10000;
         for (size_t j=0;j<value.size();j++){
             if (value[j]->High > Highest) Highest = value[j]->High;
             if (value[j]->Low < Lowest) Lowest = value[j]->Low;

@@ -10,7 +10,7 @@
 #include "wstockcustomdialog.h"
 #include "MyStockDialog.h"
 #include "StockHistoryDialog.h"
-
+#include "MyDayInfoDialog.h"
 
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(BuyInfoList);
@@ -52,7 +52,37 @@ int REALTIME_DELTA_TIMER_ID=wxNewId();
 int idMenuTestNet=wxNewId();
 int idMenuGlobalInfo=wxNewId();
 
+BEGIN_EVENT_TABLE(MyGrid, wxGrid)
+    EVT_LEFT_DCLICK(MyGrid::OnMyMouseEvent)
+END_EVENT_TABLE()
+
+void MyGrid::OnMyMouseEvent( wxMouseEvent& event ){
+    wxGrid*p = (wxGrid*)((wxWindow*)this)->GetParent();
+    if (event.ButtonDown(wxMOUSE_BTN_LEFT) && p->FindFocus() != (wxWindow*)m_gridWin)
+        p->SetFocus();
+
+    int x, y;
+    wxPoint pos( event.GetPosition() );
+    p->CalcUnscrolledPosition( pos.x, pos.y, &x, &y );
+    wxGridCellCoords coords;
+    p->XYToCell( x, y, coords );
+
+    int cell_rows, cell_cols;
+    p->GetCellSize( coords.GetRow(), coords.GetCol(), &cell_rows, &cell_cols );
+    if ((cell_rows < 0) || (cell_cols < 0))
+    {
+        coords.SetRow(coords.GetRow() + cell_rows);
+        coords.SetCol(coords.GetCol() + cell_cols);
+    }
+    wxGridEvent gridEvt( p->GetId(),
+                             wxEVT_GRID_CELL_LEFT_DCLICK,
+                             p,
+                             coords.GetRow(), coords.GetCol());
+    p->GetEventHandler()->ProcessEvent(gridEvt);
+}
+
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
+    EVT_CLOSE(MyFrame::OnCloseQuery)
     EVT_MENU(idMenuQuit, MyFrame::OnQuit)
     EVT_MENU(idMenuAbout, MyFrame::OnAbout)
     EVT_MENU(idMenuTestNet, MyFrame::OnTestNet)
@@ -66,6 +96,74 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_GRID_CELL_LEFT_DCLICK(MyFrame::OnGridCellDbClick)
     EVT_GSPREADSHEETS_GET_DONE(-1, MyFrame::OnUpdateFromGoogleDone)
 END_EVENT_TABLE()
+
+
+void MyFrame::DoSaveTodayInfo(){
+    //Load Xml From File to Memory;
+    wxString keyPath=WStockConfig::GetMyDayInfoPath();
+    wxFileName keyf(keyPath);
+    keyf.MakeAbsolute();
+    xmlDocPtr doc=NULL;
+    xmlNodePtr TodayNode=NULL;
+    if (keyf.FileExists()){
+        //Load Stocks Name From file
+		doc = xmlParseFile((const char*)keyf.GetFullPath().mb_str());
+    }
+
+    //If Load Fail, Create the Xml Memory
+    if (doc==NULL){
+        doc = xmlNewDoc(X("1.0"));
+        doc->children = xmlNewDocNode(doc, NULL, X("DayInfos"), NULL);
+        xmlDocSetRootElement(doc, doc->children);
+    }
+
+    //Find Today Node
+        for (xmlNodePtr node=doc->children->children;node;node=node->next){
+            if (xmlStrcmp(node->name,(const xmlChar*)"DayInfo")==0){
+				wxString Today(wxConvUTF8.cMB2WC(
+					(char*)xmlGetProp(node, (const xmlChar*)"Date")),*wxConvCurrent);
+                if (Today == wxDateTime::Today().FormatISODate()){
+                    TodayNode = node;
+                    break;
+				}
+            }
+        }
+
+    //If Find Fail,Create today node.
+    if (TodayNode == NULL){
+		TodayNode = xmlNewChild(doc->children, NULL, X("DayInfo"), NULL);
+		wxString utftoday(wxConvCurrent->cWX2WC(
+                wxDateTime::Today().FormatISODate().c_str()),wxConvUTF8);
+		xmlSetProp(TodayNode,X("Date"),X(utftoday.mb_str()));
+    }
+
+    //Assign Today Info Value
+	wxString utfvalue(wxConvCurrent->cWX2WC(
+            globalInfo->stocks[0]->GetRealTimeValue(_("PRICE")).c_str()),wxConvUTF8);
+	xmlSetProp(TodayNode,X("ShenZhen"),X(utfvalue.mb_str()));
+
+	utfvalue=wxString(wxConvCurrent->cWX2WC(
+            globalInfo->stocks[1]->GetRealTimeValue(_("PRICE")).c_str()),wxConvUTF8);
+	xmlSetProp(TodayNode,X("ShangHai"),X(utfvalue.mb_str()));
+
+	utfvalue=wxString(wxConvCurrent->cWX2WC(
+            mystocks.GetMyStockTotalinfo(_("Today Earnings")).c_str()),wxConvUTF8);
+	xmlSetProp(TodayNode,X("TodayEarning"),X(utfvalue.mb_str()));
+
+	utfvalue=wxString(wxConvCurrent->cWX2WC(
+            mystocks.GetMyStockTotalinfo(_("MyStock Total Money")).c_str()),wxConvUTF8);
+	xmlSetProp(TodayNode,X("Total"),X(utfvalue.mb_str()));
+
+    //Save to File.
+    xmlSaveFormatFileEnc((const char*)WStockConfig::GetMyDayInfoPath().mb_str(),doc,"utf-8",1);
+    xmlFreeDoc(doc);
+
+}
+
+void MyFrame::OnCloseQuery(wxCloseEvent& event){
+    DoSaveTodayInfo();
+    event.Skip();
+}
 
 MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     : wxFrame(frame, -1, title)
@@ -98,7 +196,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 
     SetMenuBar(mbar);
 #endif // wxUSE_MENUS
-    mainGrid = new wxGrid(this,-1);
+    mainGrid = new MyGrid(this,-1);
     mainGrid->CreateGrid(1,5);
     mainGrid->SetDefaultCellAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
     mainGrid->EnableEditing(false);
@@ -106,11 +204,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     gss = new GSpreadSheets(this);
 #if wxUSE_STATUSBAR
     // create a status bar with some information about the used wxWidgets version
-    CreateStatusBar(2);
-    int Widths[]={-1,100};
-    SetStatusWidths(2,Widths);
-    SetStatusText(_("Hello wstock user !"),0);
-    SetStatusText(_("WSTOCK"),1);
+    CreateStatusBar();
 #endif // wxUSE_STATUSBAR
 	//globalInfo=NULL;
     globalInfo = new wstockglobalinfo(this,-1,wxT(""),&mystocks);
@@ -123,7 +217,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 		y = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y) - globalInfo->GetSize().y;
 	}
     globalInfo->SetPosition(wxPoint(x,y));
-    globalInfo->Show();
+    //globalInfo->Show();
 }
 
 void MyFrame::DoInitData(){
@@ -552,8 +646,16 @@ void MyFrame::OnRealtimeDeltaTimer(wxTimerEvent& event){
     if (stock) stock->RetriveRealTimeData(mystocks.GetList(), (void*)(0));
 }
 
+void MyFrame::OnGridDbClick(wxGridEvent& event){
+	//wxLogStatus(_("Why click me?"));
+}
+
 void MyFrame::OnGridCellDbClick(wxGridEvent& event){
-	//StocksDataFetch*stock = GetCurFetchObj();
+    if ((event.GetCol()<0) || (event.GetRow()<0)){
+        MyDayInfoDialog dialog(this,-1,wxT(""));
+        dialog.ShowModal();
+        return;
+    }
 	Stock* s = (*mystocks.GetList())[CurStockStartPos+event.GetRow()];
 
 	wxString Explain=s->ExplainMePropValue(ColDefs[event.GetCol()]->KeyName);

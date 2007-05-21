@@ -9,6 +9,20 @@
 #include "gspreadsheet.h"
 #include "wstockglobalinfo.h"
 
+class MyGrid:public wxGrid{
+    public:
+        MyGrid(wxWindow *parent,
+            wxWindowID id,
+            const wxPoint& pos = wxDefaultPosition,
+            const wxSize& size = wxDefaultSize,
+            long style = wxWANTS_CHARS,
+            const wxString& name = wxPanelNameStr ):wxGrid(parent,id,pos,size,style,name){
+                ((wxWindow*)m_gridWin)->Connect(wxEVT_LEFT_DCLICK,wxMouseEventHandler(MyGrid::OnMyMouseEvent));
+        };
+        void OnMyMouseEvent( wxMouseEvent& event );
+        DECLARE_EVENT_TABLE();
+};
+
 class MyFrame: public wxFrame
 {
 	public:
@@ -21,7 +35,7 @@ class MyFrame: public wxFrame
 		void ClearDataFile(bool KeepToday=true);
 	private:
         int CurStockStartPos;
-        wxGrid *mainGrid;
+        MyGrid *mainGrid;
         Stocks stocks;
         MyStocks mystocks;
         wxTimer RealTimeDeltaTimer;
@@ -30,6 +44,7 @@ class MyFrame: public wxFrame
         wstockglobalinfo *globalInfo;
 
 		void OnTestNet(wxCommandEvent& event);
+		void DoSaveTodayInfo();
 		void UpdateMainGridCell(int r, int c);
 		void UpdateMainGridCellColor(int r, int c);
         void OnUpdateFromGoogleDone(wxNotifyEvent&event);
@@ -42,6 +57,8 @@ class MyFrame: public wxFrame
 		void OnConfigure(wxCommandEvent& event);
 		void OnAddMyStock(wxCommandEvent& event);
 		void OnGlobalInfo(wxCommandEvent& event);
+		void OnCloseQuery(wxCloseEvent& event);
+		void OnGridDbClick(wxGridEvent& event);
 		void OnStockDataGetDone(wxStockDataGetDoneEvent&event);
 		DECLARE_EVENT_TABLE();
 };
