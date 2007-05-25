@@ -109,6 +109,14 @@ SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\MyDayInfoDialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MyDayInfoDialog.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\mystockdetail.cpp
 # End Source File
 # Begin Source File

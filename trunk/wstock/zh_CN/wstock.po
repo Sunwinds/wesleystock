@@ -570,3 +570,6 @@ msgstr "今日换手价"
 #: ../stocks.cpp:369 ../wstockglobalinfo.cpp:133
 msgid "Today Earnings"
 msgstr "今日盈利"
+
+msgid "Current Value"
+msgstr "最新市值"

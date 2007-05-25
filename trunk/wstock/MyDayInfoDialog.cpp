@@ -73,7 +73,8 @@ void MyDayInfoPlot::DrawPricePlot(wxDC&dc){
     TotalDayInfoStru MyDays[TOTAY_DAYS_MYDAYINFO]={
         0
         };
-    double MaxSz,MinSz,MaxSh,MinSh,MaxMyTotal,MinMyTotal,MaxMyDelta,MinMyDelta;
+    double MaxSz,MinSz,MaxSh,MinSh,MaxTotal,MinTotal,MaxDelta,MinDelta;
+	MaxSz=MinSz=MaxSh=MinSh=MaxTotal=MinTotal=MaxDelta=MinDelta=0;
 
     wxString keyPath=WStockConfig::GetMyDayInfoPath();
     wxFileName keyf(keyPath);
@@ -108,9 +109,53 @@ void MyDayInfoPlot::DrawPricePlot(wxDC&dc){
                 int idx=(wxDateTime::Today()-date).GetDays();
                 if  (idx<TOTAY_DAYS_MYDAYINFO){
                     Sz.ToDouble(&MyDays[idx].sz);
+                    Sh.ToDouble(&MyDays[idx].sh);
+                    Total.ToDouble(&MyDays[idx].total);
+                    Delta.ToDouble(&MyDays[idx].delta);
+					MyDays[idx].Valid = true;
                 }
             }
     }
 
+	int i;
+	for (i=0;i<TOTAY_DAYS_MYDAYINFO;i++){
+		if (MyDays[i].Valid){
+			if (MyDays[i].sz>MaxSz) MaxSz = MyDays[i].sz;
+			if (MyDays[i].sz<MinSz) MinSz = MyDays[i].sz;
+
+			if (MyDays[i].sh>MaxSh) MaxSh = MyDays[i].sh;
+			if (MyDays[i].sh<MinSh) MinSh = MyDays[i].sh;
+			
+			if (MyDays[i].total>MaxTotal) MaxTotal = MyDays[i].total;
+			if (MyDays[i].total<MinTotal) MinTotal = MyDays[i].total;
+			
+			if (MyDays[i].delta>MaxDelta) MaxDelta = MyDays[i].delta;
+			if (MyDays[i].delta<MinDelta) MinDelta = MyDays[i].delta;
+
+		}
+	}
+
+	dc.SetPen(wxPen(*wxBLACK,3));
+	int XStart=100,YStart=10,YFree=60;
+	int TotalY=dc.GetSize().y-30-YFree;
+	int XTotal = dc.GetSize().x-110;
+	float TotalDelta=0;
+	if (MinDelta<0)	TotalDelta = MaxTotal - MinDelta+YFree;
+	else TotalDelta = MaxTotal+YFree;
+	if (TotalDelta<0.0003) TotalDelta = 1;
+	int ZeroY = (int)(double)(TotalY/TotalDelta * MaxTotal + YStart);
+	dc.DrawLine(XStart,YStart,XStart,YStart + TotalY + YFree);
+	dc.DrawLine(XStart-10,ZeroY,XStart+XTotal,ZeroY);
+
+	for (i=0;i<TOTAY_DAYS_MYDAYINFO;i++){
+		if (MyDays[i].Valid){
+			int MyTotalY=(int)(double)(TotalY/TotalDelta * (MaxTotal -  MyDays[i].total) + YStart);
+			int MyDeltaY=(int)(double)(TotalY/TotalDelta * (MaxTotal -  MyDays[i].delta) + YStart);
+			dc.SetBrush(*wxBLACK_BRUSH);
+			dc.DrawRectangle(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5,MyTotalY,10,ZeroY-MyTotalY);
+			dc.SetBrush(*wxGREEN_BRUSH);
+			dc.DrawRectangle(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5,MyDeltaY,10,ZeroY-MyDeltaY);
+		}
+	}
 
 }
