@@ -9,4 +9,7 @@
   <Stock Id="600021" Name="上海电力"/>
   <Stock Id="600737" Name="中粮屯河"/>
   <Stock Id="600332" Name="广州药业"/>
+  <Stock Id="600739" Name="辽宁成大"/>
+  <Stock Id="600655" Name="豫园商城"/>
+  <Stock Id="000650" Name="ST 仁 和"/>
 </Stocks>
