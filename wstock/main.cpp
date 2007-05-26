@@ -99,6 +99,17 @@ END_EVENT_TABLE()
 
 
 void MyFrame::DoSaveTodayInfo(){
+	//Check if the newest realtime date is today's date.
+	if (mystocks.GetList()->size()<=0) return;//No Stock info to save.
+	Stock*s = (*mystocks.GetList())[0];
+	wxDateTime Date;
+	Date.ParseDate(s->GetRealTimeValue(_("DATE")));
+	//wxLogMessage(s->GetRealTimeValue(_("DATE")));
+	//wxLogMessage(Date.FormatISODate());
+	if (wxDateTime::Today() - Date > 0){
+		return; //Old Date,no need save.
+	}
+
     //Load Xml From File to Memory;
     wxString keyPath=WStockConfig::GetMyDayInfoPath();
     wxFileName keyf(keyPath);
@@ -223,6 +234,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 void MyFrame::DoInitData(){
 	ColDefs.push_back(new MainGridDef_Stru(_("Stock Id"),KT_FIXED,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("Stock Name"),KT_FIXED,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("DATE"),KT_REALTIME,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("TIME"),KT_REALTIME,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("Total Amount"),KT_MYSTOCK_FIXED,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("PRICE AVG"),KT_MYSTOCK_FIXED,VT_OTHER));
