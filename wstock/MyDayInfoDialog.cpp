@@ -68,13 +68,16 @@ void MyDayInfoPlot::OnDraw(wxDC& dc)
 typedef struct{
     double sz,sh,total,delta;
     bool Valid;
+	wxDateTime date;
 }TotalDayInfoStru;
 void MyDayInfoPlot::DrawPricePlot(wxDC&dc){
-    TotalDayInfoStru MyDays[TOTAY_DAYS_MYDAYINFO]={
-        0
-        };
+    TotalDayInfoStru MyDays[TOTAY_DAYS_MYDAYINFO];
     double MaxSz,MinSz,MaxSh,MinSh,MaxTotal,MinTotal,MaxDelta,MinDelta;
 	MaxSz=MinSz=MaxSh=MinSh=MaxTotal=MinTotal=MaxDelta=MinDelta=0;
+
+	for (int tidx=0;tidx<TOTAY_DAYS_MYDAYINFO;tidx++){
+		MyDays[tidx].Valid=false;
+	}
 
     wxString keyPath=WStockConfig::GetMyDayInfoPath();
     wxFileName keyf(keyPath);
@@ -113,6 +116,7 @@ void MyDayInfoPlot::DrawPricePlot(wxDC&dc){
                     Total.ToDouble(&MyDays[idx].total);
                     Delta.ToDouble(&MyDays[idx].delta);
 					MyDays[idx].Valid = true;
+					MyDays[idx].date = date;
                 }
             }
     }
@@ -155,6 +159,7 @@ void MyDayInfoPlot::DrawPricePlot(wxDC&dc){
 			dc.DrawRectangle(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5,MyTotalY,10,ZeroY-MyTotalY);
 			dc.SetBrush(*wxGREEN_BRUSH);
 			dc.DrawRectangle(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5,MyDeltaY,10,ZeroY-MyDeltaY);
+			dc.DrawText(MyDays[i].date.FormatISODate(),XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1))-30,YStart+TotalY);
 		}
 	}
 

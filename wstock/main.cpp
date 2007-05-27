@@ -104,11 +104,6 @@ void MyFrame::DoSaveTodayInfo(){
 	Stock*s = (*mystocks.GetList())[0];
 	wxDateTime Date;
 	Date.ParseDate(s->GetRealTimeValue(_("DATE")));
-	//wxLogMessage(s->GetRealTimeValue(_("DATE")));
-	//wxLogMessage(Date.FormatISODate());
-	if (wxDateTime::Today() - Date > 0){
-		return; //Old Date,no need save.
-	}
 
     //Load Xml From File to Memory;
     wxString keyPath=WStockConfig::GetMyDayInfoPath();
@@ -133,7 +128,7 @@ void MyFrame::DoSaveTodayInfo(){
             if (xmlStrcmp(node->name,(const xmlChar*)"DayInfo")==0){
 				wxString Today(wxConvUTF8.cMB2WC(
 					(char*)xmlGetProp(node, (const xmlChar*)"Date")),*wxConvCurrent);
-                if (Today == wxDateTime::Today().FormatISODate()){
+                if (Today == Date.FormatISODate()){
                     TodayNode = node;
                     break;
 				}
@@ -144,7 +139,7 @@ void MyFrame::DoSaveTodayInfo(){
     if (TodayNode == NULL){
 		TodayNode = xmlNewChild(doc->children, NULL, X("DayInfo"), NULL);
 		wxString utftoday(wxConvCurrent->cWX2WC(
-                wxDateTime::Today().FormatISODate().c_str()),wxConvUTF8);
+                Date.FormatISODate().c_str()),wxConvUTF8);
 		xmlSetProp(TodayNode,X("Date"),X(utftoday.mb_str()));
     }
 
@@ -828,6 +823,7 @@ double MyStockStru::GetTotalPay(){
 }
 
 double MyStockStru::GetCurValue(double CurPrice){
+	if (CurPrice==0) return GetTotalPay();//if it is pause exchange,treat as no earn no lose.
     return GetCurrentAmount()*CurPrice * 0.997;
 }
 
