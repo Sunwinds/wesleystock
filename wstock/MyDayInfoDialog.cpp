@@ -164,8 +164,8 @@ void MyDayInfoPlot::DrawPricePlot(wxDC&dc){
 			dc.DrawRectangle(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5,MyTotalY,10,Abs(ZeroY-MyTotalY));
 			dc.SetBrush(*wxGREEN_BRUSH);
 			dc.DrawRectangle(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5,MyDeltaY,10,Abs(ZeroY-MyDeltaY));
-			wxLogMessage(wxT("Draw Rect at:%d %d %d %d"),(int)(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5),
-			MyDeltaY,10,Abs(ZeroY-MyDeltaY));
+			//wxLogMessage(wxT("Draw Rect at:%d %d %d %d"),(int)(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5),
+			//MyDeltaY,10,Abs(ZeroY-MyDeltaY));
 			dc.DrawText(MyDays[i].date.FormatISODate(),XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1))-30,YStart+TotalY);
 		}
 	}

@@ -244,10 +244,10 @@ void MyFrame::DoInitData(){
 
 	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE AVG PRICE"),KT_REALTIME_CALC,VT_OTHER));
 	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE"),KT_REALTIME,VT_OTHER));
-	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE 5D AVG"),KT_HISTORY_CALC,VT_OTHER));
+	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE 5D AVG"),KT_HISTORY_CALC,VT_OTHER));*/
 
 	ColDefs.push_back(new MainGridDef_Stru(_("Earnings Yield"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
-	*/
+	
 
     StocksDataFetch*stock = GetCurFetchObj();
     stocks.SetParent(this);
