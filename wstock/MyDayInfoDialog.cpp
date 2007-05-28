@@ -64,6 +64,11 @@ void MyDayInfoPlot::OnDraw(wxDC& dc)
 	DrawPricePlot(dc);
 }
 
+int Abs(int v){
+    if (v>0) return v;
+    return -v;
+}
+
 #define TOTAY_DAYS_MYDAYINFO 15
 typedef struct{
     double sz,sh,total,delta;
@@ -129,10 +134,10 @@ void MyDayInfoPlot::DrawPricePlot(wxDC&dc){
 
 			if (MyDays[i].sh>MaxSh) MaxSh = MyDays[i].sh;
 			if (MyDays[i].sh<MinSh) MinSh = MyDays[i].sh;
-			
+
 			if (MyDays[i].total>MaxTotal) MaxTotal = MyDays[i].total;
 			if (MyDays[i].total<MinTotal) MinTotal = MyDays[i].total;
-			
+
 			if (MyDays[i].delta>MaxDelta) MaxDelta = MyDays[i].delta;
 			if (MyDays[i].delta<MinDelta) MinDelta = MyDays[i].delta;
 
@@ -153,12 +158,14 @@ void MyDayInfoPlot::DrawPricePlot(wxDC&dc){
 
 	for (i=0;i<TOTAY_DAYS_MYDAYINFO;i++){
 		if (MyDays[i].Valid){
-			int MyTotalY=(int)(double)(TotalY/TotalDelta * (MaxTotal -  MyDays[i].total) + YStart);
-			int MyDeltaY=(int)(double)(TotalY/TotalDelta * (MaxTotal -  MyDays[i].delta) + YStart);
+			int MyTotalY=(int)(double)(ZeroY - TotalY/TotalDelta * MyDays[i].total);
+			int MyDeltaY=(int)(double)(ZeroY - TotalY/TotalDelta * MyDays[i].delta);
 			dc.SetBrush(*wxBLACK_BRUSH);
-			dc.DrawRectangle(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5,MyTotalY,10,ZeroY-MyTotalY);
+			dc.DrawRectangle(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5,MyTotalY,10,Abs(ZeroY-MyTotalY));
 			dc.SetBrush(*wxGREEN_BRUSH);
-			dc.DrawRectangle(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5,MyDeltaY,10,ZeroY-MyDeltaY);
+			dc.DrawRectangle(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5,MyDeltaY,10,Abs(ZeroY-MyDeltaY));
+			wxLogMessage(wxT("Draw Rect at:%d %d %d %d"),(int)(XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1)) - 5),
+			MyDeltaY,10,Abs(ZeroY-MyDeltaY));
 			dc.DrawText(MyDays[i].date.FormatISODate(),XStart+(i+1)*(XTotal / (TOTAY_DAYS_MYDAYINFO + 1))-30,YStart+TotalY);
 		}
 	}
