@@ -247,7 +247,7 @@ void MyFrame::DoInitData(){
 	ColDefs.push_back(new MainGridDef_Stru(_("EXCHANGE 5D AVG"),KT_HISTORY_CALC,VT_OTHER));*/
 
 	ColDefs.push_back(new MainGridDef_Stru(_("Earnings Yield"),KT_MYSTOCK_REALTIME,VT_COLOR_NUMBER));
-	
+
 
     StocksDataFetch*stock = GetCurFetchObj();
     stocks.SetParent(this);
@@ -812,10 +812,10 @@ double MyStockStru::GetTotalPay(){
     {
         BuyInfo* p = node->GetData();
         if (p->Op==0){
-            ret += (p->BuyPrice * p->BuyAmount) * 1.003;
+            ret += (p->BuyPrice * p->BuyAmount) * 1.005;
         }
         else{
-            ret -= (p->BuyPrice * p->BuyAmount) * 0.997;
+            ret -= (p->BuyPrice * p->BuyAmount) * 0.995;
         }
         node = node->GetNext();
     }
@@ -824,7 +824,7 @@ double MyStockStru::GetTotalPay(){
 
 double MyStockStru::GetCurValue(double CurPrice){
 	if (CurPrice==0) return GetTotalPay();//if it is pause exchange,treat as no earn no lose.
-    return GetCurrentAmount()*CurPrice * 0.997;
+    return GetCurrentAmount()*CurPrice * 0.995;
 }
 
 double MyStockStru::GetEarningYield(double CurPrice){

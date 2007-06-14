@@ -23,10 +23,10 @@ void mystockdetail::SetMyStock(MyStockStru* s){
             grid_detail->SetCellValue(i,2,wxString::Format(wxT("%d"),pbuyinfo->BuyAmount));
             grid_detail->SetCellValue(i,3,wxString::Format(wxT("%.2f"),pbuyinfo->BuyPrice));
             if (pbuyinfo->Op == 0){
-                grid_detail->SetCellValue(i,4,wxString::Format(wxT("%.2f"), -pbuyinfo->BuyAmount * pbuyinfo->BuyPrice*1.003));
+                grid_detail->SetCellValue(i,4,wxString::Format(wxT("%.2f"), -pbuyinfo->BuyAmount * pbuyinfo->BuyPrice*1.005));
             }
             else{
-                grid_detail->SetCellValue(i,4,wxString::Format(wxT("%.2f"), pbuyinfo->BuyAmount * pbuyinfo->BuyPrice*0.997));
+                grid_detail->SetCellValue(i,4,wxString::Format(wxT("%.2f"), pbuyinfo->BuyAmount * pbuyinfo->BuyPrice*0.995));
             }
             node = node->GetNext();
             i++;
